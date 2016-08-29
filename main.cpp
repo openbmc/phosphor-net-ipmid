@@ -1,0 +1,156 @@
+#include "main.hpp"
+#include <assert.h>
+#include <dlfcn.h>
+#include <dirent.h>
+#include <unistd.h>
+
+#include <iostream>
+#include <tuple>
+
+#include <systemd/sd-bus.h>
+#include <systemd/sd-daemon.h>
+#include <systemd/sd-event.h>
+
+#include "comm_module.hpp"
+#include "command_table.hpp"
+#include "message.hpp"
+#include "message_handler.hpp"
+#include "sessions_manager.hpp"
+#include "socket_channel.hpp"
+
+session::Manager manager;
+command::Table table;
+std::tuple<session::Manager&, command::Table&> singletonPool(manager, table);
+
+static int io_handler(sd_event_source* es, int fd, uint32_t revents,
+                      void* userdata)
+{
+    std::shared_ptr<SocketChannel> channelPtr;
+
+    channelPtr.reset(new SocketChannel(fd));
+
+    // Initialize the Message Handler with the socket channel
+    MessageHandler msgHandler(channelPtr);
+
+    // Read the incoming IPMI packet
+    auto inMessage = msgHandler.receive();
+
+    if (inMessage != nullptr)
+    {
+        // Execute the Command
+        auto outMessage = msgHandler.executeCommand(inMessage.get());
+
+        if (outMessage != nullptr)
+        {
+            // Send the response IPMI Message
+            msgHandler.send(outMessage.get());
+        }
+        else
+        {
+            std::cerr << "Execution of IPMI command failed\n";
+        }
+    }
+    else
+    {
+        std::cerr << "Reading & Parsing the incoming message failed\n";
+    }
+
+    return 0;
+}
+
+int main(int i_argc, char* i_argv[])
+{
+
+    union
+    {
+        struct sockaddr_in in;
+        struct sockaddr sa;
+    } sa;
+
+    sd_event_source* event_source = nullptr;
+    sd_event* event = nullptr;
+    int fd = -1, r;
+    sigset_t ss;
+
+    r = sd_event_default(&event);
+    if (r < 0)
+    {
+        goto finish;
+    }
+
+    if (sigemptyset(&ss) < 0 || sigaddset(&ss, SIGTERM) < 0 ||
+        sigaddset(&ss, SIGINT) < 0)
+    {
+        r = -errno;
+        goto finish;
+    }
+
+    /* Block SIGTERM first, so that the event loop can handle it */
+    if (sigprocmask(SIG_BLOCK, &ss, NULL) < 0)
+    {
+        r = -errno;
+        goto finish;
+    }
+
+    /* Let's make use of the default handler and "floating" reference features of sd_event_add_signal() */
+    r = sd_event_add_signal(event, NULL, SIGTERM, NULL, NULL);
+    if (r < 0)
+    {
+        goto finish;
+    }
+
+    r = sd_event_add_signal(event, NULL, SIGINT, NULL, NULL);
+    if (r < 0)
+    {
+        goto finish;
+    }
+
+    fd = socket(AF_INET, SOCK_DGRAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0);
+    if (fd < 0)
+    {
+        r = -errno;
+        goto finish;
+    }
+
+    sa.in = (struct sockaddr_in)
+    {
+        .sin_family = AF_INET,
+         .sin_port = htobe16(623),
+    };
+
+    if (bind(fd, &sa.sa, sizeof(sa)) < 0)
+    {
+        r = -errno;
+        goto finish;
+    }
+
+    r = sd_event_add_io(event, &event_source, fd, EPOLLIN, io_handler, NULL);
+    if (r < 0)
+    {
+        goto finish;
+    }
+
+    // Register the phosphor-net-ipmid commands
+    sessionSetupCommands();
+
+    r = sd_event_loop(event);
+
+finish:
+    event_source = sd_event_source_unref(event_source);
+    event = sd_event_unref(event);
+
+    if (fd >= 0)
+    {
+        (void) close(fd);
+    }
+
+    if (r < 0)
+    {
+        fprintf(stderr, "Failure: %s\n", strerror(-r));
+    }
+
+    return r < 0 ? EXIT_FAILURE : EXIT_SUCCESS;
+
+    //We will never get here .. but in case we do .. return 0 to OS.
+    return 0;
+}
