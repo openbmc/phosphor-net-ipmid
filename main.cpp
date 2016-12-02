@@ -16,6 +16,7 @@
 #include "command_table.hpp"
 #include "message.hpp"
 #include "message_handler.hpp"
+#include "provider_registration.hpp"
 #include "sessions_manager.hpp"
 #include "socket_channel.hpp"
 
@@ -25,6 +26,11 @@ command::Table table;
 std::tuple<session::Manager&, command::Table&> singletonPool(manager, table);
 
 sd_bus* bus = nullptr;
+FILE* ipmiio = nullptr;
+FILE* ipmidbus = nullptr;
+FILE* ipmicmddetails = nullptr;
+unsigned short g_sel_reserve = 0xFFFF;
+sd_bus_slot* ipmid_slot = nullptr;
 
 /*
  * @brief Required by apphandler IPMI Provider Library
@@ -32,6 +38,14 @@ sd_bus* bus = nullptr;
 sd_bus* ipmid_get_sd_bus_connection(void)
 {
     return bus;
+}
+
+/*
+ * @brief Required by apphandler IPMI Provider Library
+ */
+unsigned short get_sel_reserve_id()
+{
+    return g_sel_reserve;
 }
 
 /*
@@ -167,6 +181,9 @@ finish:
 
 int main(int i_argc, char* i_argv[])
 {
+
+    ipmicmddetails = ipmiio = ipmidbus =  fopen("/dev/null", "w");
+
     // Connect to system bus
     auto rc = sd_bus_open_system(&bus);
     if (rc < 0)
@@ -174,6 +191,9 @@ int main(int i_argc, char* i_argv[])
         std::cerr << "Failed to connect to system bus:" << strerror(-rc) <<"\n";
         goto finish;
     }
+
+    // Register all the IPMI provider libraries applicable for net-ipmid
+    provider::registerCallbackHandlers(NET_IPMID_LIB_PATH);
 
     // Register the phosphor-net-ipmid session setup commands
     command::sessionSetupCommands();
