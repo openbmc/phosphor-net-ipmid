@@ -34,6 +34,9 @@ netipmid_SOURCES = \
 	comm_module.cpp \
 	main.hpp \
 	main.cpp \
+	provider_registration.hpp \
+	provider_registration.cpp
 
-netipmid_LDFLAGS = $(SYSTEMD_LIBS) $(CRYPTO_LIBS) $(libmapper_LIBS)
+netipmid_CPPFLAGS = -DNET_IPMID_LIB_PATH=\"/usr/lib/net-ipmid/\"
+netipmid_LDFLAGS = $(SYSTEMD_LIBS) $(CRYPTO_LIBS) $(libmapper_LIBS) $(LIBADD_DLOPEN) -export-dynamic
 
