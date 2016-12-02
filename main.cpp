@@ -26,6 +26,9 @@ command::Table table;
 std::tuple<session::Manager&, command::Table&> singletonPool(manager, table);
 
 sd_bus* bus = NULL;
+FILE* ipmiio, *ipmidbus, *ipmicmddetails;
+unsigned short g_sel_reserve = 0xFFFF;
+sd_bus_slot* ipmid_slot = NULL;
 
 /*
  * @brief Required by apphandler IPMI Provider Library
@@ -33,6 +36,14 @@ sd_bus* bus = NULL;
 sd_bus* ipmid_get_sd_bus_connection(void)
 {
     return bus;
+}
+
+/*
+ * @brief Required by apphandler IPMI Provider Library
+ */
+unsigned short get_sel_reserve_id(void)
+{
+    return g_sel_reserve;
 }
 
 /*
@@ -168,6 +179,9 @@ finish:
 
 int main(int i_argc, char* i_argv[])
 {
+
+    ipmicmddetails = ipmiio = ipmidbus =  fopen("/dev/null", "w");
+
     // Connect to system bus
     auto rc = sd_bus_open_system(&bus);
     if (rc < 0)
