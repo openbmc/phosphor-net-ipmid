@@ -11,6 +11,7 @@ netipmid_SOURCES = \
 	command_table.cpp \
 	message_handler.cpp \
 	comm_module.cpp \
+	provider_registration.cpp \
 	command/channel_auth.cpp \
 	command/guid.cpp \
 	command/open_session.cpp \
@@ -18,5 +19,6 @@ netipmid_SOURCES = \
 	command/rakp34.cpp \
 	command/session_cmds.cpp
 
-netipmid_LDFLAGS = $(SYSTEMD_LIBS) $(libmapper_LIBS)
+netipmid_CPPFLAGS = -DNET_IPMID_LIB_PATH=\"/usr/lib/net-ipmid/\"
+netipmid_LDFLAGS = $(SYSTEMD_LIBS) $(libmapper_LIBS) $(LIBADD_DLOPEN) -export-dynamic
 
