@@ -74,4 +74,22 @@ std::vector<uint8_t> NetIpmidEntry::executeCommand(std::vector<uint8_t>&
     return functor(commandData, handler);
 }
 
+std::vector<uint8_t> ProviderIpmidEntry::executeCommand(std::vector<uint8_t>&
+        commandData, message::Handler& handler)
+{
+
+    std::vector<uint8_t> response(MAX_IPMI_BUFFER);
+    size_t respSize {0};
+
+    ipmi_ret_t ipmiRC = functor(0, 0,
+                                reinterpret_cast<void*>(commandData.data()),
+                                reinterpret_cast<void*>(response.data() + 1),
+                                &respSize, NULL);
+
+    response[0] = ipmiRC;
+    response.resize(respSize + 1);
+
+    return response;
+}
+
 } // namespace command
