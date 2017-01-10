@@ -2,6 +2,7 @@
 
 #include <array>
 #include <vector>
+#include "integrity_algo.hpp"
 
 namespace cipher
 {
@@ -45,7 +46,7 @@ enum class Algorithms : uint8_t
 class Interface
 {
     public:
-        Interface() = default;
+        Interface(integrity::Algorithms intAlgo) : intAlgo(intAlgo) {}
         virtual ~Interface() = default;
         Interface(const Interface&) = default;
         Interface& operator=(const Interface&) = default;
@@ -97,6 +98,15 @@ class Interface
 
         // Session Integrity Key
         std::vector<uint8_t> sessionIntegrityKey;
+
+        /*
+         * Integrity Algorithm is activated and set in the session data only
+         * once the session setup is succeeded in the RAKP34 command. But the
+         * integrity algorithm is negotiated in the Open Session Request command
+         * . So the authentication algorithm successfully negotiated is stored
+         * in the authentication algorithm.
+         */
+        integrity::Algorithms intAlgo;
 };
 
 /*
@@ -112,7 +122,7 @@ class Interface
 class AlgoSHA1 : public Interface
 {
     public:
-        AlgoSHA1() = default;
+        AlgoSHA1(integrity::Algorithms intAlgo) : Interface(intAlgo) {}
         ~AlgoSHA1() = default;
         AlgoSHA1(const AlgoSHA1&) = default;
         AlgoSHA1& operator=(const AlgoSHA1&) = default;
