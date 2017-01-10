@@ -53,7 +53,8 @@ class Manager
          *
          */
         std::weak_ptr<Session> startSession(SessionID remoteConsoleSessID,
-                Privilege priv, cipher::rakp_auth::Algorithms authAlgo);
+                Privilege priv, cipher::rakp_auth::Algorithms authAlgo,
+                cipher::integrity::Algorithms intAlgo);
 
         /*
          * @brief Stop IPMI Session
