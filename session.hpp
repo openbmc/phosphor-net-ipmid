@@ -172,6 +172,35 @@ class Session
             integrityAlgoInterface = std::move(integrityAlgo);
         }
 
+        /*
+         * @brief Get Session's Confidentiality Algorithm
+         *
+         * @return pointer to the confidentiality algorithm
+         */
+        auto getConfAlgo() const
+        {
+            if(confAlgoInterface)
+            {
+                return confAlgoInterface.get();
+            }
+            else
+            {
+                throw std::runtime_error("Confidentiality Algorithm Empty");
+            }
+        }
+
+        /*
+         * @brief Set Session's Confidentiality Algorithm
+         *
+         * @param[in] confAlgo - unique pointer to confidentiality algorithm
+         *                       instance
+         */
+        void setConfAlgo(
+                std::unique_ptr<cipher::conf::Interface>&& confAlgo)
+        {
+            confAlgoInterface = std::move(confAlgo);
+        }
+
         void updateLastTransactionTime()
         {
             lastTime = std::chrono::steady_clock::now();
@@ -210,6 +239,10 @@ class Session
 
         // Integrity Algorithm Interface for the Session
         std::unique_ptr<cipher::integrity::Interface> integrityAlgoInterface =
+                nullptr;
+
+        // Confidentiality Algorithm Interface for the Session
+        std::unique_ptr<cipher::conf::Interface> confAlgoInterface =
                 nullptr;
 
         // Last Transaction Time
