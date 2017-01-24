@@ -71,15 +71,24 @@ static int io_handler(sd_event_source* es, int fd, uint32_t revents,
     }
 
     // Execute the Command
-    auto outMessage = msgHandler.executeCommand(*inMessage.get());
+    auto outMessage = msgHandler.executeCommand(*(inMessage.get()));
     if (outMessage == nullptr)
     {
         std::cerr << "Execution of IPMI command failed\n";
         return 0;
     }
 
-    // Send the response IPMI Message
-    msgHandler.send(*outMessage.get());
+    try
+    {
+        // Send the response IPMI Message
+        msgHandler.send(*(outMessage.get()));
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << "Flattening & Sending the outgoing IPMI message failed\n";
+        std::cerr << e.what() << "\n";
+        return 0;
+    }
 
     return 0;
 }
