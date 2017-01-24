@@ -35,7 +35,9 @@ netipmid_SOURCES = \
 	main.hpp \
 	main.cpp \
 	integrity_algo.hpp \
-	integrity_algo.cpp
+	integrity_algo.cpp \
+	conf_algo.hpp \
+	conf_algo.cpp
 
 netipmid_LDFLAGS = $(SYSTEMD_LIBS) $(CRYPTO_LIBS) $(libmapper_LIBS)
 netipmid_CXXFLAGS = $(SYSTEMD_CFLAGS) $(libmapper_CFLAGS)
