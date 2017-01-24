@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "auth_algo.hpp"
+#include "conf_algo.hpp"
 #include "integrity_algo.hpp"
 #include "endian.hpp"
 #include "socket_channel.hpp"
