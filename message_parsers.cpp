@@ -165,16 +165,31 @@ std::unique_ptr<Message> unflatten(std::vector<uint8_t>& inPacket)
         ((header->payloadType & PAYLOAD_AUTH_MASK) ? true : false);
 
     auto payloadLen = endian::from_ipmi(header->payloadLength);
-    message->payload.assign(inPacket.begin() + sizeof(SessionHeader_t),
-                            inPacket.begin() + sizeof(SessionHeader_t) +
-                            payloadLen);
 
     if (message->isPacketAuthenticated)
     {
-        if (!(internal::verifyPacketIntegrity(inPacket,*(message.get()))))
+        if (!(internal::verifyPacketIntegrity(inPacket,*(message.get()),
+                                              payloadLen)))
         {
             throw std::runtime_error("Packet Integrity check failed");
         }
+    }
+
+    // Decrypt the payload if the payload is encrypted
+    if (message->isPacketEncrypted)
+    {
+        auto plainPayload = internal::decryptPayload(inPacket,
+                                                     *(message.get()),
+                                                     payloadLen);
+
+        // Assign the decrypted payload to the IPMI Message
+        message->payload = plainPayload;
+    }
+    else
+    {
+        message->payload.assign(inPacket.begin() + sizeof(SessionHeader_t),
+                                inPacket.begin() + sizeof(SessionHeader_t) +
+                                payloadLen);
     }
 
     return message;
@@ -197,11 +212,19 @@ std::vector<uint8_t> flatten(Message& outMessage, session::Session& session)
     // Add session sequence number
     internal::addSequenceNumber(packet, session);
 
-    // Add Payload
-    header->payloadLength = endian::to_ipmi(outMessage.payload.size());
-    // Insert the Payload into the Packet
-    packet.insert(packet.end(), outMessage.payload.begin(),
-                  outMessage.payload.end());
+    // Encrypt the payload if needed
+    if (outMessage.isPacketEncrypted)
+    {
+        header->payloadType |= PAYLOAD_ENCRYPT_MASK;
+        internal::encryptPayload(packet, outMessage);
+    }
+    else
+    {
+        header->payloadLength = endian::to_ipmi(outMessage.payload.size());
+        // Insert the Payload into the Packet
+        packet.insert(packet.end(), outMessage.payload.begin(),
+                      outMessage.payload.end());
+    }
 
     if (outMessage.isPacketAuthenticated)
     {
@@ -230,10 +253,9 @@ void addSequenceNumber(std::vector<uint8_t>& packet, session::Session& session)
 }
 
 bool verifyPacketIntegrity(const std::vector<uint8_t>& packet,
-                           const Message& message)
+                           const Message& message,
+                           const size_t payloadLen)
 {
-    auto payloadLen = message.payload.size();
-
     /*
      * Padding bytes are added to cause the number of bytes in the data range
      * covered by the AuthCode(Integrity Data) field to be a multiple of 4 bytes
@@ -249,7 +271,7 @@ bool verifyPacketIntegrity(const std::vector<uint8_t>& packet,
 
     // Check trailer->padLength against paddingLen, both should match up,
     // return false if the lengths don't match
-    if(trailer->padLength != paddingLen)
+    if (trailer->padLength != paddingLen)
     {
         return false;
     }
@@ -262,7 +284,7 @@ bool verifyPacketIntegrity(const std::vector<uint8_t>& packet,
     // Check if Integrity data length is as expected, check integrity data
     // length is same as the length expected for the Integrity Algorithm that
     // was negotiated during the session open process.
-    if((packet.size() - sessTrailerPos - sizeof(SessionTrailer_t)) !=
+    if ((packet.size() - sessTrailerPos - sizeof(SessionTrailer_t)) !=
                     integrityAlgo->authCodeLength)
     {
         return false;
@@ -305,6 +327,36 @@ void addIntegrityData(std::vector<uint8_t>& packet,
                                   generateIntegrityData(packet);
 
     packet.insert(packet.end(), integrityData.begin(), integrityData.end());
+}
+
+std::vector<uint8_t> decryptPayload(const std::vector<uint8_t>& packet,
+                                    const Message& message,
+                                    const size_t payloadLen)
+{
+    auto session = (std::get<session::Manager&>(singletonPool).getSession(
+                   message.bmcSessionID)).lock();
+
+    return session->getConfAlgo()->decryptPayload(packet,
+                                                  sizeof(SessionHeader_t),
+                                                  payloadLen);
+}
+
+void encryptPayload(std::vector<uint8_t>& packet, Message& message)
+{
+    auto session = (std::get<session::Manager&>(singletonPool).getSession(
+                   message.bmcSessionID)).lock();
+
+    auto cipherPayload = session->getConfAlgo()->encryptPayload(
+            message.payload);
+
+    message.payload = cipherPayload;
+
+    auto header = reinterpret_cast<SessionHeader_t*>(packet.data());
+
+    header->payloadLength = endian::to_ipmi(cipherPayload.size());
+
+    // Insert the encrypted payload into the outgoing IPMI packet
+    packet.insert(packet.end(), cipherPayload.begin(), cipherPayload.end());
 }
 
 } // namespace internal

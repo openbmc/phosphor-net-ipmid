@@ -173,20 +173,45 @@ void addSequenceNumber(std::vector<uint8_t>& packet, session::Session& session);
  * @brief Verify the integrity data of the incoming IPMI packet
  *
  * @param[in] packet - Incoming IPMI packet
- * @param[in] inMessage - IPMI Message populated from the incoming packet
+ * @param[in] message - IPMI Message populated from the incoming packet
+ * @param[in] payloadLen - Length of the IPMI payload
  *
  */
 bool verifyPacketIntegrity(const std::vector<uint8_t>& packet,
-                           const Message& message);
+                           const Message& message,
+                           const size_t payloadLen);
 
 /*
  * @brief Add Integrity data to the outgoing IPMI packet
  *
  * @param[in] packet - Outgoing IPMI packet
- * @param[in] message - IPMI Message populated from the incoming packet
+ * @param[in] message - IPMI Message populated for the outgoing packet
  *
  */
 void addIntegrityData(std::vector<uint8_t>& packet, const Message& message);
+
+/*
+ * @brief Decrypt the encrypted payload in the incoming IPMI packet
+ *
+ * @param[in] packet - Incoming IPMI packet
+ * @param[in] message - IPMI Message populated from the incoming packet
+ * @param[in] payloadLen - Length of encrypted IPMI payload
+ *
+ * @return on successful completion, return the plain text payload
+ *
+ */
+std::vector<uint8_t> decryptPayload(const std::vector<uint8_t>& packet,
+                                    const Message& message,
+                                    const size_t payloadLen);
+
+/*
+ * @brief Encrypt the plain text payload for the outgoing IPMI packet
+ *
+ * @param[in] packet - Outgoing IPMI packet
+ * @param[in] message - IPMI Message populated for the outgoing packet
+ *
+ */
+void encryptPayload(std::vector<uint8_t>& packet, Message& message);
 
 
 } // namespace internal
