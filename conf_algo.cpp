@@ -25,6 +25,35 @@ Interface::Interface(const buffer& sik, const key& addKey)
     }
 }
 
+constexpr key AlgoAES128::const2;
+
+constexpr std::array<uint8_t, AlgoAES128::AESCBC128BlockSize - 1>
+        AlgoAES128::confPadBytes;
+
+buffer AlgoAES128::decryptPayload(const buffer& packet,
+                                  const size_t sessHeaderLen,
+                                  const size_t payloadLen) const
+{
+
+}
+
+buffer AlgoAES128::encryptPayload(buffer& payload)
+{
+
+}
+
+buffer AlgoAES128::decryptData(const uint8_t* iv,
+                               const uint8_t* input,
+                               const int inputLen) const
+{
+
+}
+
+buffer AlgoAES128::encryptData(const uint8_t* input, const int inputLen) const
+{
+
+}
+
 }// namespace integrity
 
 }// namespace cipher
