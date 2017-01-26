@@ -173,11 +173,13 @@ void addSequenceNumber(std::vector<uint8_t>& packet, session::Session& session);
  * @brief Verify the integrity data of the incoming IPMI packet
  *
  * @param[in] packet - Incoming IPMI packet
- * @param[in] inMessage - IPMI Message populated from the incoming packet
+ * @param[in] message - IPMI Message populated from the incoming packet
+ * @param[in] payloadLen - Length of the IPMI payload
  *
  */
 bool verifyPacketIntegrity(const std::vector<uint8_t>& packet,
-                           const Message& message);
+                           const Message& message,
+                           const size_t payloadLen);
 
 /*
  * @brief Add Integrity data to the outgoing IPMI packet
@@ -187,7 +189,6 @@ bool verifyPacketIntegrity(const std::vector<uint8_t>& packet,
  *
  */
 void addIntegrityData(std::vector<uint8_t>& packet, const Message& message);
-
 
 } // namespace internal
 
