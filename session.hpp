@@ -75,8 +75,8 @@ struct SequenceNumbers
         }
 
     private:
-        uint32_t in;
-        uint32_t out;
+        uint32_t in = 0;
+        uint32_t out = 0;
 };
 /*
  * @class Session
