@@ -99,6 +99,7 @@ int Channel::write(buffer& inBuffer)
             if (FD_ISSET(sockfd, &writeSet))
             {
                 address.addrSize = sizeof(address.inAddr);
+
                 do
                 {
                     writeDataLen = sendto(sockfd,           // File Descriptor
