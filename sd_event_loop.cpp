@@ -337,6 +337,43 @@ void EventLoop::startSOLPayloadInstance(uint8_t payloadInst,
                                         retryTimerSource, retryInterval));
 }
 
+void EventLoop::stopSOLPayloadInstance(uint8_t payloadInst)
+{
+    auto iter = payloadInfo.find(payloadInst);
+    if (iter == payloadInfo.end())
+    {
+        log<level::ERR>("SOL Payload instance not found",
+                entry("payloadInst=%d", payloadInst));
+        throw std::runtime_error("SOL payload instance not found");
+    }
+
+    int rc = 0;
+
+    /* Destroy the character accumulate timer event source */
+    rc = sd_event_source_set_enabled(std::get<0>(iter->second),
+                                     SD_EVENT_OFF);
+    if (rc < 0)
+    {
+        log<level::ERR>("Failed to disable the character accumulate timer",
+                entry("RC=%d", rc));
+        throw std::runtime_error("Failed to disable accumulate timer");
+    }
+    sd_event_source_unref(std::get<0>(iter->second));
+
+    /* Destroy the retry interval timer event source */
+    rc = sd_event_source_set_enabled(std::get<2>(iter->second),
+                                     SD_EVENT_OFF);
+    if (rc < 0)
+    {
+        log<level::ERR>("Failed to disable the retry timer",
+                entry("RC=%d", rc));
+        throw std::runtime_error("Failed to disable retry timer");
+    }
+    sd_event_source_unref(std::get<2>(iter->second));
+
+    payloadInfo.erase(payloadInst);
+}
+
 void EventLoop::switchAccumulateTimer(uint8_t payloadInst, bool status)
 {
     auto iter = payloadInfo.find(payloadInst);
