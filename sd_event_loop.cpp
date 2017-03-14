@@ -204,4 +204,59 @@ void EventLoop::stopHostConsole()
     }
 }
 
+void EventLoop::switchAccumulateTimer(uint8_t payloadInst, bool status)
+{
+    auto iter = payloadInfo.find(payloadInst);
+    if (iter == payloadInfo.end())
+    {
+        log<level::ERR>("SOL Payload instance not found",
+                entry("payloadInst=%d", payloadInst));
+        throw std::runtime_error("SOL Payload instance not found");
+    }
+
+    int rc = 0;
+
+    // Turn OFF the Character accumulate timer
+    if (!status)
+    {
+        rc = sd_event_source_set_enabled(std::get<0>(iter->second),
+                                         SD_EVENT_OFF);
+        if (rc < 0)
+        {
+            log<level::ERR>("Failed to disable the character accumulate timer",
+                    entry("RC=%d", rc));
+            throw std::runtime_error("Failed to disable accumulate timer");
+        }
+        return;
+    }
+
+    // Turn ON the Character accumulate timer
+    uint64_t currentTime = 0;
+    rc = sd_event_now(event, CLOCK_MONOTONIC, &currentTime);
+    if (rc < 0)
+    {
+        log<level::ERR>("Failed to get the current timestamp",
+                entry("RC=%d", rc));
+        throw std::runtime_error("Failed to get current timestamp");
+    }
+
+    rc = sd_event_source_set_time(std::get<0>(iter->second),
+                                  currentTime + std::get<1>(iter->second));
+    if (rc < 0)
+    {
+        log<level::ERR>("Failed to sd_event_source_set_time",
+                entry("RC=%d", rc));
+        throw std::runtime_error("Failed to set time for accumulate timer");
+    }
+
+    rc = sd_event_source_set_enabled(std::get<0>(iter->second),
+                                     SD_EVENT_ONESHOT);
+    if (rc < 0)
+    {
+        log<level::ERR>("Failed to enable the character accumulate timer",
+                entry("RC=%d",rc));
+        throw std::runtime_error("Failed to enable accumulate timer");
+    }
+}
+
 } // namespace eventloop
