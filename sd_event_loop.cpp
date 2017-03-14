@@ -56,6 +56,43 @@ static int udp623Handler(EventSource es, int fd, uint32_t revents,
     return 0;
 }
 
+static int consoleInputHandler(EventSource es, int fd, uint32_t revents,
+                               void* userdata)
+{
+    int readSize = 0;
+    int rc = 0;
+
+    if (ioctl(fd, FIONREAD, &readSize) < 0)
+    {
+        std::cerr << "E> ioctl failed with errno = " << errno;
+        return 0;
+    }
+
+    std::vector<uint8_t> buffer(readSize);
+    auto bufferSize = buffer.size();
+    ssize_t readDataLen = 0;
+
+    readDataLen = read(fd, buffer.data(), bufferSize);
+
+    if (readDataLen > 0) // Data read from the socket
+    {
+        buffer.resize(readDataLen);
+        std::get<sol::Manager&>(singletonPool).buffer.writeData(buffer);
+    }
+    else if (readDataLen == 0)
+    {
+        std::cerr << "Connection Closed \n";
+        rc = -1;
+    }
+    else if (readDataLen < 0) // Error
+    {
+        rc = -errno;
+        std::cerr << "Can't read from server "<< errno <<"\n";
+    }
+
+    return rc;
+}
+
 int EventLoop::startEventLoop()
 {
     int fd = -1, r;
@@ -126,6 +163,26 @@ finish:
     }
 
     return r < 0 ? EXIT_FAILURE : EXIT_SUCCESS;
+}
+
+int EventLoop::startConsolePayload(int fd)
+{
+    int rc = 0;
+
+    if (!hostConsole)
+    {
+        // Add the fd to the event loop for EPOLLIN
+        rc = sd_event_add_io(
+                event, &hostConsole, fd, EPOLLIN, consoleInputHandler, nullptr);
+
+        if (rc < 0)
+        {
+            std::cerr<<"Add file descriptor to the sd_event_loop failed\n";
+            return rc;
+        }
+    }
+
+    return 0;
 }
 
 } // namespace eventloop
