@@ -55,4 +55,32 @@ int Manager::writeConsoleSocket(const sol::buffer& input)
     return 0;
 }
 
+void Manager::startSOLPayload(uint8_t payloadInstance, uint32_t sessionID)
+{
+    if (payloadMap.size() == 0)
+    {
+        if (initHostConsoleFd() != 0)
+        {
+            throw std::runtime_error("Initialising the Host Console socket "
+                                     "failed");
+        }
+
+        // Register the fd in the sd_event_loop
+        std::get<eventloop::EventLoop&>(singletonPool).startConsolePayload(fd);
+    }
+
+    // Create the SOL Context data for payload instance
+    auto context = std::make_unique<Context>(
+            accumulateInterval, retryCount, payloadInstance, sessionID);
+
+    payloadMap.emplace(payloadInstance, std::move(context));
+
+
+    // Call Start Payload Event Instance
+    std::get<eventloop::EventLoop&>(singletonPool).startSOLPayloadInstance(
+            payloadInstance,
+            accumulateInterval * 5 * pow(10, 6),
+            sendThreshold * 10 * pow(10, 6));
+}
+
 } // namespace sol
