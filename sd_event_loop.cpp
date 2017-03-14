@@ -209,4 +209,73 @@ void EventLoop::stopHostConsole()
     }
 }
 
+void EventLoop::switchTimer(uint8_t payloadInst,
+                            Timers type,
+                            bool status)
+{
+    auto iter = payloadInfo.find(payloadInst);
+    if (iter == payloadInfo.end())
+    {
+        log<level::ERR>("SOL Payload instance not found",
+                entry("payloadInst=%d", payloadInst));
+        throw std::runtime_error("SOL Payload instance not found");
+    }
+
+    int rc = 0;
+    EventSource source = nullptr;
+    uint64_t interval = 0;
+
+    if (type == Timers::ACCUMULATE)
+    {
+        source = std::get<0>(iter->second);
+        interval = std::get<1>(iter->second);
+    }
+    else if (type == Timers::RETRY)
+    {
+        source = std::get<2>(iter->second);
+        interval = std::get<3>(iter->second);
+    }
+    else
+    {
+        throw std::runtime_error("Unsupported timer type");
+    }
+
+    // Turn OFF the timer
+    if (!status)
+    {
+        rc = sd_event_source_set_enabled(source, SD_EVENT_OFF);
+        if (rc < 0)
+        {
+            log<level::ERR>("Failed to disable the timer", entry("RC=%d", rc));
+            throw std::runtime_error("Failed to disable timer");
+        }
+        return;
+    }
+
+    // Turn ON the timer
+    uint64_t currentTime = 0;
+    rc = sd_event_now(event, CLOCK_MONOTONIC, &currentTime);
+    if (rc < 0)
+    {
+        log<level::ERR>("Failed to get the current timestamp",
+                entry("RC=%d", rc));
+        throw std::runtime_error("Failed to get current timestamp");
+    }
+
+    rc = sd_event_source_set_time(source, currentTime + interval);
+    if (rc < 0)
+    {
+        log<level::ERR>("sd_event_source_set_time function failed",
+                entry("RC=%d", rc));
+        throw std::runtime_error("sd_event_source_set_time function failed");
+    }
+
+    rc = sd_event_source_set_enabled(source, SD_EVENT_ONESHOT);
+    if (rc < 0)
+    {
+        log<level::ERR>("Failed to enable the timer", entry("RC=%d",rc));
+        throw std::runtime_error("Failed to enable timer");
+    }
+}
+
 } // namespace eventloop
