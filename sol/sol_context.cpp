@@ -95,7 +95,43 @@ void Context::sendSOLPayloadResponse(uint8_t ackSeqNum,
                                      uint8_t count,
                                      bool ack)
 {
+    auto bufferSize = std::get<sol::Manager&>(singletonPool).buffer.
+                            getSize();
 
+    if (bufferSize <= sendThreshold)
+    {
+        std::get<eventloop::EventLoop&>(singletonPool).
+                switchAccumulateTimer(payloadInstance, true);
+    }
+
+    /* Sent a ACK only response */
+    if (sentPayload.size() != 0 || (bufferSize <= sendThreshold))
+    {
+        buffer outPayload(sizeof(SOLPayload));
+        auto response = reinterpret_cast<SOLPayload*>(outPayload.data());
+        response->packetSeqNum = 0;
+        response->packetAckSeqNum = ackSeqNum;
+        response->acceptedCharCount = count;
+        response->outOperation.ack = ack;
+        // Invoke send SOL payload
+        return;
+    }
+
+    sentPayload.resize(sizeof(SOLPayload));
+    auto response = reinterpret_cast<SOLPayload*>(sentPayload.data());
+    response->packetAckSeqNum = ackSeqNum;
+    response->acceptedCharCount = count;
+    response->outOperation.ack = ack;
+
+    auto data = std::get<sol::Manager&>(singletonPool).buffer.
+            readData(std::min(bufferSize, MAX_PAYLOAD_SIZE));
+
+    sentPayload.insert(sentPayload.end(), data.begin(), data.end());
+
+    response->packetSeqNum = seqNums.incSendSeqNum();
+    expectedCharCount = data.size();
+    std::get<eventloop::EventLoop&>(singletonPool).switchRetryTimer(
+            payloadInstance, true);
 }
 
 } // namespace sol
