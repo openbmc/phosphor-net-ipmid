@@ -106,7 +106,9 @@ static int charAccTimerHandler(EventSource s, uint64_t usec,
      */
     if(bufferSize > 0)
     {
-        // Invoke API to send the outbound SOL data
+        auto& context = std::get<sol::Manager&>(singletonPool).getSOLContext
+                                (instance);
+        context.sendOutboundSOLData();
     }
     else
     {
