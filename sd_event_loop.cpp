@@ -53,6 +53,43 @@ static int udp623Handler(EventSource es, int fd, uint32_t revents,
     return 0;
 }
 
+static int consoleInputHandler(EventSource es, int fd, uint32_t revents,
+                               void* userdata)
+{
+    int readSize = 0;
+
+    if (ioctl(fd, FIONREAD, &readSize) < 0)
+    {
+        log<level::ERR>("ioctl failed for FIONREAD:",
+                entry("errno = %d", errno));
+        return 0;
+    }
+
+    std::vector<uint8_t> buffer(readSize);
+    auto bufferSize = buffer.size();
+    ssize_t readDataLen = 0;
+
+    readDataLen = read(fd, buffer.data(), bufferSize);
+
+    // Update the Console buffer with data read from the socket
+    if (readDataLen > 0)
+    {
+        buffer.resize(readDataLen);
+        std::get<sol::Manager&>(singletonPool).dataBuffer.write(buffer);
+    }
+    else if (readDataLen == 0)
+    {
+        log<level::ERR>("Connection Closed for host console socket");
+    }
+    else if (readDataLen < 0) // Error
+    {
+        log<level::ERR>("Reading from host console socket failed:",
+                entry("ERRNO=%d", errno));
+    }
+
+    return 0;
+}
+
 int EventLoop::startEventLoop()
 {
     int fd = -1;
@@ -125,6 +162,27 @@ finish:
     }
 
     return r < 0 ? EXIT_FAILURE : EXIT_SUCCESS;
+}
+
+void EventLoop::startHostConsole(int fd)
+{
+    int rc = 0;
+
+    if (fd && !hostConsole)
+    {
+        // Add the fd to the event loop for EPOLLIN
+        rc = sd_event_add_io(
+                event, &hostConsole, fd, EPOLLIN, consoleInputHandler, nullptr);
+
+        if (rc < 0)
+        {
+            throw std::runtime_error("Failed to add socket descriptor");
+        }
+    }
+    else
+    {
+        throw std::runtime_error("Console descriptor already added");
+    }
 }
 
 } // namespace eventloop
