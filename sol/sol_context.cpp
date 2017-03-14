@@ -96,14 +96,54 @@ void Context::processInboundPayload(uint8_t seqNum,
     }
 }
 
-void Context::prepareResponse(uint8_t ackSeqNum,
-                              uint8_t count,
-                              bool ack)
+void Context::prepareResponse(uint8_t ackSeqNum, uint8_t count, bool ack)
+{
+    auto bufferSize = std::get<sol::Manager&>(singletonPool).dataBuffer.
+                            size();
+
+    /* Sent a ACK only response */
+    if (payloadCache.size() != 0 || (bufferSize < sendThreshold))
+    {
+        std::get<eventloop::EventLoop&>(singletonPool).switchAccumulateTimer
+                (payloadInstance, true);
+
+        Buffer outPayload(sizeof(Payload));
+        auto response = reinterpret_cast<Payload*>(outPayload.data());
+        response->packetSeqNum = 0;
+        response->packetAckSeqNum = ackSeqNum;
+        response->acceptedCharCount = count;
+        response->outOperation.ack = ack;
+        sendPayload(outPayload);
+        return;
+    }
+
+    auto readSize = std::min(bufferSize, MAX_PAYLOAD_SIZE);
+    payloadCache.resize(sizeof(Payload) + readSize);
+    auto response = reinterpret_cast<Payload*>(payloadCache.data());
+    response->packetAckSeqNum = ackSeqNum;
+    response->acceptedCharCount = count;
+    response->outOperation.ack = ack;
+    response->packetSeqNum = seqNums.incSendSeqNum();
+
+
+    auto handle = std::get<sol::Manager&>(singletonPool).dataBuffer.readIter();
+    std::copy_n(handle, readSize, payloadCache.data() + sizeof(Payload));
+    expectedCharCount = readSize;
+
+    std::get<eventloop::EventLoop&>(singletonPool).switchRetryTimer(
+            payloadInstance, true);
+    std::get<eventloop::EventLoop&>(singletonPool).switchAccumulateTimer
+            (payloadInstance, false);
+
+    sendPayload(payloadCache);
+}
+
+void Context::resendPayload(bool clear)
 {
 
 }
 
-void Context::resendPayload(bool clear)
+void Context::sendPayload(const Buffer& out) const
 {
 
 }
