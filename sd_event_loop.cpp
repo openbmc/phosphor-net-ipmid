@@ -98,6 +98,9 @@ static int charAccTimerHandler(EventSource s, uint64_t usec,
 {
     auto instance = *(static_cast<uint8_t*>(userdata));
 
+    auto& context = std::get<sol::Manager&>(singletonPool).getSOLContext
+                            (instance);
+
     auto bufferSize = std::get<sol::Manager&>(singletonPool).buffer.
                             getSize();
     /*
@@ -105,7 +108,7 @@ static int charAccTimerHandler(EventSource s, uint64_t usec,
      */
     if(bufferSize > 0)
     {
-        // Invoke API to send the outbound SOL data
+        context.sendOutboundSOLData();
     }
     else
     {
