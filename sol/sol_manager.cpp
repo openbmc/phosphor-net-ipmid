@@ -83,4 +83,21 @@ void Manager::startSOLPayload(uint8_t payloadInstance, uint32_t sessionID)
             sendThreshold * 10 * pow(10, 6));
 }
 
+void Manager::stopSOLPayload(uint8_t payloadInstance)
+{
+    auto iter = payloadMap.find(payloadInstance);
+    if (iter == payloadMap.end())
+    {
+        throw std::runtime_error("Payload instance not found ");
+    }
+
+    payloadMap.erase(iter);
+
+    if (payloadMap.size() == 0)
+    {
+        std::get<eventloop::EventLoop&>(singletonPool).stopConsolePayload();
+    }
+
+}
+
 } // namespace sol
