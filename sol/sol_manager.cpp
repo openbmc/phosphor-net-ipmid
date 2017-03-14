@@ -38,4 +38,25 @@ void Manager::initHostConsoleFd()
     }
 }
 
+int Manager::writeConsoleSocket(const Buffer& input)
+{
+    auto inBuffer = input.data();
+    auto inBufferSize = input.size();
+    size_t pos = 0;
+    ssize_t rc = 0;
+
+    for (pos = 0; pos < inBufferSize; pos += rc)
+    {
+        rc = write(fd, inBuffer + pos, inBufferSize - pos);
+        if (rc <= 0)
+        {
+            log<level::ERR>("Failed to write to host console socket",
+                    entry("errno = %d", errno));
+            return -errno;
+        }
+    }
+
+    return 0;
+}
+
 } // namespace sol
