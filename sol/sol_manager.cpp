@@ -36,4 +36,23 @@ int Manager::initHostConsoleFd()
     return 0;
 }
 
+int Manager::writeConsoleSocket(const sol::buffer& input)
+{
+    auto inBuffer = input.data();
+    auto inBufferSize = input.size();
+    size_t pos = 0;
+    ssize_t rc = 0;
+
+    for (pos = 0; pos < inBufferSize; pos += rc)
+    {
+        rc = write(fd, inBuffer + pos, inBufferSize - pos);
+        if (rc <= 0) {
+            std::cerr<< "Write error\n";
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
 } // namespace sol
