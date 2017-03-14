@@ -196,4 +196,24 @@ int EventLoop::startConsolePayload(int fd)
     return rc;
 }
 
+int EventLoop::stopConsolePayload()
+{
+    int rc = 0;
+
+    if (hostConsole)
+    {
+        // Disable the Host Console Payload
+        rc = sd_event_source_set_enabled(hostConsole, SD_EVENT_OFF);
+        if (rc < 0)
+        {
+            log<level::ERR>("Failed to disable the retry timer",
+                    entry("rc = %d", rc));
+            return rc;
+        }
+        sd_event_source_unref(hostConsole);
+    }
+
+    return rc;
+}
+
 } // namespace eventloop
