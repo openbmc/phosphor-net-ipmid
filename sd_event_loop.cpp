@@ -273,4 +273,61 @@ int EventLoop::switchAccumulateTimer(uint8_t payloadInst, bool status)
     return rc;
 }
 
+int EventLoop::switchRetryTimer(uint8_t payloadInst, bool status)
+{
+    auto iter = payloadInfo.find(payloadInst);
+    if (iter == payloadInfo.end())
+    {
+        throw std::runtime_error("SOL Payload instance not found ");
+    }
+
+    int rc = 0;
+
+    // Turn OFF the Retry Interval Timer
+    if(!status)
+    {
+        rc = sd_event_source_set_enabled(std::get<2>(iter->second),
+                                         SD_EVENT_OFF);
+        if (rc < 0)
+        {
+            log<level::ERR>("Failed to disable the retry interval timer",
+                    entry("rc = %d", rc));
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    // Turn ON the Character Accumulate Timer
+    uint64_t currentTime = 0;
+    rc = sd_event_now(event, CLOCK_MONOTONIC, &currentTime);
+    if (rc < 0)
+    {
+        log<level::ERR>("Failed to get the current timestamp",
+                entry("rc = %d", rc));
+        return rc;
+    }
+
+    rc = sd_event_source_set_time(std::get<2>(iter->second),
+                                  currentTime + std::get<3>(iter->second));
+    if (rc < 0)
+    {
+        log<level::ERR>("Failed to sd_event_source_set_time",
+                entry("rc = %d", rc));
+        return rc;
+    }
+
+    rc = sd_event_source_set_enabled(std::get<2>(iter->second),
+                                     SD_EVENT_ONESHOT);
+    if (rc < 0)
+    {
+        log<level::ERR>("Failed to enable the retry interval timer",
+                entry("rc = %d", rc));
+        return rc;
+    }
+
+    return rc;
+}
+
 } // namespace eventloop
