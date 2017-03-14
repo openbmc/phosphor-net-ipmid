@@ -59,4 +59,34 @@ int Manager::writeConsoleSocket(const Buffer& input) const
     return 0;
 }
 
+void Manager::startPayloadInstance(uint8_t payloadInstance,
+                                   session::SessionID sessionID)
+{
+    if (payloadMap.empty())
+    {
+        initHostConsoleFd();
+
+        // Register the fd in the sd_event_loop
+        std::get<eventloop::EventLoop&>(singletonPool).startHostConsole(fd);
+    }
+
+    // Create the SOL Context data for payload instance
+    auto context = std::make_unique<Context>(
+            accumulateInterval, retryCount, payloadInstance, sessionID);
+
+    payloadMap.emplace(payloadInstance, std::move(context));
+
+    /*
+     * Start payload event instance
+     *
+     * Accumulate interval is in 5 ms(milli secs) increments, since
+     * sd_event_add_time takes in micro secs, it is converted to micro secs.
+     * The Retry interval is in 10 ms (milli secs) increments.
+     */
+    std::get<eventloop::EventLoop&>(singletonPool).startSOLPayloadInstance(
+            payloadInstance,
+            accumulateInterval * 5 * pow(10, 3),
+            retryThreshold * 10 * pow(10, 3));
+}
+
 } // namespace sol
