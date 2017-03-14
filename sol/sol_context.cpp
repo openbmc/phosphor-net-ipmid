@@ -134,4 +134,39 @@ void Context::sendSOLPayloadResponse(uint8_t ackSeqNum,
             payloadInstance, true);
 }
 
+void Context::sendOutboundSOLData()
+{
+    if (sentPayload.size() != 0)
+    {
+        std::get<eventloop::EventLoop&>(singletonPool).
+                switchAccumulateTimer(payloadInstance, true);
+        return;
+    }
+
+    auto bufferSize = std::get<sol::Manager&>(singletonPool).buffer.
+                            getSize();
+
+    if (bufferSize == 0)
+    {
+        std::get<eventloop::EventLoop&>(singletonPool).
+                switchAccumulateTimer(payloadInstance, true);
+        return;
+    }
+
+    sentPayload.resize(sizeof(SOLPayload));
+    auto response = reinterpret_cast<SOLPayload*>(sentPayload.data());
+    response->packetAckSeqNum = 0;
+    response->acceptedCharCount = 0;
+    response->outOperation.ack = false;
+
+    auto data = std::get<sol::Manager&>(singletonPool).buffer.
+            readData(std::min(bufferSize, MAX_PAYLOAD_SIZE));
+
+    sentPayload.insert(sentPayload.end(), data.begin(), data.end());
+
+    response->packetSeqNum = seqNums.incSendSeqNum();
+    std::get<eventloop::EventLoop&>(singletonPool).switchRetryTimer(
+            payloadInstance, true);
+}
+
 } // namespace sol
