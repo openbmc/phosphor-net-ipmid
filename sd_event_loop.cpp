@@ -205,4 +205,59 @@ int EventLoop::stopConsolePayload()
     return 0;
 }
 
+int EventLoop::switchAccumulateTimer(uint8_t payloadInst, bool status)
+{
+    auto iter = payloadInfo.find(payloadInst);
+    if (iter == payloadInfo.end())
+    {
+        throw std::runtime_error("Payload instance not found ");
+    }
+
+    int rc = 0;
+
+    // Turn OFF the Character Accumulate Timer
+    if(!status)
+    {
+        rc = sd_event_source_set_enabled(std::get<0>(iter->second),
+                                         SD_EVENT_OFF);
+        if (rc < 0)
+        {
+            std::cerr<<"Failed to disable the accumulate timer "<< rc << "\n";
+            return rc;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    // Turn ON the Character Accumulate Timer
+    uint64_t currentTime = 0;
+    rc = sd_event_now(event, CLOCK_MONOTONIC, &currentTime);
+    if (rc < 0)
+    {
+        std::cerr<<"Failed to get the current timestamp "<< rc << "\n";
+        return rc;
+    }
+
+    rc = sd_event_source_set_time(
+             std::get<0>(iter->second),
+             currentTime + std::get<1>(iter->second));
+    if (rc < 0)
+    {
+        std::cerr<<"Failed to sd_event_source_set_time "<< rc << "\n";
+        return rc;
+    }
+
+    rc = sd_event_source_set_enabled(std::get<0>(iter->second),
+                                     SD_EVENT_ONESHOT);
+    if (rc < 0)
+    {
+        std::cerr<<"Failed to disable the retry timer "<< rc << "\n";
+        return rc;
+    }
+
+    return 0;
+}
+
 } // namespace eventloop
