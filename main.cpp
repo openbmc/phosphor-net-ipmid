@@ -12,6 +12,7 @@
 #include <systemd/sd-event.h>
 
 #include <host-ipmid/ipmid-api.h>
+#include "command/guid.hpp"
 #include "comm_module.hpp"
 #include "command_table.hpp"
 #include "message.hpp"
@@ -195,6 +196,16 @@ int main(int i_argc, char* i_argv[])
         std::cerr << "Failed to connect to system bus:" << strerror(-rc) <<"\n";
         goto finish;
     }
+
+    /*
+     * Read the System GUID from the DBUS Object, this is done as a workaround
+     * for the "Connection timed out" issue. The connection to the system bus
+     * acquired by sd_bus_open_system() goes stale, if the not used within a
+     * stipulated amount of time. The getSystemGUID uses the system bus object,
+     * after which the connection does'nt go stale and is valid throughout the
+     * lifetime of the daemon.
+     */
+    command::getSystemGUID();
 
     // Register all the IPMI provider libraries applicable for net-ipmid
     provider::registerCallbackHandlers(NET_IPMID_LIB_PATH);
