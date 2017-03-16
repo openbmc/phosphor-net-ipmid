@@ -20,10 +20,18 @@ bool Session::isSessionActive()
             {
                 return true;
             }
+            else
+            {
+                return false;
+            }
         case State::ACTIVE:
             if (elapsedSeconds < SESSION_INACTIVITY_TIMEOUT)
             {
                 return true;
+            }
+            else
+            {
+                return false;
             }
         default:
             return false;
