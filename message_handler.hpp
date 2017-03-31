@@ -62,6 +62,14 @@ class Handler
          */
         void send(Message& outMessage);
 
+        /** @brief Send the SOL payload
+         *
+         *  The SOL payload is flattened and sent out on the socket
+         *
+         *  @param[in] input - SOL Payload
+         */
+        void sendSOLPayload(const sol::Buffer& input);
+
         // BMC Session ID for the Channel
         session::SessionID sessionID;
 
