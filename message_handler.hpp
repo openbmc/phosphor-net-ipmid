@@ -68,10 +68,10 @@ class Handler
         // BMC Session ID for the Channel
         session::SessionID sessionID;
 
-    private:
-        // Socket channel for communicating with the remote client
+        /** @brief Socket channel for communicating with the remote client.*/
         std::shared_ptr<udpsocket::Channel> channel;
 
+    private:
         // IPMI 1.5 or IPMI 2.0 Session Header
         parser::SessionHeader sessionHeader;
 
