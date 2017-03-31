@@ -47,6 +47,7 @@ void applyCryptAlgo(const uint32_t bmcSessionID)
         {
             session->setCryptAlgo(std::make_unique<cipher::crypt::AlgoAES128>(
                                  authAlgo->sessionIntegrityKey));
+            session->encrypted = true;
             break;
         }
         default:
