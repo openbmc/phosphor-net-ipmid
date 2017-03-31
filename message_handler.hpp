@@ -72,8 +72,8 @@ class Handler
         std::shared_ptr<udpsocket::Channel> channel;
 
     private:
-        // IPMI 1.5 or IPMI 2.0 Session Header
-        parser::SessionHeader sessionHeader;
+        /** @brief IPMI 1.5 or IPMI 2.0 Session Header. */
+        parser::SessionHeader sessionHeader  = parser::SessionHeader::IPMI20;
 
         /*
          * @brief Create the response IPMI message
