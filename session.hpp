@@ -250,6 +250,8 @@ class Session
          */
         bool encrypted = false;
 
+        std::shared_ptr<udpsocket::Channel> channelPtr;
+
     private:
 
         SessionID bmcSessionID = 0; //BMC Session ID
