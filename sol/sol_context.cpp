@@ -186,7 +186,12 @@ void Context::resendPayload(bool clear)
 
 void Context::sendPayload(const Buffer& out) const
 {
+    auto session = (std::get<session::Manager&>(singletonPool).getSession(
+                    sessionID)).lock();
 
+    message::Handler msgHandler(sessionID, session->channelPtr);
+
+    msgHandler.sendSOLPayloadData(out);
 }
 
 } // namespace sol
