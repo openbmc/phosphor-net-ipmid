@@ -240,6 +240,16 @@ class Session
          */
         bool integrityCheck = false;
 
+        /** @brief Session's encryption algorithm status.
+         *
+         *  The encrypted field indicates whether the encryption algorithm is
+         *  supported for this session. If the encryption algorithm is enabled
+         *  then the field is set to true, else it is set to false. This field
+         *  is utilized in the case of payload like SOL which sends unsolicited
+         *  IPMI packets.
+         */
+        bool encrypted = false;
+
     private:
 
         SessionID bmcSessionID = 0; //BMC Session ID
