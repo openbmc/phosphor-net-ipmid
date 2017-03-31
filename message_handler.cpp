@@ -196,5 +196,51 @@ void Handler::sendSOLPayloadData(const sol::Buffer& input)
     send(outMessage);
 }
 
+void Handler::sendUnsolicitedIPMIPayload(uint8_t netfn,
+                                         uint8_t cmd,
+                                         const std::vector<uint8_t>& output)
+{
+    Message outMessage;
+
+    auto session = (std::get<session::Manager&>(singletonPool).getSession(
+                    sessionID)).lock();
+
+    outMessage.payloadType = PayloadType::IPMI;
+    outMessage.isPacketEncrypted = session->encrypted;
+    outMessage.isPacketAuthenticated = session->integrityCheck;
+    outMessage.rcSessionID = session->getRCSessionID();
+    outMessage.bmcSessionID = sessionID;
+
+    outMessage.payload.resize(sizeof(LAN::header::Request) +
+                              output.size() +
+                              sizeof(LAN::trailer::Request));
+
+    auto respHeader = reinterpret_cast<LAN::header::Request*>
+                      (outMessage.payload.data());
+
+    // Add IPMI LAN Message Request Header
+    respHeader->rsaddr = LAN::REQUESTER_BMC_ADDRESS;
+    respHeader->netfn  = (netfn << 0x02);
+    respHeader->cs     = crc8bit(&(respHeader->rsaddr), 2);
+    respHeader->rqaddr = LAN::RESPONDER_BMC_ADDRESS;
+    respHeader->rqseq  = 0;
+    respHeader->cmd    = cmd;
+
+    auto assembledSize = sizeof(LAN::header::Request);
+
+    // Copy the output by the execution of the command
+    std::copy(output.begin(),
+              output.end(),
+              outMessage.payload.begin() + assembledSize);
+    assembledSize += output.size();
+
+    // Add the IPMI LAN Message Trailer
+    auto trailer = reinterpret_cast<LAN::trailer::Request*>
+                   (outMessage.payload.data() + assembledSize);
+    trailer->checksum = crc8bit(&respHeader->rqaddr, assembledSize - 3);
+
+    send(outMessage);
+}
+
 } //namespace message
 
