@@ -70,6 +70,20 @@ class Handler
          */
         void sendSOLPayloadData(const sol::Buffer& input);
 
+        /** @brief Send the unsolicited IPMI payload to the remote console.
+         *
+         *  This is used by commands like SOL activating, in which case the BMC
+         *  has to notify the remote console that a SOL payload is activating
+         *  on another channel.
+         *
+         *  @param[in] input - Command request data.
+         *  @param[in] netfn - Net function.
+         *  @param[in] cmd - Command.
+         */
+        void sendUnsolicitedIPMIPayload(uint8_t netfn,
+                                        uint8_t cmd,
+                                        const std::vector<uint8_t>& input);
+
         // BMC Session ID for the Channel
         session::SessionID sessionID;
 
