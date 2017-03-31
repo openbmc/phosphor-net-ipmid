@@ -230,6 +230,16 @@ class Session
         State state = State::INACTIVE; // Session State
         std::vector<char> userName; // User Name
 
+        /** @brief Session's Integrity Algorithm Status.
+         *
+         *  The integrityCheck field indicates whether the integrity algorithm
+         *  is supported for this session. If the integrity algorithm is enabled
+         *  then the field is set to true, else it is set to false. This field
+         *  is utilized in the case of payload like SOL which sends unsolicited
+         *  IPMI packets.
+         */
+        bool integrityCheck = false;
+
     private:
 
         SessionID bmcSessionID = 0; //BMC Session ID
