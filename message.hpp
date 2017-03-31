@@ -63,6 +63,9 @@ struct Message
 namespace LAN
 {
 
+constexpr uint8_t REQUESTER_BMC_ADDRESS = 0x20;
+constexpr uint8_t RESPONDER_BMC_ADDRESS = 0x81;
+
 namespace header
 {
 
