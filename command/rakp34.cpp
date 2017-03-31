@@ -26,6 +26,7 @@ void applyIntegrityAlgo(const uint32_t bmcSessionID)
             session->setIntegrityAlgo(
                     std::make_unique<cipher::integrity::AlgoSHA1>(
                         authAlgo->sessionIntegrityKey));
+            session->integrityCheck = true;
             break;
         }
         default:
