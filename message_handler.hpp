@@ -2,10 +2,10 @@
 
 #include <iostream>
 #include <numeric>
-
 #include "message.hpp"
 #include "message_parsers.hpp"
 #include "session.hpp"
+#include "sol/console_buffer.hpp"
 
 namespace message
 {
@@ -14,8 +14,13 @@ class Handler
 {
     public:
 
-        explicit Handler(std::shared_ptr<udpsocket::Channel> inChannel):
+        Handler(std::shared_ptr<udpsocket::Channel> inChannel):
             channel(inChannel) {}
+
+        Handler(uint32_t sessionID,
+                std::shared_ptr<udpsocket::Channel> channel):
+            sessionID(sessionID),
+            channel(channel) {}
 
         Handler() = delete;
         ~Handler() = default;
@@ -62,6 +67,7 @@ class Handler
 
         // BMC Session ID for the Channel
         session::SessionID sessionID;
+
     private:
         // Socket channel for communicating with the remote client
         std::shared_ptr<udpsocket::Channel> channel;
