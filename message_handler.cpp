@@ -182,5 +182,22 @@ int Handler::send(Message& outMessage)
     return writeStatus;
 }
 
+int Handler::sendSOLPayloadData(sol::Buffer input)
+{
+    Message outMessage;
+
+    auto session = (std::get<session::Manager&>(singletonPool).getSession(
+                    sessionID)).lock();
+
+    outMessage.payloadType = PayloadType::SOL;
+    outMessage.payload = input;
+    outMessage.isPacketEncrypted = session->encrypted;
+    outMessage.isPacketAuthenticated = session->integrityCheck;
+    outMessage.rcSessionID = session->getRCSessionID();
+    outMessage.bmcSessionID = sessionID;
+
+    return send(outMessage);
+}
+
 } //namespace message
 
