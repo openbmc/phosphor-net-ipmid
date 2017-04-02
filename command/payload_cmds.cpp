@@ -139,4 +139,30 @@ std::vector<uint8_t> deactivatePayload(std::vector<uint8_t>& inPayload,
     return outPayload;
 }
 
+std::vector<uint8_t> getPayloadStatus(std::vector<uint8_t>& inPayload,
+                                      const message::Handler& handler)
+{
+    std::vector<uint8_t> outPayload(sizeof(GetPayloadStatusResponse));
+    auto request = reinterpret_cast<GetPayloadStatusRequest*>(inPayload.data());
+    auto response = reinterpret_cast<GetPayloadStatusResponse*>
+                    (outPayload.data());
+
+    // SOL is the payload currently supported for payload status
+    if (static_cast<uint8_t>(message::PayloadType::SOL) != request->payloadType)
+    {
+        response->completionCode = IPMI_CC_UNSPECIFIED_ERROR;
+        return outPayload;
+    }
+
+    response->completionCode = IPMI_CC_OK;
+    response->capacity = sol::MAX_PAYLOAD_INSTANCES;
+
+    // Currently we support only one SOL session
+    auto status = std::get<sol::Manager&>(singletonPool).checkPayloadInst(1);
+
+    response->instance1 = status;
+
+    return outPayload;
+}
+
 } // command
