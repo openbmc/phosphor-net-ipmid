@@ -21,6 +21,7 @@
 #include "sessions_manager.hpp"
 #include "socket_channel.hpp"
 #include "sol/sol_manager.hpp"
+#include "sol_module.hpp"
 
 // Tuple of Global Singletons
 session::Manager manager;
@@ -188,7 +189,6 @@ finish:
 
 int main(int i_argc, char* i_argv[])
 {
-
     /*
      * Required by apphandler IPMI Provider Library for logging.
      */
@@ -207,6 +207,9 @@ int main(int i_argc, char* i_argv[])
 
     // Register the phosphor-net-ipmid session setup commands
     command::sessionSetupCommands();
+
+    // Register the phosphor-net-ipmid SOL commands
+    command::solCommands();
 
     // Start Event Loop
     return eventloop::startEventLoop();
