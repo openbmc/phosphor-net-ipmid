@@ -45,4 +45,26 @@ std::vector<uint8_t> SOLPayloadHandler(std::vector<uint8_t>& inPayload,
     return response;
 }
 
+void SOLActivating(uint8_t payloadInstance, uint32_t sessionID)
+{
+    std::vector<uint8_t> outPayload(sizeof(SOLActivatingRequest));
+
+    auto request = reinterpret_cast<SOLActivatingRequest*>
+                    (outPayload.data());
+
+    request->sessionState = 0;
+    request->payloadInstance = payloadInstance;
+    request->majorVersion = sol::MAJOR_VERSION;
+    request->minorVersion = sol::MINOR_VERSION;
+
+    auto session = (std::get<session::Manager&>(singletonPool).getSession(
+            sessionID)).lock();
+
+    message::Handler msgHandler(sessionID, session->channelPtr);
+
+    msgHandler.sendUnsolicitedIPMIPayload(NETFN_TRANSPORT,
+                                          SOL_ACTIVATING_COMMAND,
+                                          outPayload);
+}
+
 } // command
