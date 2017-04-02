@@ -53,17 +53,14 @@ class Handler
          */
         std::unique_ptr<Message> executeCommand(Message& inMessage);
 
-        /*
-         * @brief Send the outgoing message
+        /** @brief Send the outgoing message
          *
-         * The payload in the outgoing message is flattened and sent out on the
-         * socket
+         *  The payload in the outgoing message is flattened and sent out on the
+         *  socket
          *
-         * @param[in] outMessage - Outgoing Message
-         *
-         * @return Zero on success and <0 on failure
+         *  @param[in] outMessage - Outgoing Message
          */
-        int send(Message& outMessage);
+        void send(Message& outMessage);
 
         // BMC Session ID for the Channel
         session::SessionID sessionID;
