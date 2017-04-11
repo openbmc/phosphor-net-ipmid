@@ -20,7 +20,7 @@ namespace command
  *
  *  @return Response data for the command.
  */
-std::vector<uint8_t> payloadHandler(std::vector<uint8_t>& inPayload,
+std::vector<uint8_t> payloadHandler(const std::vector<uint8_t>& inPayload,
                                     const message::Handler& handler);
 
 constexpr uint8_t NETFN_TRANSPORT = 0x0C;
