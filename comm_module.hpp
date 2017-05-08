@@ -7,7 +7,7 @@
 namespace command
 {
 
-/*
+/**
  * @brief RMCP+ and RAKP Message Status Codes
  */
 enum class RAKP_ReturnCode : uint8_t
@@ -33,7 +33,7 @@ enum class RAKP_ReturnCode : uint8_t
     ILLEGAL_PARAMETER,          /* Illegal or unrecognized parameter */
 };
 
-/*
+/**
  * @brief Register Session Setup commands to the Command Table
  */
 void sessionSetupCommands();
