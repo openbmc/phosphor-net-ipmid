@@ -19,7 +19,7 @@ enum class PayloadType : uint8_t
     INVALID               = 0xFF,
 };
 
-/*
+/**
  * @ struct Message
  *
  * IPMI message is data encapsulated in an IPMI Session packet. The IPMI
