@@ -12,6 +12,7 @@
 #include <systemd/sd-event.h>
 
 #include <host-ipmid/ipmid-api.h>
+#include <phosphor-logging/log.hpp>
 #include "comm_module.hpp"
 #include "command_table.hpp"
 #include "message.hpp"
@@ -19,6 +20,8 @@
 #include "provider_registration.hpp"
 #include "socket_channel.hpp"
 #include "sol_module.hpp"
+
+using namespace phosphor::logging;
 
 // Tuple of Global Singletons
 session::Manager manager;
@@ -30,6 +33,8 @@ std::tuple<session::Manager&, command::Table&, eventloop::EventLoop&,
         sol::Manager&> singletonPool(manager, table, loop, solManager);
 
 sd_bus* bus = nullptr;
+sd_event *events = nullptr;
+
 FILE* ipmidbus = nullptr;
 unsigned short g_sel_reserve = 0xFFFF;
 sd_bus_slot* ipmid_slot = nullptr;
@@ -73,6 +78,18 @@ int main(int i_argc, char* i_argv[])
 
     // Register the phosphor-net-ipmid SOL commands
     sol::command::registerCommands();
+
+    /* Get an sd event handler */
+    rc = sd_event_default(&events);
+    if (rc < 0)
+    {
+        log<level::ERR>("Failure to create sd_event handler",
+                entry("ERROR=%s", strerror(-rc)));
+        goto finish;
+    }
+
+    // Attach the bus to sd_event to service user requests
+    sd_bus_attach_event(bus, events, SD_EVENT_PRIORITY_NORMAL);
 
     // Start Event Loop
     return std::get<eventloop::EventLoop&>(singletonPool).startEventLoop();
