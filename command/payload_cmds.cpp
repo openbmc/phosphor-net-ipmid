@@ -123,19 +123,33 @@ std::vector<uint8_t> deactivatePayload(const std::vector<uint8_t>& inPayload,
 
     try
     {
-        auto& context = std::get<sol::Manager&>(singletonPool).getContext
-                (request->payloadInstance);
-        auto sessionID = context.sessionID;
-
-        activating(request->payloadInstance, sessionID);
-        std::get<sol::Manager&>(singletonPool).stopPayloadInstance(
-                request->payloadInstance);
-
-        auto check = std::get<session::Manager&>(singletonPool).stopSession
-                (sessionID);
-        if(!check)
+        try
         {
-            response->completionCode = IPMI_CC_UNSPECIFIED_ERROR;
+            auto& context = std::get<sol::Manager&>(singletonPool).getContext
+                    (request->payloadInstance);
+            auto sessionID = context.sessionID;
+
+            activating(request->payloadInstance, sessionID);
+            std::get<sol::Manager&>(singletonPool).stopPayloadInstance(
+                    request->payloadInstance);
+
+            auto check = std::get<session::Manager&>(singletonPool).stopSession
+                    (sessionID);
+            if (!check)
+            {
+                response->completionCode = IPMI_CC_UNSPECIFIED_ERROR;
+            }
+        }
+        catch (std::exception& e)
+        {
+            log<level::INFO>(e.what());
+            /*
+             * In case session has been closed (like in the case of a inactivity
+             * timeout), then stop the SOL payload instance, so that a new SOL
+             * connection can be allowed for the same payload instance.
+             */
+            std::get<sol::Manager&>(singletonPool).stopPayloadInstance(
+                    request->payloadInstance);
         }
     }
     catch (std::exception& e)
