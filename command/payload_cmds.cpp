@@ -127,13 +127,28 @@ std::vector<uint8_t> deactivatePayload(const std::vector<uint8_t>& inPayload,
                 (request->payloadInstance);
         auto sessionID = context.sessionID;
 
-        activating(request->payloadInstance, sessionID);
         std::get<sol::Manager&>(singletonPool).stopPayloadInstance(
                 request->payloadInstance);
 
+        try
+        {
+            activating(request->payloadInstance, sessionID);
+        }
+        catch (std::exception& e)
+        {
+            log<level::INFO>(e.what());
+            /*
+             * In case session has been closed (like in the case of inactivity
+             * timeout), then activating function would throw an exception,
+             * since sessionID is not found. Since the session is already
+             * closed, we would return with success completion code.
+             */
+            return outPayload;
+        }
+
         auto check = std::get<session::Manager&>(singletonPool).stopSession
                 (sessionID);
-        if(!check)
+        if (!check)
         {
             response->completionCode = IPMI_CC_UNSPECIFIED_ERROR;
         }
