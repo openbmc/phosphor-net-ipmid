@@ -29,6 +29,14 @@ sol::Manager solManager;
 std::tuple<session::Manager&, command::Table&, eventloop::EventLoop&,
         sol::Manager&> singletonPool(manager, table, loop, solManager);
 
+namespace cache
+{
+
+command::Guid guid;
+
+} // namespace cache
+
+
 sd_bus* bus = nullptr;
 
 FILE* ipmidbus = nullptr;
@@ -65,6 +73,9 @@ int main(int i_argc, char* i_argv[])
         std::cerr << "Failed to connect to system bus:" << strerror(-rc) <<"\n";
         goto finish;
     }
+
+    // Cache the System GUID.
+    cache::guid = command::getSystemGUID();
 
     // Register all the IPMI provider libraries applicable for net-ipmid
     provider::registerCallbackHandlers(NET_IPMID_LIB_PATH);
