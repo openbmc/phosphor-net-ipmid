@@ -10,7 +10,7 @@
 namespace command
 {
 
-std::array<uint8_t, BMC_GUID_LEN> getSystemGUID()
+Guid getSystemGUID()
 {
     // Canned System GUID for QEMU where the Chassis DBUS object is not
     // populated
