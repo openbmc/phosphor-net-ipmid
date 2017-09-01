@@ -10,15 +10,12 @@
 namespace command
 {
 
-std::array<uint8_t, BMC_GUID_LEN> getSystemGUID()
+Guid getSystemGUID()
 {
     // Canned System GUID for QEMU where the Chassis DBUS object is not
     // populated
-    std::array<uint8_t, BMC_GUID_LEN> guid = { 0x01, 0x02, 0x03, 0x04,
-                                               0x05, 0x06, 0x07, 0x08,
-                                               0x09, 0x0A, 0x0B, 0x0C,
-                                               0x0D, 0x0E, 0x0F, 0x10
-                                             };
+    Guid guid = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                  0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10 };
 
     constexpr auto objname = "/org/openbmc/control/chassis0";
     constexpr auto interface = "org.freedesktop.DBus.Properties";
