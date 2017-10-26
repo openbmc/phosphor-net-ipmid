@@ -12,6 +12,12 @@ namespace command
 
 void Table::registerCommand(CommandID inCommand, std::unique_ptr<Entry>&& entry)
 {
+    if (commandTable.find(inCommand.command) != commandTable.end()){
+        std::cout << "I> Already Registered, Skipping " << std::hex
+            << inCommand.command << "\n";
+        return;
+    }
+
     std::cout << "I> Registering Command" << std::hex
               << inCommand.command << "\n";
 
@@ -82,7 +88,7 @@ std::vector<uint8_t> ProviderIpmidEntry::executeCommand(
         const message::Handler& handler)
 {
     std::vector<uint8_t> response(message::parser::MAX_PAYLOAD_SIZE - 1);
-    size_t respSize {};
+    size_t respSize = commandData.size();
 
     ipmi_ret_t ipmiRC = functor(0, 0,
                                 reinterpret_cast<void*>(commandData.data()),
