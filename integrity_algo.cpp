@@ -1,5 +1,5 @@
+#include <openssl/evp.h>
 #include <openssl/hmac.h>
-#include <openssl/sha.h>
 #include "integrity_algo.hpp"
 #include "message_parsers.hpp"
 
@@ -9,25 +9,16 @@ namespace cipher
 namespace integrity
 {
 
-Interface::Interface(const Buffer& sik, const Key& addKey, size_t authLength)
+AlgoSHA1::AlgoSHA1(const std::vector<uint8_t>& sik)
+    : Interface(SHA1_96_AUTHCODE_LENGTH)
 {
-    unsigned int mdLen = 0;
-
-    // Generated K1 for the integrity algorithm with the additional key keyed
-    // with SIK.
-    if (HMAC(EVP_sha1(), sik.data(), sik.size(), addKey.data(),
-             addKey.size(), K1.data(), &mdLen) == NULL)
-    {
-        throw std::runtime_error("Generating Key1 for integrity "
-                                 "algorithm failed");
-    }
-
-    authCodeLength = authLength;
+    K1 = generateKn(sik, rmcp::const_1);
 }
 
-Buffer AlgoSHA1::generateHMAC(const uint8_t* input, const size_t len) const
+std::vector<uint8_t> AlgoSHA1::generateHMAC(const uint8_t* input,
+        const size_t len) const
 {
-    Buffer output(SHA_DIGEST_LENGTH);
+    std::vector<uint8_t> output(SHA_DIGEST_LENGTH);
     unsigned int mdLen = 0;
 
     if (HMAC(EVP_sha1(), K1.data(), K1.size(), input, len,
@@ -45,9 +36,10 @@ Buffer AlgoSHA1::generateHMAC(const uint8_t* input, const size_t len) const
     return output;
 }
 
-bool AlgoSHA1::verifyIntegrityData(const Buffer& packet,
-                                   const size_t length,
-                                   Buffer::const_iterator integrityData) const
+bool AlgoSHA1::verifyIntegrityData(
+        const std::vector<uint8_t>& packet,
+        const size_t length,
+        std::vector<uint8_t>::const_iterator integrityData) const
 {
 
     auto output = generateHMAC(
@@ -59,11 +51,29 @@ bool AlgoSHA1::verifyIntegrityData(const Buffer& packet,
     return (std::equal(output.begin(), output.end(), integrityData));
 }
 
-Buffer AlgoSHA1::generateIntegrityData(const Buffer& packet) const
+std::vector<uint8_t> AlgoSHA1::generateIntegrityData(
+        const std::vector<uint8_t>& packet) const
 {
     return generateHMAC(
             packet.data() + message::parser::RMCP_SESSION_HEADER_SIZE,
             packet.size() - message::parser::RMCP_SESSION_HEADER_SIZE);
+}
+
+std::vector<uint8_t> AlgoSHA1::generateKn(const std::vector<uint8_t>& sik,
+        const rmcp::Const_n& const_n) const
+{
+    unsigned int mdLen = 0;
+    std::vector<uint8_t> Kn(sik.size());
+
+    // Generated Kn for the integrity algorithm with the additional key keyed
+    // with SIK.
+    if (HMAC(EVP_sha1(), sik.data(), sik.size(), const_n.data(),
+             const_n.size(), Kn.data(), &mdLen) == NULL)
+    {
+        throw std::runtime_error("Generating KeyN for integrity "
+                                 "algorithm failed");
+    }
+    return Kn;
 }
 
 }// namespace integrity

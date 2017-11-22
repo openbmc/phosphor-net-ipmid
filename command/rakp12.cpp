@@ -131,7 +131,7 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
                 iter);
 
     // Generate Key Exchange Authentication Code - RAKP2
-    auto output = authAlgo->generateHMAC(input);
+    auto output = authAlgo->generateHMAC(session->kuid, input);
 
     response->messageTag = request->messageTag;
     response->rmcpStatusCode = static_cast<uint8_t>(RAKP_ReturnCode::NO_ERROR);

@@ -11,6 +11,7 @@
 #include "crypt_algo.hpp"
 #include "integrity_algo.hpp"
 #include "endian.hpp"
+#include "rmcp.hpp"
 #include "socket_channel.hpp"
 
 namespace session
@@ -138,10 +139,37 @@ class Session
             }
         }
 
+        /**
+         * @brief Set Session's Authentication Algorithm
+         */
         void setAuthAlgo(std::unique_ptr<cipher::rakp_auth::Interface>&&
                          inAuthAlgo)
         {
             authAlgoInterface = std::move(inAuthAlgo);
+        }
+
+        /**
+         * @brief Reset Session's Authentication Algorithm
+         */
+        void destroyAuthAlgo()
+        {
+            authAlgoInterface.reset();
+        }
+
+        /**
+         * @brief Set Session's Integrity Algorithm
+         */
+        void setIntegrityAlgo(cipher::integrity::Algorithms intAlgo)
+        {
+            intAlgoType = intAlgo;
+        }
+
+        /**
+         * @brief Set Session's Confidentiality Algorithm
+         */
+        void setCryptAlgo(cipher::crypt::Algorithms cryptAlgo)
+        {
+            cryptAlgoType = cryptAlgo;
         }
 
         /**
@@ -159,18 +187,6 @@ class Session
             {
                 throw std::runtime_error("Integrity Algorithm Empty");
             }
-        }
-
-        /**
-         * @brief Set Session's Integrity Algorithm
-         *
-         * @param[in] integrityAlgo - unique pointer to integrity algorithm
-         *                              instance
-         */
-        void setIntegrityAlgo(
-                std::unique_ptr<cipher::integrity::Interface>&& integrityAlgo)
-        {
-            integrityAlgoInterface = std::move(integrityAlgo);
         }
 
         /** @brief Check if integrity algorithm is enabled for this session.
@@ -199,18 +215,6 @@ class Session
             }
         }
 
-        /**
-         * @brief Set Session's Confidentiality Algorithm
-         *
-         * @param[in] confAlgo - unique pointer to confidentiality algorithm
-         *                       instance
-         */
-        void setCryptAlgo(
-                std::unique_ptr<cipher::crypt::Interface>&& cryptAlgo)
-        {
-            cryptAlgoInterface = std::move(cryptAlgo);
-        }
-
         /** @brief Check if confidentiality algorithm is enabled for this
          *         session.
          *
@@ -235,6 +239,69 @@ class Session
          */
         bool isSessionActive();
 
+        void generateSIK(const std::vector<uint8_t>& input)
+        {
+            if (authAlgoInterface)
+            {
+                SIK = authAlgoInterface->generateHMAC(kuid, input);
+            }
+            else
+            {
+                throw std::runtime_error("Authentication algorithm empty");
+            }
+        }
+
+        std::vector<uint8_t> generateICV(const std::vector<uint8_t>& input)
+        {
+            if (authAlgoInterface)
+            {
+                return authAlgoInterface->generateICV(SIK, input);
+            }
+            else
+            {
+                throw std::runtime_error("Authentication algorithm empty");
+            }
+        }
+
+        std::vector<uint8_t> generateKn(const rmcp::Const_n& const_n)
+        {
+            return integrityAlgoInterface->generateKn(SIK, const_n);
+        }
+
+        void applyIntegrityAlgo()
+        {
+            switch (intAlgoType)
+            {
+                case cipher::integrity::Algorithms::HMAC_SHA1_96:
+                    {
+                        integrityAlgoInterface =
+                                std::make_unique<cipher::integrity::AlgoSHA1>(
+                                    SIK);
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
+
+        void applyCryptAlgo()
+        {
+            std::vector<uint8_t> K2 = generateKn(rmcp::const_2);
+            switch (cryptAlgoType)
+            {
+                case cipher::crypt::Algorithms::AES_CBC_128:
+                    {
+                        cryptAlgoInterface =
+                                std::make_unique<cipher::crypt::AlgoAES128>(
+                                    K2);
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
+
+
         /**
          * @brief Session's Current Privilege Level
          */
@@ -252,7 +319,14 @@ class Session
         /** @brief Socket channel for communicating with the remote client.*/
         std::shared_ptr<udpsocket::Channel> channelPtr;
 
+        // User Key is hardcoded until the IPMI User account
+        // management is in place.
+        cipher::rakp_auth::UserKey kuid = {"0penBmc"};
+
     private:
+
+        // Session Integrity Key
+        std::vector<uint8_t> SIK;
 
         SessionID bmcSessionID = 0; //BMC Session ID
         SessionID remoteConsoleSessionID = 0; //Remote Console Session ID
@@ -267,6 +341,9 @@ class Session
         // Confidentiality Algorithm Interface for the Session
         std::unique_ptr<cipher::crypt::Interface> cryptAlgoInterface =
                 nullptr;
+
+        cipher::integrity::Algorithms intAlgoType;
+        cipher::crypt::Algorithms cryptAlgoType;
 
         // Last Transaction Time
         decltype(std::chrono::steady_clock::now()) lastTime;

@@ -3,7 +3,7 @@
 #include <array>
 #include <vector>
 #include "crypt_algo.hpp"
-#include "integrity_algo.hpp"
+#include "rmcp.hpp"
 
 namespace cipher
 {
@@ -13,6 +13,8 @@ namespace rakp_auth
 constexpr size_t USER_KEY_MAX_LENGTH = 20;
 constexpr size_t BMC_RANDOM_NUMBER_LEN = 16;
 constexpr size_t REMOTE_CONSOLE_RANDOM_NUMBER_LEN = 16;
+
+using UserKey = std::array<uint8_t, USER_KEY_MAX_LENGTH>;
 
 /**
  * @enum RAKP Authentication Algorithms
@@ -47,12 +49,8 @@ enum class Algorithms : uint8_t
 class Interface
 {
     public:
-        explicit Interface(integrity::Algorithms intAlgo,
-                           crypt::Algorithms cryptAlgo) :
-                intAlgo(intAlgo),
-                cryptAlgo(cryptAlgo) {}
+        explicit Interface() {}
 
-        Interface() = delete;
         virtual ~Interface() = default;
         Interface(const Interface&) = default;
         Interface& operator=(const Interface&) = default;
@@ -60,12 +58,13 @@ class Interface
         Interface& operator=(Interface&&) = default;
 
         /**
-         * @brief Generate the Hash Message Authentication Code
+         * @brief Generate the session integrity key
          *
          * This API is invoked to generate the Key Exchange Authentication Code
          * in the RAKP2 and RAKP4 sequence and for generating the Session
          * Integrity Key.
          *
+         * @param UserKey auth key (either Kg or Kuid)
          * @param input message
          *
          * @return hash output
@@ -74,7 +73,8 @@ class Interface
          *        needs to be set before this operation.
          */
         std::vector<uint8_t> virtual generateHMAC(
-            std::vector<uint8_t>& input) const = 0;
+                const UserKey& userKey,
+                const std::vector<uint8_t>& input) const = 0;
 
         /**
          * @brief Generate the Integrity Check Value
@@ -90,38 +90,35 @@ class Interface
          *        hash operation needs to be set before this operation.
          */
         std::vector<uint8_t> virtual generateICV(
-            std::vector<uint8_t>& input) const = 0;
+                const std::vector<uint8_t>& sik,
+                const std::vector<uint8_t>& input) const = 0;
 
-        // User Key is hardcoded to PASSW0RD till the IPMI User account
-        // management is in place.
-        std::array<uint8_t, USER_KEY_MAX_LENGTH> userKey = {"0penBmc"};
+        /**
+         * @brief Check if the Authentication algorithm is supported
+         *
+         * @param[in] algo - authentication algorithm
+         *
+         * @return true if algorithm is supported else false
+         *
+         */
+        static bool isAlgorithmSupported(Algorithms algo)
+        {
+            if (algo == Algorithms::RAKP_NONE ||
+                algo == Algorithms::RAKP_HMAC_SHA1)
+            {
+               return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         // Managed System Random Number
         std::array<uint8_t, BMC_RANDOM_NUMBER_LEN> bmcRandomNum;
 
         // Remote Console Random Number
         std::array<uint8_t, REMOTE_CONSOLE_RANDOM_NUMBER_LEN> rcRandomNum;
-
-        // Session Integrity Key
-        std::vector<uint8_t> sessionIntegrityKey;
-
-        /**
-         * Integrity Algorithm is activated and set in the session data only
-         * once the session setup is succeeded in the RAKP34 command. But the
-         * integrity algorithm is negotiated in the Open Session Request command
-         * . So the integrity algorithm successfully negotiated is stored
-         * in the authentication algorithm's instance.
-         */
-        integrity::Algorithms intAlgo;
-
-        /**
-         * Confidentiality Algorithm is activated and set in the session data
-         * only once the session setup is succeeded in the RAKP34 command. But
-         * the confidentiality algorithm is negotiated in the Open Session
-         * Request command. So the confidentiality algorithm successfully
-         * negotiated is stored in the authentication algorithm's instance.
-         */
-        crypt::Algorithms cryptAlgo;
 };
 
 /**
@@ -137,22 +134,21 @@ class Interface
 class AlgoSHA1 : public Interface
 {
     public:
-        explicit AlgoSHA1(integrity::Algorithms intAlgo,
-                          crypt::Algorithms cryptAlgo) :
-                Interface(intAlgo, cryptAlgo) {}
+        explicit AlgoSHA1() : Interface() {}
 
-        AlgoSHA1() = delete;
         ~AlgoSHA1() = default;
         AlgoSHA1(const AlgoSHA1&) = default;
         AlgoSHA1& operator=(const AlgoSHA1&) = default;
         AlgoSHA1(AlgoSHA1&&) = default;
         AlgoSHA1& operator=(AlgoSHA1&&) = default;
 
-        std::vector<uint8_t> generateHMAC(std::vector<uint8_t>& input) const
-        override;
+        std::vector<uint8_t> generateHMAC(
+                const UserKey& userKey,
+                const std::vector<uint8_t>& input) const override;
 
-        std::vector<uint8_t> generateICV(std::vector<uint8_t>& input) const
-        override;
+        std::vector<uint8_t> generateICV(
+                const std::vector<uint8_t>& sik,
+                const std::vector<uint8_t>& input) const override;
 };
 
 }// namespace auth

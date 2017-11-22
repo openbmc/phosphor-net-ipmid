@@ -12,47 +12,6 @@
 namespace command
 {
 
-void applyIntegrityAlgo(const uint32_t bmcSessionID)
-{
-    auto session = (std::get<session::Manager&>(singletonPool).getSession(
-            bmcSessionID)).lock();
-
-    auto authAlgo = session->getAuthAlgo();
-
-    switch (authAlgo->intAlgo)
-    {
-        case cipher::integrity::Algorithms::HMAC_SHA1_96:
-        {
-            session->setIntegrityAlgo(
-                    std::make_unique<cipher::integrity::AlgoSHA1>(
-                        authAlgo->sessionIntegrityKey));
-            break;
-        }
-        default:
-            break;
-    }
-}
-
-void applyCryptAlgo(const uint32_t bmcSessionID)
-{
-    auto session = (std::get<session::Manager&>(singletonPool).getSession(
-            bmcSessionID)).lock();
-
-    auto authAlgo = session->getAuthAlgo();
-
-    switch (authAlgo->cryptAlgo)
-    {
-        case cipher::crypt::Algorithms::AES_CBC_128:
-        {
-            session->setCryptAlgo(std::make_unique<cipher::crypt::AlgoAES128>(
-                                 authAlgo->sessionIntegrityKey));
-            break;
-        }
-        default:
-            break;
-    }
-}
-
 std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
                             const message::Handler& handler)
 {
@@ -63,7 +22,7 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
     auto response = reinterpret_cast<RAKP4response*>(outPayload.data());
 
     // Check if the RAKP3 Payload Length is as expected
-    if(inPayload.size() != sizeof(RAKP3request))
+    if (inPayload.size() < sizeof(RAKP3request))
     {
         std::cerr << "RAKP34: Invalid RAKP3 request\n";
         response->rmcpStatusCode =
@@ -142,11 +101,11 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
     // User Name Length Byte
     std::copy_n(&userLength, sizeof(userLength), iter);
 
-    // Generate Key Exchange Authentication Code - RAKP2
-    auto output = authAlgo->generateHMAC(input);
+    // Generate Key Exchange Authentication Code - RAKP3
+    auto output = authAlgo->generateHMAC(session->kuid, input);
 
-    if (std::memcmp(output.data(), request->keyExchangeAuthCode,
-                    output.size()))
+    if (inPayload.size() != (sizeof(RAKP3request) + output.size()) ||
+            std::memcmp(output.data(), request+1, output.size()))
     {
         std::cerr << "Mismatch in HMAC sent by remote console\n";
 
@@ -199,11 +158,7 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
     std::copy_n(&userLength, sizeof(userLength), iter);
 
     // Generate Session Integrity Key
-    auto sikOutput = authAlgo->generateHMAC(input);
-
-    // Update the SIK in the Authentication Algo Interface
-    authAlgo->sessionIntegrityKey.insert(authAlgo->sessionIntegrityKey.begin(),
-                                         sikOutput.begin(), sikOutput.end());
+    session->generateSIK(input);
 
     /*
      * Integrity Check Value
@@ -236,7 +191,7 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
     std::copy_n(cache::guid.data(), cache::guid.size(), iter);
 
     // Integrity Check Value
-    auto icv = authAlgo->generateICV(input);
+    auto icv = session->generateICV(input);
 
     outPayload.resize(sizeof(RAKP4response));
 
@@ -249,10 +204,13 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
     outPayload.insert(outPayload.end(), icv.begin(), icv.end());
 
     // Set the Integrity Algorithm
-    applyIntegrityAlgo(session->getBMCSessionID());
+    session->applyIntegrityAlgo();
 
     // Set the Confidentiality Algorithm
-    applyCryptAlgo(session->getBMCSessionID());
+    session->applyCryptAlgo();
+
+    // Destroy the Authentication Algorithm (not needed after this)
+    session->destroyAuthAlgo();
 
     session->state = session::State::ACTIVE;
 

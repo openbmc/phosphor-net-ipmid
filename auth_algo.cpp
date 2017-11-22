@@ -1,4 +1,5 @@
 #include "auth_algo.hpp"
+#include "integrity_algo.hpp"
 
 #include <openssl/hmac.h>
 #include <openssl/sha.h>
@@ -11,7 +12,9 @@ namespace cipher
 namespace rakp_auth
 {
 
-std::vector<uint8_t> AlgoSHA1::generateHMAC(std::vector<uint8_t>& input) const
+std::vector<uint8_t> AlgoSHA1::generateHMAC(
+        const UserKey& userKey,
+        const std::vector<uint8_t>& input) const
 {
     std::vector<uint8_t> output(SHA_DIGEST_LENGTH);
     unsigned int mdLen = 0;
@@ -26,17 +29,20 @@ std::vector<uint8_t> AlgoSHA1::generateHMAC(std::vector<uint8_t>& input) const
     return output;
 }
 
-std::vector<uint8_t> AlgoSHA1::generateICV(std::vector<uint8_t>& input) const
+std::vector<uint8_t> AlgoSHA1::generateICV(
+        const std::vector<uint8_t>& sik,
+        const std::vector<uint8_t>& input) const
 {
     std::vector<uint8_t> output(SHA_DIGEST_LENGTH);
     unsigned int mdLen = 0;
 
-    if (HMAC(EVP_sha1(), sessionIntegrityKey.data(), SHA_DIGEST_LENGTH,
+    if (HMAC(EVP_sha1(), sik.data(), sik.size(),
              input.data(), input.size(), output.data(), &mdLen) == NULL)
     {
         std::cerr << "Generate Session Integrity Key failed\n";
         output.resize(0);
     }
+    output.resize(integrity::AlgoSHA1::SHA1_96_AUTHCODE_LENGTH);
 
     return output;
 }

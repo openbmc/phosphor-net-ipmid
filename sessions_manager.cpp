@@ -64,14 +64,13 @@ std::weak_ptr<Session> Manager::startSession(SessionID remoteConsoleSessID,
         }
         while (1);
 
-        // Set the Authentication Algorithm to RAKP_HMAC_SHA1
+        // Set the Authentication Algorithm
         switch (authAlgo)
         {
             case cipher::rakp_auth::Algorithms::RAKP_HMAC_SHA1:
             {
                 session->setAuthAlgo(
-                        std::make_unique<cipher::rakp_auth::AlgoSHA1>(intAlgo,
-                        cryptAlgo));
+                        std::make_unique<cipher::rakp_auth::AlgoSHA1>());
                 break;
             }
             default:
@@ -79,6 +78,9 @@ std::weak_ptr<Session> Manager::startSession(SessionID remoteConsoleSessID,
                 throw std::runtime_error("Invalid Authentication Algorithm");
             }
         }
+        session->setIntegrityAlgo(intAlgo);
+        session->setCryptAlgo(cryptAlgo);
+
         sessionID = session->getBMCSessionID();
         sessionsMap.emplace(sessionID, std::move(session));
     }
