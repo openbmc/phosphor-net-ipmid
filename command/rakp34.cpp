@@ -8,6 +8,7 @@
 #include "endian.hpp"
 #include "guid.hpp"
 #include "main.hpp"
+#include "rmcp.hpp"
 
 namespace command
 {
@@ -39,13 +40,15 @@ void applyCryptAlgo(const uint32_t bmcSessionID)
             bmcSessionID)).lock();
 
     auto authAlgo = session->getAuthAlgo();
+    auto intAlgo = session->getIntegrityAlgo();
+    auto k2 = intAlgo->generateKn(authAlgo->sessionIntegrityKey, rmcp::const_2);
 
     switch (authAlgo->cryptAlgo)
     {
         case cipher::crypt::Algorithms::AES_CBC_128:
         {
-            session->setCryptAlgo(std::make_unique<cipher::crypt::AlgoAES128>(
-                                 authAlgo->sessionIntegrityKey));
+            session->setCryptAlgo(
+                    std::make_unique<cipher::crypt::AlgoAES128>(k2));
             break;
         }
         default:
@@ -63,7 +66,7 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
     auto response = reinterpret_cast<RAKP4response*>(outPayload.data());
 
     // Check if the RAKP3 Payload Length is as expected
-    if(inPayload.size() != sizeof(RAKP3request))
+    if (inPayload.size() < sizeof(RAKP3request))
     {
         std::cerr << "RAKP34: Invalid RAKP3 request\n";
         response->rmcpStatusCode =
@@ -145,8 +148,8 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
     // Generate Key Exchange Authentication Code - RAKP2
     auto output = authAlgo->generateHMAC(input);
 
-    if (std::memcmp(output.data(), request->keyExchangeAuthCode,
-                    output.size()))
+    if (inPayload.size() != (sizeof(RAKP3request) + output.size()) ||
+            std::memcmp(output.data(), request+1, output.size()))
     {
         std::cerr << "Mismatch in HMAC sent by remote console\n";
 
