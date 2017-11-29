@@ -279,6 +279,13 @@ class Session
                                     SIK);
                         break;
                     }
+                case cipher::integrity::Algorithms::HMAC_SHA256_128:
+                    {
+                        integrityAlgoInterface =
+                                std::make_unique<cipher::integrity::AlgoSHA256>(
+                                    SIK);
+                        break;
+                    }
                 default:
                     break;
             }
