@@ -12,7 +12,7 @@ namespace cipher
 namespace crypt
 {
 
-Interface::Interface(const buffer& sik, const key& addKey)
+Interface::Interface(const std::vector<uint8_t>& sik, const key& addKey)
 {
     unsigned int mdLen = 0;
 
@@ -31,9 +31,10 @@ constexpr key AlgoAES128::const2;
 constexpr std::array<uint8_t, AlgoAES128::AESCBC128BlockSize - 1>
         AlgoAES128::confPadBytes;
 
-buffer AlgoAES128::decryptPayload(const buffer& packet,
-                                  const size_t sessHeaderLen,
-                                  const size_t payloadLen) const
+std::vector<uint8_t> AlgoAES128::decryptPayload(
+        const std::vector<uint8_t>& packet,
+        const size_t sessHeaderLen,
+        const size_t payloadLen) const
 {
     auto plainPayload = decryptData(
             packet.data() + sessHeaderLen,
@@ -63,7 +64,8 @@ buffer AlgoAES128::decryptPayload(const buffer& packet,
     return plainPayload;
 }
 
-buffer AlgoAES128::encryptPayload(buffer& payload) const
+std::vector<uint8_t> AlgoAES128::encryptPayload(
+        std::vector<uint8_t>& payload) const
 {
     auto payloadLen = payload.size();
 
@@ -100,7 +102,7 @@ buffer AlgoAES128::encryptPayload(buffer& payload) const
     return encryptData(payload.data(), payload.size());
 }
 
-buffer AlgoAES128::decryptData(const uint8_t* iv,
+std::vector<uint8_t> AlgoAES128::decryptData(const uint8_t* iv,
                                const uint8_t* input,
                                const int inputLen) const
 {
@@ -136,7 +138,7 @@ buffer AlgoAES128::decryptData(const uint8_t* iv,
      */
     EVP_CIPHER_CTX_set_padding(ctxPtr.get(), 0);
 
-    buffer output(inputLen + AESCBC128BlockSize);
+    std::vector<uint8_t> output(inputLen + AESCBC128BlockSize);
 
     int outputLen = 0;
 
@@ -159,9 +161,10 @@ buffer AlgoAES128::decryptData(const uint8_t* iv,
     return output;
 }
 
-buffer AlgoAES128::encryptData(const uint8_t* input, const int inputLen) const
+std::vector<uint8_t> AlgoAES128::encryptData(const uint8_t* input,
+        const int inputLen) const
 {
-    buffer output(inputLen + AESCBC128BlockSize);
+    std::vector<uint8_t> output(inputLen + AESCBC128BlockSize);
 
     // Generate the initialization vector
     if (!RAND_bytes(output.data(), AESCBC128ConfHeader))
