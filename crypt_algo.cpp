@@ -12,14 +12,14 @@ namespace cipher
 namespace crypt
 {
 
-Interface::Interface(const buffer& sik, const key& addKey)
+Interface::Interface(const std::vector<uint8_t>& sik, const key& addKey)
 {
     unsigned int mdLen = 0;
 
     // Generated K2 for the confidentiality algorithm with the additional key
     // keyed with SIK.
     if (HMAC(EVP_sha1(), sik.data(), sik.size(), addKey.data(),
-             addKey.size(), k2.data(), &mdLen) == NULL)
+             addKey.size(), K2.data(), &mdLen) == NULL)
     {
         throw std::runtime_error("Generating K2 for confidentiality algorithm"
                                  "failed");
@@ -31,9 +31,10 @@ constexpr key AlgoAES128::const2;
 constexpr std::array<uint8_t, AlgoAES128::AESCBC128BlockSize - 1>
         AlgoAES128::confPadBytes;
 
-buffer AlgoAES128::decryptPayload(const buffer& packet,
-                                  const size_t sessHeaderLen,
-                                  const size_t payloadLen) const
+std::vector<uint8_t> AlgoAES128::decryptPayload(
+        const std::vector<uint8_t>& packet,
+        const size_t sessHeaderLen,
+        const size_t payloadLen) const
 {
     auto plainPayload = decryptData(
             packet.data() + sessHeaderLen,
@@ -63,7 +64,8 @@ buffer AlgoAES128::decryptPayload(const buffer& packet,
     return plainPayload;
 }
 
-buffer AlgoAES128::encryptPayload(buffer& payload) const
+std::vector<uint8_t> AlgoAES128::encryptPayload(
+        std::vector<uint8_t>& payload) const
 {
     auto payloadLen = payload.size();
 
@@ -100,7 +102,7 @@ buffer AlgoAES128::encryptPayload(buffer& payload) const
     return encryptData(payload.data(), payload.size());
 }
 
-buffer AlgoAES128::decryptData(const uint8_t* iv,
+std::vector<uint8_t> AlgoAES128::decryptData(const uint8_t* iv,
                                const uint8_t* input,
                                const int inputLen) const
 {
@@ -122,7 +124,7 @@ buffer AlgoAES128::decryptData(const uint8_t* iv,
      * AES-CBC-128. ctx must be initialized before calling this function. K2 is
      * the symmetric key used and iv is the initialization vector used.
      */
-    if (!EVP_DecryptInit_ex(ctxPtr.get(), EVP_aes_128_cbc(), NULL, k2.data(),
+    if (!EVP_DecryptInit_ex(ctxPtr.get(), EVP_aes_128_cbc(), NULL, K2.data(),
                             iv))
     {
         throw std::runtime_error("EVP_DecryptInit_ex failed for type "
@@ -136,7 +138,7 @@ buffer AlgoAES128::decryptData(const uint8_t* iv,
      */
     EVP_CIPHER_CTX_set_padding(ctxPtr.get(), 0);
 
-    buffer output(inputLen + AESCBC128BlockSize);
+    std::vector<uint8_t> output(inputLen + AESCBC128BlockSize);
 
     int outputLen = 0;
 
@@ -159,9 +161,10 @@ buffer AlgoAES128::decryptData(const uint8_t* iv,
     return output;
 }
 
-buffer AlgoAES128::encryptData(const uint8_t* input, const int inputLen) const
+std::vector<uint8_t> AlgoAES128::encryptData(const uint8_t* input,
+        const int inputLen) const
 {
-    buffer output(inputLen + AESCBC128BlockSize);
+    std::vector<uint8_t> output(inputLen + AESCBC128BlockSize);
 
     // Generate the initialization vector
     if (!RAND_bytes(output.data(), AESCBC128ConfHeader))
@@ -187,7 +190,7 @@ buffer AlgoAES128::encryptData(const uint8_t* input, const int inputLen) const
      * AES-CBC-128. ctx must be initialized before calling this function. K2 is
      * the symmetric key used and iv is the initialization vector used.
      */
-    if (!EVP_EncryptInit_ex(ctxPtr.get(), EVP_aes_128_cbc(), NULL, k2.data(),
+    if (!EVP_EncryptInit_ex(ctxPtr.get(), EVP_aes_128_cbc(), NULL, K2.data(),
                             output.data()))
     {
         throw std::runtime_error("EVP_EncryptInit_ex failed for type "
