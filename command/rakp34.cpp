@@ -126,12 +126,12 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
     auto sessPrivLevel = static_cast<uint8_t>(session->curPrivLevel);
 
     // User Name Length Byte
-    uint8_t userLength = 0;
+    auto userLength = static_cast<uint8_t>(session->userName.size());
 
     std::vector<uint8_t> input;
     input.resize(cipher::rakp_auth::BMC_RANDOM_NUMBER_LEN +
                  sizeof(rcSessionID) + sizeof(sessPrivLevel) +
-                 sizeof(userLength));
+                 sizeof(userLength) + userLength);
 
     auto iter = input.begin();
 
@@ -152,6 +152,9 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
 
     // User Name Length Byte
     std::copy_n(&userLength, sizeof(userLength), iter);
+    std::advance(iter, sizeof(userLength));
+
+    std::copy_n(session->userName.data(), userLength, iter);
 
     // Generate Key Exchange Authentication Code - RAKP2
     auto output = authAlgo->generateHMAC(input);
@@ -188,7 +191,7 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
 
     input.resize(cipher::rakp_auth::REMOTE_CONSOLE_RANDOM_NUMBER_LEN +
                  cipher::rakp_auth::BMC_RANDOM_NUMBER_LEN +
-                 sizeof(sessPrivLevel) + sizeof(userLength));
+                 sizeof(sessPrivLevel) + sizeof(userLength) + userLength);
     iter = input.begin();
 
     // Remote Console Random Number
@@ -208,6 +211,9 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
 
     // User Name Length Byte
     std::copy_n(&userLength, sizeof(userLength), iter);
+    std::advance(iter, sizeof(userLength));
+
+    std::copy_n(session->userName.data(), userLength, iter);
 
     // Generate Session Integrity Key
     auto sikOutput = authAlgo->generateHMAC(input);
