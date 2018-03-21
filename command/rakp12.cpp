@@ -1,6 +1,7 @@
 #include "rakp12.hpp"
 
 #include <openssl/rand.h>
+#include <systemd/sd-journal.h>
 
 #include <algorithm>
 #include <iomanip>
@@ -72,7 +73,8 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
                  cipher::rakp_auth::REMOTE_CONSOLE_RANDOM_NUMBER_LEN +
                  cipher::rakp_auth::BMC_RANDOM_NUMBER_LEN +
                  BMC_GUID_LEN + sizeof(request->req_max_privilege_level) +
-                 sizeof(request->user_name_len));
+                 sizeof(request->user_name_len) +
+                 cipher::rakp_auth::userName.size());
 
     auto iter = input.begin();
 
@@ -128,6 +130,11 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
 
     // User Name Length Byte
     std::copy_n(&(request->user_name_len), sizeof(request->user_name_len),
+                iter);
+    std::advance(iter, sizeof(request->user_name_len));
+
+    std::copy_n(cipher::rakp_auth::userName.data(),
+                cipher::rakp_auth::userName.size(),
                 iter);
 
     // Generate Key Exchange Authentication Code - RAKP2
