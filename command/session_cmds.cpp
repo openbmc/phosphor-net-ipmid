@@ -12,7 +12,9 @@ namespace command
 std::vector<uint8_t> setSessionPrivilegeLevel(
         const std::vector<uint8_t>& inPayload, const message::Handler& handler)
 {
+#ifdef __IPMI_DEBUG__
     std::cout << ">> setSessionPrivilegeLevel\n";
+#endif
 
     std::vector<uint8_t> outPayload(sizeof(SetSessionPrivLevelResp));
     auto request = reinterpret_cast<const SetSessionPrivLevelReq*>
@@ -40,16 +42,18 @@ std::vector<uint8_t> setSessionPrivilegeLevel(
         // Requested level exceeds Channel and/or User Privilege Limit
         response->completionCode = IPMI_CC_EXCEEDS_USER_PRIV;
     }
-
+#ifdef __IPMI_DEBUG__
     std::cout << "<< setSessionPrivilegeLevel\n";
+#endif
     return outPayload;
 }
 
 std::vector<uint8_t> closeSession(const std::vector<uint8_t>& inPayload,
                                   const message::Handler& handler)
 {
+#ifdef __IPMI_DEBUG__
     std::cout << ">> closeSession\n";
-
+#endif
     std::vector<uint8_t> outPayload(sizeof(CloseSessionResponse));
     auto request = reinterpret_cast<const CloseSessionRequest*>
                    (inPayload.data());
@@ -73,8 +77,9 @@ std::vector<uint8_t> closeSession(const std::vector<uint8_t>& inPayload,
             response->completionCode = IPMI_CC_INVALID_SESSIONID;
         }
     }
-
+#ifdef __IPMI_DEBUG__
     std::cout << "<< closeSession\n";
+#endif
     return outPayload;
 }
 

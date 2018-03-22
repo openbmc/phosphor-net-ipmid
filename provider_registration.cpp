@@ -50,7 +50,9 @@ void registerCallbackHandlers(const char* providerLibPath)
     {
         handlerPath = providerLibPath;
         handlerPath += handlerList[numLibs]->d_name;
+#ifdef __IPMI_DEBUG__
         std::cout << "Registering handler: " << handlerPath << "\n";
+#endif
 
         auto lib_handler = dlopen(handlerPath.c_str(), RTLD_NOW);
 

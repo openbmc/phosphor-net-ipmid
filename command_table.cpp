@@ -16,13 +16,17 @@ void Table::registerCommand(CommandID inCommand, std::unique_ptr<Entry>&& entry)
 
     if (command)
     {
+#ifdef __IPMI_DEBUG__
         std::cout << "I> Already Registered, Skipping " << std::hex
                   << inCommand.command << "\n";
+#endif
         return;
     }
 
+#ifdef __IPMI_DEBUG__
     std::cout << "I> Registering Command" << std::hex
               << inCommand.command << "\n";
+#endif
 
     command = std::move(entry);
 }

@@ -17,8 +17,9 @@ namespace command
 std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
                             const message::Handler& handler)
 {
+#ifdef __IPMI_DEBUG__
     std::cout << ">> RAKP12\n";
-
+#endif
     std::vector<uint8_t> outPayload(sizeof(RAKP2response));
     auto request = reinterpret_cast<const RAKP1request*>(inPayload.data());
     auto response = reinterpret_cast<RAKP2response*>(outPayload.data());
@@ -149,8 +150,9 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
 
     // Insert the HMAC output into the payload
     outPayload.insert(outPayload.end(), output.begin(), output.end());
-
+#ifdef __IPMI_DEBUG__
     std::cout << "<< RAKP12\n";
+#endif
     return outPayload;
 }
 
