@@ -5,12 +5,30 @@
 #include <openssl/sha.h>
 
 #include <iostream>
+#include <fstream>
+#include <string.h>
 
 namespace cipher
 {
 
 namespace rakp_auth
 {
+
+void Interface::loadPassword()
+{
+    std::ifstream pwdFile;
+    std::string pwd;
+    pwdFile.open("/etc/ipmipwd");
+    if (!pwdFile.is_open())
+    {
+        return;
+    }
+
+    userKey.fill(0);
+    pwdFile >> pwd;
+    strcpy((char *)userKey.data(), pwd.c_str());
+    pwdFile.close();
+}
 
 std::vector<uint8_t> AlgoSHA1::generateHMAC(
         const std::vector<uint8_t>& input) const
@@ -24,7 +42,6 @@ std::vector<uint8_t> AlgoSHA1::generateHMAC(
         std::cerr << "Generate HMAC failed\n";
         output.resize(0);
     }
-
     return output;
 }
 
