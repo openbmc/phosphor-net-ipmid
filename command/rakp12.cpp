@@ -128,6 +128,9 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     std::copy_n(&(request->user_name_len), sizeof(request->user_name_len),
                 iter);
 
+    //Load password from file
+    authAlgo->loadPassword();
+
     // Generate Key Exchange Authentication Code - RAKP2
     auto output = authAlgo->generateHMAC(input);
 

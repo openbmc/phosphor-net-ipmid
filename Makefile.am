@@ -67,7 +67,8 @@ netipmid_LDFLAGS = \
 	$(PHOSPHOR_LOGGING_LIBS) \
 	$(PHOSPHOR_DBUS_INTERFACES_LIBS) \
 	$(LIBADD_DLOPEN) \
-	-export-dynamic
+	-export-dynamic \
+	-lstdc++fs
 
 netipmid_CXXFLAGS = \
 	$(SYSTEMD_CFLAGS) \
