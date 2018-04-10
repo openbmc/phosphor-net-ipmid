@@ -5,6 +5,8 @@
 #include <openssl/sha.h>
 
 #include <iostream>
+#include <fstream>
+#include <string.h>
 
 namespace cipher
 {
@@ -12,19 +14,35 @@ namespace cipher
 namespace rakp_auth
 {
 
+void Interface::loadPassword()
+{
+    std::ifstream pwdFile;
+    std::string pwd;
+    pwdFile.open("/etc/ipmipwd");
+    if (!pwdFile.is_open())
+    {
+        return;
+    }
+
+    userKey.fill(0);
+    pwdFile >> pwd;
+    strcpy((char *)userKey.data(), pwd.c_str());
+    pwdFile.close();
+}
+
 std::vector<uint8_t> AlgoSHA1::generateHMAC(
-        const std::vector<uint8_t>& input) const
+        const std::vector<uint8_t>& input)
 {
     std::vector<uint8_t> output(SHA_DIGEST_LENGTH);
     unsigned int mdLen = 0;
 
+    loadPassword();
     if (HMAC(EVP_sha1(), userKey.data(), userKey.size(), input.data(),
              input.size(), output.data(), &mdLen) == NULL)
     {
         std::cerr << "Generate HMAC failed\n";
         output.resize(0);
     }
-
     return output;
 }
 
@@ -46,11 +64,12 @@ std::vector<uint8_t> AlgoSHA1::generateICV(
 }
 
 std::vector<uint8_t> AlgoSHA256::generateHMAC(
-        const std::vector<uint8_t>& input) const
+        const std::vector<uint8_t>& input)
 {
     std::vector<uint8_t> output(SHA256_DIGEST_LENGTH);
     unsigned int mdLen = 0;
 
+    loadPassword();
     if (HMAC(EVP_sha256(), userKey.data(), userKey.size(), input.data(),
              input.size(), output.data(), &mdLen) == NULL)
     {
