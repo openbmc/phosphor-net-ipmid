@@ -55,7 +55,8 @@ netipmid_SOURCES = \
 	sol_module.cpp \
 	settings.hpp \
 	settings.cpp \
-	timer.cpp
+	timer.cpp \
+        user_module.cpp
 
 netipmid_CPPFLAGS = -DNET_IPMID_LIB_PATH=\"/usr/lib/net-ipmid/\"
 
@@ -67,7 +68,8 @@ netipmid_LDFLAGS = \
 	$(PHOSPHOR_LOGGING_LIBS) \
 	$(PHOSPHOR_DBUS_INTERFACES_LIBS) \
 	$(LIBADD_DLOPEN) \
-	-export-dynamic
+	-export-dynamic \
+	-lstdc++fs
 
 netipmid_CXXFLAGS = \
 	$(SYSTEMD_CFLAGS) \
