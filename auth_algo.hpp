@@ -114,6 +114,11 @@ class Interface
             }
         }
 
+        /**
+         * @brief load the passsword from the password file if present
+         */
+        void loadPassword();
+
         // User Key is hardcoded to PASSW0RD till the IPMI User account
         // management is in place.
         std::array<uint8_t, USER_KEY_MAX_LENGTH> userKey = {"0penBmc"};
@@ -176,7 +181,7 @@ class AlgoSHA1 : public Interface
                 const std::vector<uint8_t>& input) const override;
 
         std::vector<uint8_t> generateICV(
-                const std::vector<uint8_t>& input) const override;
+                const std::vector<uint8_t>& input) const  override;
 };
 
 /**

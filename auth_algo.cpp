@@ -5,12 +5,33 @@
 #include <openssl/sha.h>
 
 #include <iostream>
+#include <fstream>
+#include <string.h>
+#include <phosphor-logging/log.hpp>
 
 namespace cipher
 {
 
 namespace rakp_auth
 {
+
+void Interface::loadPassword()
+{
+    std::ifstream pwdFile;
+    pwdFile.open("/etc/ipmipwd", std::ifstream::binary);
+    if (!pwdFile.is_open())
+    {
+        return;
+    }
+
+    pwdFile.seekg(0, pwdFile.end);
+    auto pwdLength = pwdFile.tellg();
+    pwdFile.seekg(0, pwdFile.beg);
+    userKey.fill(0);
+
+    pwdFile.read(reinterpret_cast<char *>(userKey.data()), pwdLength);
+    pwdFile.close();
+}
 
 std::vector<uint8_t> AlgoSHA1::generateHMAC(
         const std::vector<uint8_t>& input) const
@@ -24,7 +45,6 @@ std::vector<uint8_t> AlgoSHA1::generateHMAC(
         std::cerr << "Generate HMAC failed\n";
         output.resize(0);
     }
-
     return output;
 }
 
