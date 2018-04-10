@@ -21,6 +21,7 @@
 #include "socket_channel.hpp"
 #include "sol_module.hpp"
 #include "timer.hpp"
+#include "user_module.hpp"
 
 // Tuple of Global Singletons
 session::Manager manager;
@@ -101,6 +102,9 @@ int main(int i_argc, char* i_argv[])
 
     // Register the phosphor-net-ipmid SOL commands
     sol::command::registerCommands();
+
+    //Register user management commands
+    usermanagement::command::registerCommands();
 
     // Start Event Loop
     return std::get<eventloop::EventLoop&>(singletonPool).startEventLoop(events);
