@@ -41,8 +41,13 @@ std::vector<uint8_t> Table::executeCommand(uint32_t inCommand,
 
     if (iterator == commandTable.end())
     {
-        std::cerr << "E> Table:: Command Not found: 0x" << std::hex << inCommand
-                  << "\n";
+        // 0xb03e is a group extensions command to query about HPM compatibility
+        // it is not a standard command can be ignored.
+        if (inCommand != 0xb03e)
+        {
+            std::cerr << "E> Table:: Command Not found: 0x" << std::hex
+                    << inCommand << "\n";
+        }
 
         response.resize(1);
         response[0] = IPMI_CC_INVALID;
