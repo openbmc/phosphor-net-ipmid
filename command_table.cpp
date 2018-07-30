@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <iostream>
 
+#include <main.hpp>
 #include "message_handler.hpp"
 #include "message_parsers.hpp"
 #include "sessions_manager.hpp"
@@ -10,6 +11,7 @@
 #include <phosphor-logging/elog-errors.hpp>
 #include "xyz/openbmc_project/Common/error.hpp"
 
+using namespace sdbusplus::xyz::openbmc_project::Common::Error;
 using namespace phosphor::logging;
 
 namespace command
@@ -41,8 +43,46 @@ std::vector<uint8_t> Table::executeCommand(uint32_t inCommand,
 
     if (iterator == commandTable.end())
     {
-        response.resize(1);
-        response[0] = IPMI_CC_INVALID;
+        auto bus = getSdBus();
+        // forward the request onto the main ipmi queue
+        auto method = bus->new_method_call(
+                    "xyz.openbmc_project.IPMI",
+                    "/xyz/openbmc_project/IPMI",
+                    "xyz.openbmc_project.ipmi.server",
+                    "execute");
+        uint8_t seq = 0; // where can we get this from?
+        uint8_t lun = 0; // where can we get this from?
+        uint8_t netFn = static_cast<uint8_t>(inCommand >> 8);
+        uint8_t cmd = static_cast<uint8_t>(inCommand);
+        method.append(seq, netFn, lun, cmd, commandData);
+        auto reply = bus->call(method);
+        if (reply.is_method_error())
+        {
+            log<level::ERR>("Error sending command to ipmi queue");
+            elog<InternalFailure>();
+            response.resize(1);
+            response[0] = IPMI_CC_UNSPECIFIED_ERROR;
+        }
+        else
+        {
+            std::vector<uint8_t> responseData;
+            uint8_t rseq, rlun, rnetFn, rcmd, cc;
+            reply.read(rseq, rnetFn, rlun, rcmd, cc, responseData);
+            if (seq != rseq || netFn != rnetFn || lun != rlun || cmd != rcmd)
+            {
+                log<level::ERR>("Invalid response from ipmi queue");
+                elog<InternalFailure>();
+                response.resize(1);
+                response[0] = IPMI_CC_UNSPECIFIED_ERROR;
+            }
+            else
+            {
+                response.resize(1 + responseData.size());
+                response[0] = cc;
+                std::copy(response.begin() + 1,
+                        responseData.begin(), responseData.end());
+            }
+        }
     }
     else
     {
@@ -83,40 +123,6 @@ std::vector<uint8_t> NetIpmidEntry::executeCommand(
     }
 
     return functor(commandData, handler);
-}
-
-std::vector<uint8_t> ProviderIpmidEntry::executeCommand(
-        std::vector<uint8_t>& commandData,
-        const message::Handler& handler)
-{
-    std::vector<uint8_t> response(message::parser::MAX_PAYLOAD_SIZE - 1);
-    size_t respSize = commandData.size();
-    ipmi_ret_t ipmiRC = IPMI_CC_UNSPECIFIED_ERROR;
-    try
-    {
-        ipmiRC = functor(0, 0, reinterpret_cast<void*>(commandData.data()),
-                         reinterpret_cast<void*>(response.data() + 1),
-                         &respSize, NULL);
-    }
-    // IPMI command handlers can throw unhandled exceptions, catch those
-    // and return sane error code.
-    catch (const std::exception& e)
-    {
-        std::cerr << "E> Unspecified error for command 0x" << std::hex
-                  << command.command << " - " << e.what() << "\n";
-        respSize = 0;
-        // fall through
-    }
-    /*
-     * respSize gets you the size of the response data for the IPMI command. The
-     * first byte in a response to the IPMI command is the Completion Code.
-     * So we are inserting completion code as the first byte and incrementing
-     * the response payload size by the size of the completion code.
-     */
-    response[0] = ipmiRC;
-    response.resize(respSize + sizeof(ipmi_ret_t));
-
-    return response;
 }
 
 } // namespace command

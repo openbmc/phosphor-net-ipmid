@@ -17,7 +17,6 @@
 #include "command_table.hpp"
 #include "message.hpp"
 #include "message_handler.hpp"
-#include "provider_registration.hpp"
 #include "socket_channel.hpp"
 #include "sol_module.hpp"
 #include "timer.hpp"
@@ -40,6 +39,7 @@ std::unique_ptr<phosphor::ipmi::Timer> networkTimer = nullptr;
 FILE* ipmidbus = nullptr;
 unsigned short g_sel_reserve = 0xFFFF;
 sd_bus_slot* ipmid_slot = nullptr;
+std::shared_ptr<sdbusplus::bus::bus> sdbusp;
 
 /*
  * @brief Required by apphandler IPMI Provider Library
@@ -47,6 +47,14 @@ sd_bus_slot* ipmid_slot = nullptr;
 sd_bus* ipmid_get_sd_bus_connection()
 {
     return bus;
+}
+
+/*
+ * @brief mechanism to get at sdbusplus object
+ */
+std::shared_ptr<sdbusplus::bus::bus> getSdBus()
+{
+    return sdbusp;
 }
 
 /*
@@ -79,6 +87,7 @@ int main(int i_argc, char* i_argv[])
         std::cerr << "Failed to connect to system bus:" << strerror(-rc) <<"\n";
         goto finish;
     }
+    sdbusp = std::make_shared<sdbusplus::bus::bus>(bus);
 
     /* Get an sd event handler */
     rc = sd_event_default(&events);
@@ -92,10 +101,6 @@ int main(int i_argc, char* i_argv[])
     command::registerGUIDChangeCallback();
     cache::guid = command::getSystemGUID();
 
-
-    // Register all the IPMI provider libraries applicable for net-ipmid
-    provider::registerCallbackHandlers(NET_IPMID_LIB_PATH);
-
     // Register the phosphor-net-ipmid session setup commands
     command::sessionSetupCommands();
 
@@ -106,7 +111,6 @@ int main(int i_argc, char* i_argv[])
     return std::get<eventloop::EventLoop&>(singletonPool).startEventLoop(events);
 
 finish:
-    sd_bus_unref(bus);
     sd_event_unref(events);
 
     return 0;
