@@ -39,8 +39,6 @@ netipmid_SOURCES = \
 	main.cpp \
 	integrity_algo.hpp \
 	integrity_algo.cpp \
-	provider_registration.hpp \
-	provider_registration.cpp \
 	crypt_algo.hpp \
 	crypt_algo.cpp \
 	sol/console_buffer.hpp \
@@ -68,9 +66,7 @@ netipmid_LDFLAGS = \
 	-pthread \
 	$(libmapper_LIBS) \
 	$(PHOSPHOR_LOGGING_LIBS) \
-	$(PHOSPHOR_DBUS_INTERFACES_LIBS) \
-	$(LIBADD_DLOPEN) \
-	-export-dynamic
+	$(PHOSPHOR_DBUS_INTERFACES_LIBS)
 
 netipmid_CXXFLAGS = \
 	-flto \
