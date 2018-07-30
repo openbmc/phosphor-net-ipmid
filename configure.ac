@@ -53,8 +53,7 @@ AC_CHECK_HEADER(systemd/sd-bus.h, ,[AC_MSG_ERROR([Could not find systemd/sd-bus.
 AC_CHECK_HEADER(host-ipmid/ipmid-api.h, ,[AC_MSG_ERROR([Could not find host-ipmid/ipmid-api.h...openbmc/phosphor-host-ipmid package required])])
 
 # Checks for library functions.
-LT_INIT([dlopen disable-static shared])
-LT_LIB_DLLOAD
+LT_INIT([disable-static shared])
 
 AC_CONFIG_FILES([Makefile test/Makefile])
 AC_OUTPUT
