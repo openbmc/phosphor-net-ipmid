@@ -65,6 +65,11 @@ unsigned short get_sel_reserve_id()
     return g_sel_reserve;
 }
 
+EInterfaceIndex getInterfaceIndex(void)
+{
+    return interfaceLAN1;
+}
+
 int main(int i_argc, char* i_argv[])
 {
     /*
