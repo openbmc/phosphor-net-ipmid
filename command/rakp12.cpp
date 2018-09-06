@@ -11,6 +11,8 @@
 #include "endian.hpp"
 #include "guid.hpp"
 #include "main.hpp"
+#include <user_channel/user_layer.hpp>
+#include <user_channel/channel_layer.hpp>
 
 namespace command
 {
@@ -23,8 +25,8 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     auto response = reinterpret_cast<RAKP2response*>(outPayload.data());
 
     // Session ID zero is reserved for Session Setup
-    if(endian::from_ipmi(request->managedSystemSessionID) ==
-                         session::SESSION_ZERO)
+    if (endian::from_ipmi(request->managedSystemSessionID) ==
+        session::SESSION_ZERO)
     {
         std::cerr << "RAKP12: BMC invalid Session ID\n";
         response->rmcpStatusCode =
@@ -35,8 +37,10 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     std::shared_ptr<session::Session> session;
     try
     {
-        session = (std::get<session::Manager&>(singletonPool).getSession(
-            endian::from_ipmi(request->managedSystemSessionID))).lock();
+        session = (std::get<session::Manager&>(singletonPool)
+                       .getSession(
+                           endian::from_ipmi(request->managedSystemSessionID)))
+                      .lock();
     }
     catch (std::exception& e)
     {
@@ -46,12 +50,12 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
         return outPayload;
     }
 
-    auto rakp1Size = sizeof(RAKP1request) -
-            (userNameMaxLen - request->user_name_len);
+    auto rakp1Size =
+        sizeof(RAKP1request) - (userNameMaxLen - request->user_name_len);
 
     // Validate user name length in the message
     if (request->user_name_len > userNameMaxLen ||
-        inPayload.size() !=  rakp1Size)
+        inPayload.size() != rakp1Size)
     {
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::INVALID_NAME_LENGTH);
@@ -59,15 +63,6 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     }
 
     session->userName.assign(request->user_name, request->user_name_len);
-
-    // Validate the user name if the username is provided
-    if (request->user_name_len &&
-        (session->userName != cipher::rakp_auth::userName))
-    {
-        response->rmcpStatusCode =
-            static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
-        return outPayload;
-    }
 
     // Update transaction time
     session->updateLastTransactionTime();
@@ -92,16 +87,15 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     std::vector<uint8_t> input;
     input.resize(sizeof(rcSessionID) + sizeof(bmcSessionID) +
                  cipher::rakp_auth::REMOTE_CONSOLE_RANDOM_NUMBER_LEN +
-                 cipher::rakp_auth::BMC_RANDOM_NUMBER_LEN +
-                 BMC_GUID_LEN + sizeof(request->req_max_privilege_level) +
-                 sizeof(request->user_name_len) +
-                 session->userName.size());
+                 cipher::rakp_auth::BMC_RANDOM_NUMBER_LEN + BMC_GUID_LEN +
+                 sizeof(request->req_max_privilege_level) +
+                 sizeof(request->user_name_len) + session->userName.size());
 
     auto iter = input.begin();
 
     // Remote Console Session ID
-    std::copy_n(reinterpret_cast<uint8_t*>(&rcSessionID),
-                sizeof(rcSessionID), iter);
+    std::copy_n(reinterpret_cast<uint8_t*>(&rcSessionID), sizeof(rcSessionID),
+                iter);
     std::advance(iter, sizeof(rcSessionID));
 
     // Managed System Session ID
@@ -111,22 +105,101 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
 
     // Copy the Remote Console Random Number from the RAKP1 request to the
     // Authentication Algorithm
-    std::copy_n(reinterpret_cast<const uint8_t*>
-                (request->remote_console_random_number),
-                cipher::rakp_auth::REMOTE_CONSOLE_RANDOM_NUMBER_LEN,
-                authAlgo->rcRandomNum.begin());
+    std::copy_n(
+        reinterpret_cast<const uint8_t*>(request->remote_console_random_number),
+        cipher::rakp_auth::REMOTE_CONSOLE_RANDOM_NUMBER_LEN,
+        authAlgo->rcRandomNum.begin());
 
-    std::copy(authAlgo->rcRandomNum.begin(), authAlgo->rcRandomNum.end(),
-              iter);
+    std::copy(authAlgo->rcRandomNum.begin(), authAlgo->rcRandomNum.end(), iter);
     std::advance(iter, cipher::rakp_auth::REMOTE_CONSOLE_RANDOM_NUMBER_LEN);
 
     // Generate the Managed System Random Number
     if (!RAND_bytes(input.data() + sizeof(rcSessionID) + sizeof(bmcSessionID) +
-                    cipher::rakp_auth::REMOTE_CONSOLE_RANDOM_NUMBER_LEN,
+                        cipher::rakp_auth::REMOTE_CONSOLE_RANDOM_NUMBER_LEN,
                     cipher::rakp_auth::BMC_RANDOM_NUMBER_LEN))
     {
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::INSUFFICIENT_RESOURCE);
+        return outPayload;
+    }
+
+    session->reqMaxPrivLevel = request->req_max_privilege_level;
+    session->curPrivLevel = static_cast<session::Privilege>(
+        request->req_max_privilege_level & session::reqMaxPrivMask);
+    // Perform user name based lookup, if requested through mask or
+    // if there is any user name.
+    if (((request->req_max_privilege_level & userNameOnlyLookupMask) ==
+         userNameOnlyLookup) ||
+        (request->user_name_len > 0))
+    {
+        std::string userName(request->user_name, request->user_name_len);
+        std::string passwd;
+        uint8_t userId = ipmi::ipmiUserGetUserId(userName);
+        if (userId == ipmi::invalidUserId)
+        {
+            response->rmcpStatusCode =
+                static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
+            return outPayload;
+        }
+        bool userEnabled = false;
+        ipmi::ipmiUserCheckEnabled(userId, userEnabled);
+        if (!userEnabled)
+        {
+            response->rmcpStatusCode =
+                static_cast<uint8_t>(RAKP_ReturnCode::INACTIVE_ROLE);
+            return outPayload;
+        }
+        if (ipmi::ipmiUserGetPassword(userName, passwd) != IPMI_CC_OK)
+        {
+            response->rmcpStatusCode =
+                static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
+            return outPayload;
+        }
+        if (passwd.empty())
+        {
+            response->rmcpStatusCode =
+                static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
+            return outPayload;
+        }
+        ipmi::PrivAccess userAccess{};
+        ipmi::ChannelAccess chAccess{};
+        // TODO Replace with proper calls.
+        uint8_t chNum = static_cast<uint8_t>(ipmi::EChannelID::chanLan1);
+        if ((ipmi::ipmiUserGetPrivilegeAccess(userId, chNum, userAccess) !=
+             IPMI_CC_OK) ||
+            (ipmi::getChannelAccessData(chNum, chAccess) != IPMI_CC_OK))
+        {
+            response->rmcpStatusCode =
+                static_cast<uint8_t>(RAKP_ReturnCode::INACTIVE_ROLE);
+            return outPayload;
+        }
+        session->chNum = chNum;
+        // minimum privilege of Channel / User / requested has to be used
+        // as session current privilege level
+        uint8_t minPriv = 0;
+        if (chAccess.privLimit < userAccess.privilege)
+        {
+            minPriv = chAccess.privLimit;
+        }
+        else
+        {
+            minPriv = userAccess.privilege;
+        }
+        if (session->curPrivLevel > static_cast<session::Privilege>(minPriv))
+        {
+            session->curPrivLevel = static_cast<session::Privilege>(minPriv);
+        }
+
+        std::fill(authAlgo->userKey.data(),
+                  authAlgo->userKey.data() + authAlgo->userKey.size(), 0);
+        std::copy_n(passwd.c_str(), passwd.size(), authAlgo->userKey.data());
+    }
+    else
+    {
+        // TODO: Implement privilege level lookup if really required or skip
+        // for security purpose??
+        response->rmcpStatusCode =
+            static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
         return outPayload;
     }
 
@@ -140,14 +213,9 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     std::advance(iter, BMC_GUID_LEN);
 
     // Requested Privilege Level
-    session->curPrivLevel = static_cast<session::Privilege>
-                            (request->req_max_privilege_level);
     std::copy_n(&(request->req_max_privilege_level),
                 sizeof(request->req_max_privilege_level), iter);
     std::advance(iter, sizeof(request->req_max_privilege_level));
-
-    // Set Max Privilege to ADMIN
-    session->maxPrivLevel = session::Privilege::ADMIN;
 
     // User Name Length Byte
     std::copy_n(&(request->user_name_len), sizeof(request->user_name_len),
@@ -162,15 +230,14 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     response->messageTag = request->messageTag;
     response->rmcpStatusCode = static_cast<uint8_t>(RAKP_ReturnCode::NO_ERROR);
     response->reserved = 0;
-    response->remoteConsoleSessionID = rcSessionID ;
+    response->remoteConsoleSessionID = rcSessionID;
 
     // Copy Managed System Random Number to the Response
     std::copy(authAlgo->bmcRandomNum.begin(), authAlgo->bmcRandomNum.end(),
               response->managed_system_random_number);
 
     // Copy System GUID to the Response
-    std::copy_n(cache::guid.data(),
-                cache::guid.size(),
+    std::copy_n(cache::guid.data(), cache::guid.size(),
                 response->managed_system_guid);
 
     // Insert the HMAC output into the payload

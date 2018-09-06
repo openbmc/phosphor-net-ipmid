@@ -42,6 +42,9 @@ constexpr auto SESSION_SETUP_TIMEOUT = 5s;
 // Seconds of inactivity allowed when session is active
 constexpr auto SESSION_INACTIVITY_TIMEOUT = 60s;
 
+// Mask to get only the privilege from requested maximum privlege (RAKP message 1)
+constexpr uint8_t reqMaxPrivMask = 0xF;
+
 /**
  * @struct SequenceNumbers Session Sequence Numbers
  *
@@ -238,12 +241,12 @@ class Session
         /**
          * @brief Session's Current Privilege Level
          */
-        Privilege curPrivLevel;
+        Privilege curPrivLevel = Privilege::CALLBACK;
 
         /**
-         * @brief Session's Maximum Privilege Level
+         * @brief Session's Requested Maximum Privilege Level
          */
-        Privilege maxPrivLevel = Privilege::CALLBACK;
+        uint8_t reqMaxPrivLevel;
 
         SequenceNumbers sequenceNums; // Session Sequence Numbers
         State state = State::INACTIVE; // Session State
@@ -251,6 +254,7 @@ class Session
 
         /** @brief Socket channel for communicating with the remote client.*/
         std::shared_ptr<udpsocket::Channel> channelPtr;
+        uint8_t chNum;
 
     private:
 
