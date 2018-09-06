@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <iostream>
 
+#include "main.hpp"
 #include "message_handler.hpp"
 #include "message_parsers.hpp"
 #include "sessions_manager.hpp"
@@ -21,8 +22,10 @@ void Table::registerCommand(CommandID inCommand, std::unique_ptr<Entry>&& entry)
 
     if (command)
     {
-        log<level::DEBUG>("Already Registered", phosphor::logging::entry(
-            "SKIPPED_ENTRY=0x%x", uint32_t(inCommand.command)));
+        log<level::DEBUG>(
+            "Already Registered",
+            phosphor::logging::entry("SKIPPED_ENTRY=0x%x",
+                                     uint32_t(inCommand.command)));
         return;
     }
 
@@ -52,23 +55,24 @@ std::vector<uint8_t> Table::executeCommand(uint32_t inCommand,
 
         auto end = std::chrono::steady_clock::now();
 
-        auto elapsedSeconds = std::chrono::duration_cast<std::chrono::seconds>
-                              (end - start);
+        auto elapsedSeconds =
+            std::chrono::duration_cast<std::chrono::seconds>(end - start);
 
         // If command time execution time exceeds 2 seconds, log a time
         // exceeded message
         if (elapsedSeconds > 2s)
         {
             std::cerr << "E> IPMI command timed out:Elapsed time = "
-                      << elapsedSeconds.count() << "s" << "\n";
+                      << elapsedSeconds.count() << "s"
+                      << "\n";
         }
     }
     return response;
 }
 
-std::vector<uint8_t> NetIpmidEntry::executeCommand(
-        std::vector<uint8_t>& commandData,
-        const message::Handler& handler)
+std::vector<uint8_t>
+    NetIpmidEntry::executeCommand(std::vector<uint8_t>& commandData,
+                                  const message::Handler& handler)
 {
     std::vector<uint8_t> errResponse;
 
@@ -85,27 +89,39 @@ std::vector<uint8_t> NetIpmidEntry::executeCommand(
     return functor(commandData, handler);
 }
 
-std::vector<uint8_t> ProviderIpmidEntry::executeCommand(
-        std::vector<uint8_t>& commandData,
-        const message::Handler& handler)
+std::vector<uint8_t>
+    ProviderIpmidEntry::executeCommand(std::vector<uint8_t>& commandData,
+                                       const message::Handler& handler)
 {
     std::vector<uint8_t> response(message::parser::MAX_PAYLOAD_SIZE - 1);
     size_t respSize = commandData.size();
     ipmi_ret_t ipmiRC = IPMI_CC_UNSPECIFIED_ERROR;
-    try
+    auto session = (std::get<session::Manager&>(singletonPool)
+                        .getSession(handler.sessionID))
+                       .lock();
+
+    if (session->curPrivLevel >= Entry::getPrivilege())
     {
-        ipmiRC = functor(0, 0, reinterpret_cast<void*>(commandData.data()),
-                         reinterpret_cast<void*>(response.data() + 1),
-                         &respSize, NULL);
+        try
+        {
+            ipmiRC = functor(0, 0, reinterpret_cast<void*>(commandData.data()),
+                             reinterpret_cast<void*>(response.data() + 1),
+                             &respSize, NULL);
+        }
+        // IPMI command handlers can throw unhandled exceptions, catch those
+        // and return sane error code.
+        catch (const std::exception& e)
+        {
+            std::cerr << "E> Unspecified error for command 0x" << std::hex
+                      << command.command << " - " << e.what() << "\n";
+            respSize = 0;
+            // fall through
+        }
     }
-    // IPMI command handlers can throw unhandled exceptions, catch those
-    // and return sane error code.
-    catch (const std::exception& e)
+    else
     {
-        std::cerr << "E> Unspecified error for command 0x" << std::hex
-                  << command.command << " - " << e.what() << "\n";
         respSize = 0;
-        // fall through
+        ipmiRC = IPMI_CC_INSUFFICIENT_PRIVILEGE;
     }
     /*
      * respSize gets you the size of the response data for the IPMI command. The
