@@ -1,0 +1,8 @@
+Code-Review+2: Emily Shaffer <emilyshaffer@google.com>
+Ok-To-Test+1: Vernon Mauery <vernon.mauery@linux.intel.com>
+Verified+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Submitted-by: Vernon Mauery <vernon.mauery@linux.intel.com>
+Submitted-at: Mon, 08 Oct 2018 16:18:32 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/12704
+Project: openbmc/phosphor-net-ipmid
+Branch: refs/heads/master
