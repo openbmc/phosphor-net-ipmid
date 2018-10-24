@@ -1,3 +1,8 @@
+BOOST_CXX = -DBOOST_ERROR_CODE_HEADER_ONLY \
+            -DBOOST_SYSTEM_NO_DEPRECATED \
+            -DBOOST_COROUTINES_NO_DEPRECATION_WARNING \
+            -DBOOST_ALL_NO_LIB
+
 sbin_PROGRAMS = \
 	netipmid
 
@@ -62,6 +67,7 @@ netipmid_LDFLAGS = \
 	-flto \
 	$(SYSTEMD_LIBS) \
 	$(CRYPTO_LIBS) \
+	-pthread \
 	$(libmapper_LIBS) \
 	$(PHOSPHOR_LOGGING_LIBS) \
 	$(PHOSPHOR_DBUS_INTERFACES_LIBS) \
@@ -71,6 +77,7 @@ netipmid_LDFLAGS = \
 netipmid_CXXFLAGS = \
 	-flto \
 	$(SYSTEMD_CFLAGS) \
+	$(BOOST_CXX) \
 	$(libmapper_CFLAGS) \
 	$(PHOSPHOR_LOGGING_CFLAGS) \
 	$(PHOSPHOR_DBUS_INTERFACES_CFLAGS)
