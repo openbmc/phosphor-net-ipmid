@@ -61,6 +61,7 @@ netipmid_CPPFLAGS = -DNET_IPMID_LIB_PATH=\"/usr/lib/net-ipmid/\"
 
 
 netipmid_LDFLAGS = \
+	-flto \
 	$(SYSTEMD_LIBS) \
 	$(CRYPTO_LIBS) \
 	$(libmapper_LIBS) \
@@ -70,6 +71,7 @@ netipmid_LDFLAGS = \
 	-export-dynamic
 
 netipmid_CXXFLAGS = \
+	-flto \
 	$(SYSTEMD_CFLAGS) \
 	$(libmapper_CFLAGS) \
 	$(PHOSPHOR_LOGGING_CFLAGS) \
