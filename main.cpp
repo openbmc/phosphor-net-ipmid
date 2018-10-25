@@ -32,7 +32,6 @@ std::tuple<session::Manager&, command::Table&, eventloop::EventLoop&,
     singletonPool(manager, table, loop, solManager);
 
 sd_bus* bus = nullptr;
-sd_event* events = nullptr;
 
 std::shared_ptr<sdbusplus::asio::connection> sdbusp;
 
@@ -52,14 +51,6 @@ std::shared_ptr<sdbusplus::asio::connection> getSdBus()
     return sdbusp;
 }
 
-/*
- * @brief Required by apphandler IPMI Provider Library
- */
-sd_event* ipmid_get_sd_event_connection()
-{
-    return events;
-}
-
 int main()
 {
     // Connect to system bus
@@ -71,14 +62,6 @@ int main()
         return rc;
     }
 
-    /* Get an sd event handler */
-    rc = sd_event_default(&events);
-    if (rc < 0)
-    {
-        std::cerr << "Failure to create sd_event" << strerror(-rc) << "\n";
-        sd_bus_unref(bus);
-        return EXIT_FAILURE;
-    }
     sdbusp = std::make_shared<sdbusplus::asio::connection>(*io, bus);
 
     // Register callback to update cache for a GUID change and cache the GUID
