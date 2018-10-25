@@ -3,6 +3,9 @@
 #include "console_buffer.hpp"
 #include "session.hpp"
 
+#include <boost/asio/io_context.hpp>
+#include <boost/asio/steady_timer.hpp>
+
 namespace sol
 {
 
@@ -149,12 +152,12 @@ struct SequenceNumbers
 class Context
 {
   public:
-    Context() = default;
+    Context() = delete;
     ~Context() = default;
     Context(const Context&) = delete;
     Context& operator=(const Context&) = delete;
-    Context(Context&&) = default;
-    Context& operator=(Context&&) = default;
+    Context(Context&&) = delete;
+    Context& operator=(Context&&) = delete;
 
     /** @brief Context Constructor.
      *
@@ -166,16 +169,18 @@ class Context
      *  @param[in] instance - SOL payload instance.
      *  @param[in] sessionID - BMC session ID.
      */
-    Context(uint8_t maxRetryCount, uint8_t sendThreshold, uint8_t instance,
-            session::SessionID sessionID) :
-        maxRetryCount(maxRetryCount),
-        retryCounter(maxRetryCount), sendThreshold(sendThreshold),
-        payloadInstance(instance), sessionID(sessionID)
-    {
-    }
+    Context(std::shared_ptr<boost::asio::io_context> io, uint8_t maxRetryCount,
+            uint8_t sendThreshold, uint8_t instance,
+            session::SessionID sessionID);
 
     static constexpr auto clear = true;
     static constexpr auto noClear = false;
+
+    /** @brief accumulate timer */
+    boost::asio::steady_timer accumulateTimer;
+
+    /** @brief retry timer */
+    boost::asio::steady_timer retryTimer;
 
     /** @brief Retry count max value. */
     const uint8_t maxRetryCount = 0;
@@ -191,6 +196,24 @@ class Context
 
     /** @brief Session ID. */
     const session::SessionID sessionID = 0;
+
+    /** @brief session pointer
+     */
+    std::shared_ptr<session::Session> session;
+
+    /** @brief enable/disable accumulate timer
+     *
+     *  The timeout is dynamic (settable) and the SOL Manager
+     *  knows the current interval
+     */
+    void enableAccumulateTimer(bool enable);
+
+    /** @brief enable/disable retry timer
+     *
+     *  The timeout is dynamic (settable) and the SOL Manager
+     *  knows the current interval
+     */
+    void enableRetryTimer(bool enable);
 
     /** @brief Process the Inbound SOL payload.
      *
@@ -253,6 +276,12 @@ class Context
      *  @param[in] out - buffer containing the SOL payload.
      */
     void sendPayload(const std::vector<uint8_t>& out) const;
+
+    /** @brief accumlate timer handler called by timer */
+    int charAccTimerHandler();
+
+    /** @brief retry timer handler called by timer */
+    int retryTimerHandler();
 };
 
 } // namespace sol
