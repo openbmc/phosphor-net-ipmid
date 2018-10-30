@@ -86,6 +86,7 @@ std::shared_ptr<Session>
         }
         sessionID = session->getBMCSessionID();
         sessionsMap.emplace(sessionID, session);
+        storeSessionHandle(sessionID);
         return session;
     }
 
@@ -154,12 +155,15 @@ std::shared_ptr<Session> Manager::getSession(SessionID sessionID,
 
 void Manager::cleanStaleEntries()
 {
+    uint8_t sessionIndex = 0;
     for (auto iter = sessionsMap.begin(); iter != sessionsMap.end();)
     {
         auto session = iter->second;
         if ((session->getBMCSessionID() != SESSION_ZERO) &&
             !(session->isSessionActive()))
         {
+            sessionIndex = getSessionHandle(session->getBMCSessionID());
+            sessionHandleMap[sessionIndex] = 0;
             iter = sessionsMap.erase(iter);
         }
         else
@@ -169,4 +173,53 @@ void Manager::cleanStaleEntries()
     }
 }
 
+uint8_t Manager::storeSessionHandle(SessionID bmcSessionID)
+{
+    // Zero handler is reserved for invalid session.
+    // index starts with 1, for direct usage. Index 0 reserved
+    for (uint8_t i = 1; i <= MAX_SESSION_COUNT; i++)
+    {
+        if (sessionHandleMap[i] == 0)
+        {
+            sessionHandleMap[i] = bmcSessionID;
+            break;
+        }
+    }
+    return 0;
+}
+
+uint32_t Manager::getSessionIDbyHandle(uint8_t sessionHandle) const
+{
+    if (sessionHandle <= MAX_SESSION_COUNT)
+    {
+        return sessionHandleMap[sessionHandle];
+    }
+    return 0;
+}
+
+uint8_t Manager::getSessionHandle(SessionID bmcSessionID) const
+{
+
+    for (uint8_t i = 1; i <= MAX_SESSION_COUNT; i++)
+    {
+        if (sessionHandleMap[i] == bmcSessionID)
+        {
+            return i;
+        }
+    }
+    return 0;
+}
+uint8_t Manager::getActiveSessionCount() const
+{
+    uint8_t count = 0;
+    for (const auto& it : sessionsMap)
+    {
+        const auto& session = it.second;
+        if (session->state == State::ACTIVE)
+        {
+            count++;
+        }
+    }
+    return count;
+}
 } // namespace session
