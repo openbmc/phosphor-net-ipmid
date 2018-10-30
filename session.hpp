@@ -251,6 +251,7 @@ class Session
 
         /** @brief Socket channel for communicating with the remote client.*/
         std::shared_ptr<udpsocket::Channel> channelPtr;
+        uint8_t chNum;
 
     private:
 

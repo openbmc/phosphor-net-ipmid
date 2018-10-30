@@ -82,8 +82,14 @@ class Manager
         std::weak_ptr<Session> getSession(
                SessionID sessionID,
                RetrieveOption option = RetrieveOption::BMC_SESSION_ID);
+        uint8_t getNoOfActiveSession() const;
+        uint8_t getSessionHandle(SessionID bmcSessionID) const;
+        uint8_t storeSessionHandle(SessionID bmcSessionID);
+        uint32_t getSessionIDbyHandle(uint8_t sessionHandle) const;
 
     private:
+    // +1 for session, as 0 is reserved for sessionless command
+        std::array<uint32_t, MAX_SESSION_COUNT + 1> sessionHandleMap;
 
         /**
          * @brief Session Manager keeps the session objects as a sorted
