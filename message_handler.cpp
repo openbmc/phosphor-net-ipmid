@@ -41,6 +41,7 @@ std::unique_ptr<Message> Handler::receive()
     sessionID = message->bmcSessionID;
     message->rcSessionID = session->getRCSessionID();
     session->updateLastTransactionTime();
+    session->channelPtr = channel;
 
     return message;
 }

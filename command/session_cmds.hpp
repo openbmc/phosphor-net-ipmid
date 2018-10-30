@@ -115,4 +115,59 @@ struct CloseSessionResponse
 std::vector<uint8_t> closeSession(const std::vector<uint8_t>& inPayload,
                                   const message::Handler& handler);
 
+/**
+ * @struct GetSessionInfoRequest
+ *
+ * IPMI Request data for getSession info command
+ */
+struct GetSessionInfoRequest
+{
+    uint8_t sessionIndex;
+    union
+    {
+        uint8_t sessionHandle;
+        uint32_t sessionID;
+    };
+} __attribute__((packed));
+
+/**
+ * @struct getSessionInfoResponse
+ *
+ * IPMI Response data for getSession info command
+ */
+struct GetSessionInfoResponse
+{
+    uint8_t completionCode;
+    uint8_t sessionHandle;
+    uint8_t totalSessionCount;
+    uint8_t activeSessioncount;
+    uint8_t userID;
+    uint8_t privLevel;
+#if BYTE_ORDER == LITTLE_ENDIAN
+    uint8_t chanNum : 4;
+    uint8_t ipmiVer : 4;
+#endif
+#if BYTE_ORDER == BIG_ENDIAN
+    uint8_t ipmiVer : 4;
+    uint8_t chanNum : 4;
+#endif
+    uint32_t remoteIpAddr; // for channel private data
+    uint8_t remoteMACAddr[6];
+    uint16_t remotePort;
+} __attribute__((packed));
+
+/**
+ * @brief GetSessionInfo Command
+ *
+ * This command is used to  get the session information based on
+ * session handle or session ID. Retreive all session information.
+
+ * @param[in] inPayload - Request Data for the command
+ * @param[in] handler - Reference to the Message Handler
+ *
+ * @return Response data for the command
+ */
+std::vector<uint8_t> getSessionInfo(const std::vector<uint8_t>& inPayload,
+                                    const message::Handler& handler);
+
 } // namespace command

@@ -14,9 +14,34 @@ namespace udpsocket
 
 std::string Channel::getRemoteAddress() const
 {
-    char tmp[INET_ADDRSTRLEN] = { 0 };
-    inet_ntop(AF_INET6, &address.inAddr.sin6_addr, tmp, sizeof(tmp));
+    char tmp[INET_ADDRSTRLEN] = {0};
+    if (address.sockAddr.sa_family == AF_INET)
+    {
+        inet_ntop(AF_INET, &address.sockAddrV4.sin_addr, tmp, sizeof(tmp));
+    }
+    else if (address.sockAddr.sa_family == AF_INET6)
+    {
+        inet_ntop(AF_INET6, &address.inAddr.sin6_addr, tmp, sizeof(tmp));
+    }
     return std::string(tmp);
+}
+
+std::uint32_t Channel::getRemoteAddressInbytes()
+{
+
+    if (address.sockAddr.sa_family == AF_INET)
+    {
+        return address.sockAddrV4.sin_addr.s_addr;
+    }
+    else if (address.sockAddr.sa_family == AF_INET6)
+    {
+
+        return (address.inAddr.sin6_addr.s6_addr[12] |
+                address.inAddr.sin6_addr.s6_addr[13] << 8 |
+                address.inAddr.sin6_addr.s6_addr[14] << 16 |
+                address.inAddr.sin6_addr.s6_addr[15] << 24);
+    }
+    return 0;
 }
 
 std::tuple<int, std::vector<uint8_t>> Channel::read()
