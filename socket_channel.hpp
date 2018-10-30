@@ -52,6 +52,29 @@ class Channel
     }
 
     /**
+     * @brief Fetch the IP address of the remote peer
+     *
+     * Returns the IP address of the remote peer which is connected to this
+     * socket
+     *
+     * @return IP address of the remote peer
+     */
+    std::uint32_t getRemoteAddressInBytes() const
+    {
+        const boost::asio::ip::address& addr = endpoint.address();
+        if (addr.is_v4())
+        {
+            return addr.to_v4().to_uint();
+        }
+        else
+        {
+            auto s6Addr = addr.to_v6().to_bytes();
+            return (s6Addr[12] | s6Addr[13] << 8 | s6Addr[14] << 16 |
+                    s6Addr[15] << 24);
+        }
+    }
+
+    /**
      * @brief Fetch the port number of the remote peer
      *
      * Returns the port number of the remote peer
