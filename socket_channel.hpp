@@ -23,6 +23,7 @@ class Channel
         union
         {
             sockaddr sockAddr;
+            sockaddr_in sockAddrV4;
             sockaddr_in6 inAddr;
         };
         socklen_t addrSize;
@@ -65,6 +66,7 @@ class Channel
     {
         return address.inAddr.sin6_port;
     }
+    std::uint32_t getRemoteAddressInbytes();
 
     /**
      * @brief Read the incoming packet
