@@ -136,7 +136,7 @@ std::tuple<Path, OneTimeEnabled> setting(const Objects& objects,
 
     sdbusplus::message::variant<bool> enabled;
     reply.read(enabled);
-    auto oneTimeEnabled = enabled.get<bool>();
+    auto oneTimeEnabled = sdbusplus::message::variant_ns::get<bool>(enabled);
     const Path& setting = oneTimeEnabled ? oneTimeSetting : regularSetting;
     return std::make_tuple(setting, oneTimeEnabled);
 }
