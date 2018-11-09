@@ -1,0 +1,10 @@
+Ok-To-Test+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Verified+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Code-Review+1: William A. Kennington III <wak@google.com>
+Code-Review+1: Kuiying Wang <kuiying.wang@intel.com>
+Code-Review+2: Tom Joseph <tomjoseph@in.ibm.com>
+Submitted-by: Tom Joseph <tomjoseph@in.ibm.com>
+Submitted-at: Fri, 09 Nov 2018 03:43:46 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/14116
+Project: openbmc/phosphor-net-ipmid
+Branch: refs/heads/master
