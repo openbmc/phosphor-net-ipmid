@@ -1,0 +1,10 @@
+Ok-To-Test+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Verified+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Code-Review+1: Dawid Frycki <dawid.frycki@intel.com>
+Code-Review+1: Tom Joseph <tomjoseph@in.ibm.com>
+Code-Review+2: Emily Shaffer <emilyshaffer@google.com>
+Submitted-by: Vernon Mauery <vernon.mauery@linux.intel.com>
+Submitted-at: Tue, 11 Dec 2018 16:39:05 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/15499
+Project: openbmc/phosphor-net-ipmid
+Branch: refs/heads/master
