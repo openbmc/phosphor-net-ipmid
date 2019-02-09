@@ -234,6 +234,9 @@ std::vector<uint8_t> flatten(std::shared_ptr<Message> outMessage,
 
     if (outMessage->isPacketAuthenticated)
     {
+        SessionHeader_t* header =
+            reinterpret_cast<SessionHeader_t*>(packet.data());
+        header->payloadType |= PAYLOAD_AUTH_MASK;
         internal::addIntegrityData(packet, outMessage, payloadLen);
     }
 
