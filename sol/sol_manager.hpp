@@ -249,6 +249,8 @@ class Manager
      */
     int writeConsoleSocket(const std::vector<uint8_t>& input) const;
 
+    void updateSOLParameter(void);
+
   private:
     SOLPayloadMap payloadMap;
 

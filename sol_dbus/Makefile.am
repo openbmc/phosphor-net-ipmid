@@ -1,0 +1,24 @@
+AM_DEFAULT_SOURCE_EXT = .cpp
+AM_CPPFLAGS = -I$(top_srcdir)
+sbin_PROGRAMS = phosphor-soldbus
+
+phosphor_soldbus_SOURCES = \
+	sol_dbus_interface.cpp \
+	mainapp.cpp
+
+phosphor_soldbus_LDFLAGS = \
+	$(SYSTEMD_LIBS) \
+	$(SDBUSPLUS_LIBS) \
+	$(SDEVENTPLUS_LIBS) \
+	$(PHOSPHOR_LOGGING_LIBS) \
+	$(PHOSPHOR_DBUS_INTERFACES_LIBS) \
+	-pthread
+phosphor_soldbus_CXXFLAGS = \
+	$(SYSTEMD_CFLAGS) \
+	$(SDBUSPLUS_CFLAGS) \
+	$(SDEVENTPLUS_CFLAGS) \
+	$(PHOSPHOR_LOGGING_CFLAGS) \
+	$(PHOSPHOR_DBUS_INTERFACES_CFLAGS) \
+	-DBOOST_ERROR_CODE_HEADER_ONLY \
+	-DBOOST_SYSTEM_NO_DEPRECATED \
+	-DBOOST_ALL_NO_LIB

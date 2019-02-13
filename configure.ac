@@ -56,5 +56,5 @@ AC_CHECK_HEADER(host-ipmid/ipmid-api.h, ,[AC_MSG_ERROR([Could not find host-ipmi
 LT_INIT([dlopen disable-static shared])
 LT_LIB_DLLOAD
 
-AC_CONFIG_FILES([Makefile test/Makefile])
+AC_CONFIG_FILES([Makefile test/Makefile sol_dbus/Makefile])
 AC_OUTPUT
