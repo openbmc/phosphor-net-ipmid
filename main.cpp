@@ -18,6 +18,9 @@
 
 #include <phosphor-logging/log.hpp>
 #include <sdbusplus/asio/connection.hpp>
+#include <sdbusplus/bus.hpp>
+#include <sdbusplus/server/object.hpp>
+#include <sdbusplus/timer.hpp>
 #include <tuple>
 
 using namespace phosphor::logging;
@@ -28,6 +31,9 @@ session::Manager manager;
 command::Table table;
 eventloop::EventLoop loop(io);
 sol::Manager solManager(io);
+
+// D-Bus root for session manager
+constexpr auto SESSION_MANAGER_ROOT = "/xyz/openbmc_project/Session";
 
 std::tuple<session::Manager&, command::Table&, eventloop::EventLoop&,
            sol::Manager&>
@@ -70,6 +76,15 @@ int main()
     }
 
     sdbusp = std::make_shared<sdbusplus::asio::connection>(*io, bus);
+    auto objManager = std::make_unique<sdbusplus::server::manager::manager>(
+        *sdbusp, SESSION_MANAGER_ROOT);
+    rc = sd_bus_request_name(bus, "xyz.openbmc_project.netipmid", 0);
+    if (rc < 0)
+    {
+        log<level::ERR>("Failure in bus request",
+                        entry("ERROR=%s", strerror(-rc)));
+        return EXIT_FAILURE;
+    }
 
     // Register callback to update cache for a GUID change and cache the GUID
     command::registerGUIDChangeCallback();
