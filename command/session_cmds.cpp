@@ -10,6 +10,13 @@
 
 namespace command
 {
+// Defined as per IPMI specification
+static constexpr uint8_t searchCurrentSession = 0x00;
+static constexpr uint8_t searchSessionByHandle = 0xFE;
+static constexpr uint8_t searchSessionByID = 0xFF;
+
+static constexpr uint8_t ipmi15VerSession = 0x00;
+static constexpr uint8_t ipmi20VerSession = 0x01;
 
 std::vector<uint8_t>
     setSessionPrivilegeLevel(const std::vector<uint8_t>& inPayload,
@@ -29,7 +36,7 @@ std::vector<uint8_t>
 
     if (reqPrivilegeLevel == 0) // Just return present privilege level
     {
-        response->newPrivLevel = static_cast<uint8_t>(session->curPrivLevel);
+        response->newPrivLevel = session->currentPrivilege();
         return outPayload;
     }
     if (reqPrivilegeLevel > (static_cast<uint8_t>(session->reqMaxPrivLevel) &
@@ -40,7 +47,7 @@ std::vector<uint8_t>
         return outPayload;
     }
 
-    uint8_t userId = ipmi::ipmiUserGetUserId(session->userName);
+    uint8_t userId = ipmi::ipmiUserGetUserId(session->userName());
     if (userId == ipmi::invalidUserId)
     {
         response->completionCode = IPMI_CC_UNSPECIFIED_ERROR;
@@ -48,9 +55,10 @@ std::vector<uint8_t>
     }
     ipmi::PrivAccess userAccess{};
     ipmi::ChannelAccess chAccess{};
-    if ((ipmi::ipmiUserGetPrivilegeAccess(userId, session->chNum, userAccess) !=
-         IPMI_CC_OK) ||
-        (ipmi::getChannelAccessData(session->chNum, chAccess) != IPMI_CC_OK))
+    if ((ipmi::ipmiUserGetPrivilegeAccess(userId, session->channelNum(),
+                                          userAccess) != IPMI_CC_OK) ||
+        (ipmi::getChannelAccessData(session->channelNum(), chAccess) !=
+         IPMI_CC_OK))
     {
         response->completionCode = IPMI_CC_INVALID_PRIV_LEVEL;
         return outPayload;
@@ -73,8 +81,7 @@ std::vector<uint8_t>
     else
     {
         // update current privilege of the session.
-        session->curPrivLevel =
-            static_cast<session::Privilege>(reqPrivilegeLevel);
+        session->currentPrivilege(reqPrivilegeLevel);
         response->newPrivLevel = reqPrivilegeLevel;
     }
 
@@ -106,6 +113,137 @@ std::vector<uint8_t> closeSession(const std::vector<uint8_t>& inPayload,
         {
             response->completionCode = IPMI_CC_INVALID_SESSIONID;
         }
+    }
+    return outPayload;
+}
+
+std::vector<uint8_t> getSessionInfo(const std::vector<uint8_t>& inPayload,
+                                    const message::Handler& handler)
+
+{
+    std::vector<uint8_t> outPayload(sizeof(GetSessionInfoResponse));
+    auto request =
+        reinterpret_cast<const GetSessionInfoRequest*>(inPayload.data());
+    auto response =
+        reinterpret_cast<GetSessionInfoResponse*>(outPayload.data());
+    uint32_t reqSessionID = handler.sessionID;
+    response->completionCode = IPMI_CC_OK;
+
+    // Here we look for session info according to session index parameter
+    switch (request->sessionIndex)
+    {
+        // Look for current active session which this cmd is received over
+        case searchCurrentSession:
+            // Request data should only contain session index byte
+            if (inPayload.size() != sizeof(request->sessionIndex))
+            {
+                response->completionCode = IPMI_CC_REQ_DATA_LEN_INVALID;
+                outPayload.resize(sizeof(response->completionCode));
+                return outPayload;
+            }
+            break;
+        case searchSessionByHandle:
+            // Request data should only contain session index byte and Session
+            // handle
+            if (inPayload.size() != (sizeof(request->sessionIndex) +
+                                     sizeof(request->sessionHandle)))
+            {
+                response->completionCode = IPMI_CC_REQ_DATA_LEN_INVALID;
+                outPayload.resize(sizeof(response->completionCode));
+                return outPayload;
+            }
+            // Retrieve session id based on session handle
+            if (request->sessionHandle <= session::MAX_SESSION_COUNT)
+            {
+                reqSessionID =
+                    std::get<session::Manager&>(singletonPool)
+                        .getSessionIDbyHandle(request->sessionHandle);
+            }
+            else
+            {
+                response->completionCode = IPMI_CC_INVALID_FIELD_REQUEST;
+                outPayload.resize(sizeof(response->completionCode));
+                return outPayload;
+            }
+            break;
+        case searchSessionByID:
+            // Request data should only contain session index byte and Session
+            // handle
+            if (inPayload.size() != sizeof(GetSessionInfoRequest))
+            {
+                response->completionCode = IPMI_CC_REQ_DATA_LEN_INVALID;
+                outPayload.resize(sizeof(response->completionCode));
+                return outPayload;
+            }
+            reqSessionID = endian::from_ipmi(request->sessionID);
+
+            break;
+        default:
+            if (inPayload.size() == sizeof(request->sessionIndex))
+            {
+                if (request->sessionIndex <= session::MAX_SESSION_COUNT)
+                {
+                    reqSessionID =
+                        std::get<session::Manager&>(singletonPool)
+                            .getSessionIDbyHandle(request->sessionIndex);
+                }
+                else
+                {
+                    response->completionCode = IPMI_CC_REQ_DATA_LEN_INVALID;
+                    outPayload.resize(sizeof(response->completionCode));
+                    return outPayload;
+                }
+            }
+            else
+            {
+                response->completionCode = IPMI_CC_REQ_DATA_LEN_INVALID;
+                outPayload.resize(sizeof(response->completionCode));
+                return outPayload;
+            }
+    }
+
+    response->totalSessionCount = session::MAX_SESSION_COUNT;
+    response->activeSessioncount =
+        std::get<session::Manager&>(singletonPool).getActiveSessionCount();
+    response->sessionHandle = 0;
+    if (reqSessionID != 0)
+    {
+
+        std::shared_ptr<session::Session> sessionInfo;
+        try
+        {
+            sessionInfo = std::get<session::Manager&>(singletonPool)
+                              .getSession(reqSessionID);
+        }
+        catch (std::exception& e)
+        {
+            response->completionCode = IPMI_CC_REQ_DATA_LEN_INVALID;
+            outPayload.resize(sizeof(response->completionCode));
+            return outPayload;
+        }
+        response->sessionHandle = std::get<session::Manager&>(singletonPool)
+                                      .getSessionHandle(reqSessionID);
+        uint8_t userId = ipmi::ipmiUserGetUserId(sessionInfo->userName());
+        if (userId == ipmi::invalidUserId)
+        {
+            response->completionCode = IPMI_CC_UNSPECIFIED_ERROR;
+            outPayload.resize(sizeof(response->completionCode));
+            return outPayload;
+        }
+        response->userID = userId; // userId;
+        response->privLevel = sessionInfo->currentPrivilege();
+        response->chanNum = sessionInfo->channelNum(); // byte7 3:0
+        response->ipmiVer = ipmi20VerSession;          // byte7 7:4
+        response->remotePort =
+            sessionInfo->channelPtr->getPort(); // remoteSessionPort;
+        response->remoteIpAddr =
+            sessionInfo->channelPtr->getRemoteAddressInBytes();
+
+        // TODO: Filling the Remote MACAddress
+    }
+    else
+    {
+        outPayload.resize(4);
     }
     return outPayload;
 }
