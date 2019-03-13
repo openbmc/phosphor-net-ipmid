@@ -248,6 +248,7 @@ class Manager
      *  @return 0 on success and errno on failure.
      */
     int writeConsoleSocket(const std::vector<uint8_t>& input) const;
+    void updateSOLParameter(void);
 
   private:
     SOLPayloadMap payloadMap;
