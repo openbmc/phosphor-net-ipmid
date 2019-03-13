@@ -6,6 +6,10 @@
 #include "integrity_algo.hpp"
 #include "prng.hpp"
 #include "socket_channel.hpp"
+#include <sdbusplus/bus.hpp>
+#include <sdbusplus/server/object.hpp>
+#include <xyz/openbmc_project/Session/Info/server.hpp>
+#include <unordered_map>
 
 #include <chrono>
 #include <exception>
@@ -96,7 +100,10 @@ struct SequenceNumbers
  * active sessions established with the BMC. It is recommended that a BMC
  * implementation support at least four simultaneous sessions
  */
-class Session
+
+using SessionInfo = sdbusplus::xyz::openbmc_project::Session::server::Info;
+
+class Session : public SessionInfo
 {
   public:
     Session() = default;
@@ -115,10 +122,12 @@ class Session
      * @param[in] inRemoteConsoleSessID - Remote Console Session ID
      * @param[in] priv - Privilege Level requested in the Command
      */
-    Session(SessionID inRemoteConsoleSessID, Privilege priv) :
-        reqMaxPrivLevel(priv), bmcSessionID(crypto::prng::rand()),
-        remoteConsoleSessionID(inRemoteConsoleSessID)
+    Session(sdbusplus::bus::bus &bus, const char *path,
+         SessionID inRemoteConsoleSessID, SessionID BMCSessionID ,char priv):SessionInfo(bus, path)
     {
+     reqMaxPrivLevel = static_cast<session::Privilege> (priv);
+     bmcSessionID = BMCSessionID ;//(crypto::prng::rand());
+     remoteConsoleSessionID =inRemoteConsoleSessID;
     }
 
     auto getBMCSessionID() const
@@ -265,7 +274,6 @@ class Session
     /**
      * @brief Session's Current Privilege Level
      */
-    Privilege curPrivLevel = Privilege::CALLBACK;
 
     /**
      * @brief Session's Requested Maximum Privilege Level
@@ -274,11 +282,9 @@ class Session
 
     SequenceNumbers sequenceNums;  // Session Sequence Numbers
     State state = State::INACTIVE; // Session State
-    std::string userName{};        // User Name
 
     /** @brief Socket channel for communicating with the remote client.*/
     std::shared_ptr<udpsocket::Channel> channelPtr;
-    uint8_t chNum;
 
   private:
     SessionID bmcSessionID = 0;           // BMC Session ID

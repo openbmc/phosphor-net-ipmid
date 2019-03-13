@@ -21,7 +21,11 @@ Manager::Manager()
      * manager comes up, is creates the Session ID  0000_0000h. It is active
      * through the lifetime of the Session Manager.
      */
-    sessionsMap.emplace(0, std::make_shared<Session>());
+
+    auto bus = sdbusplus::bus::new_default();
+    auto objPath = std::string(SESSION_MANAGER_ROOT) + "/" + "0";
+    sessionsMap.emplace(
+        0, std::make_shared<Session>(bus, objPath.c_str(), 0, 0, 0));
 }
 
 std::shared_ptr<Session>
@@ -31,7 +35,7 @@ std::shared_ptr<Session>
                           cipher::crypt::Algorithms cryptAlgo)
 {
     std::shared_ptr<Session> session = nullptr;
-    SessionID sessionID = 0;
+    SessionID sessionID = 0,BMCSessionID=0;
     cleanStaleEntries();
     auto activeSessions = sessionsMap.size() - MAX_SESSIONLESS_COUNT;
 
@@ -39,8 +43,16 @@ std::shared_ptr<Session>
     {
         do
         {
-            session = std::make_shared<Session>(remoteConsoleSessID, priv);
-
+            BMCSessionID = (crypto::prng::rand());
+            auto bus = sdbusplus::bus::new_default();
+            std::stringstream sstream;
+            sstream << std::hex << BMCSessionID;
+            std::string result = sstream.str();
+            auto objPath =
+                std::string(SESSION_MANAGER_ROOT) + "/" + result.c_str();
+            session = std::make_shared<Session>(
+                bus, objPath.c_str(), remoteConsoleSessID, BMCSessionID,
+                static_cast<uint8_t>(priv));
             /*
              * Every IPMI Session has two ID's attached to it Remote Console
              * Session ID and BMC Session ID. The remote console ID is passed
@@ -89,6 +101,7 @@ std::shared_ptr<Session>
         sessionID = session->getBMCSessionID();
         sessionsMap.emplace(sessionID, session);
         storeSessionHandle(sessionID);
+        session->sessionHandle(getSessionHandle(sessionID));
         return session;
     }
 

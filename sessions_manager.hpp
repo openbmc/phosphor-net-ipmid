@@ -19,6 +19,9 @@ constexpr size_t SESSION_ZERO = 0;
 constexpr size_t MAX_SESSIONLESS_COUNT = 1;
 constexpr size_t MAX_SESSION_COUNT = 5;
 
+// D-Bus root for session manager
+constexpr auto SESSION_MANAGER_ROOT = "/xyz/openbmc_project/Session";
+
 /**
  * @class Manager
  *
@@ -88,7 +91,7 @@ class Manager
     uint32_t getSessionIDbyHandle(uint8_t sessionHandle) const;
 
   private:
-    // +1 for session, as 0 is reserved for sessionless command
+    //+1 for session, as 0 is reserved for sessionless command
     std::array<uint32_t, MAX_SESSION_COUNT + 1> sessionHandleMap;
 
     /**

@@ -44,6 +44,7 @@ std::shared_ptr<Message> Handler::receive()
     message->rcSessionID = session->getRCSessionID();
     session->updateLastTransactionTime();
     session->channelPtr = channel;
+    session->remotePort(channel->getPort());
 
     return message;
 }
