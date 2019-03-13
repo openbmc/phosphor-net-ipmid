@@ -18,6 +18,9 @@
 
 #include <phosphor-logging/log.hpp>
 #include <sdbusplus/asio/connection.hpp>
+#include <sdbusplus/bus.hpp>
+#include <sdbusplus/server/object.hpp>
+#include <sdbusplus/timer.hpp>
 #include <tuple>
 
 using namespace phosphor::logging;
@@ -70,6 +73,15 @@ int main()
     }
 
     sdbusp = std::make_shared<sdbusplus::asio::connection>(*io, bus);
+    auto objManager = std::make_unique<sdbusplus::server::manager::manager>(
+        *sdbusp, session::SESSION_MANAGER_ROOT);
+    rc = sd_bus_request_name(bus, session::service, 0);
+    if (rc < 0)
+    {
+        log<level::ERR>("Failure in bus request",
+                        entry("ERROR=%s", strerror(-rc)));
+        return EXIT_FAILURE;
+    }
 
     // Register callback to update cache for a GUID change and cache the GUID
     command::registerGUIDChangeCallback();
