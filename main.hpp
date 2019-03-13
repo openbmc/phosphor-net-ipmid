@@ -20,3 +20,4 @@ static const auto IPMI_STD_PORT = 623;
 extern sd_bus* bus;
 
 std::shared_ptr<sdbusplus::asio::connection> getSdBus();
+sd_bus* ipmid_get_sd_bus_connection(void);
