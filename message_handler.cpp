@@ -43,6 +43,8 @@ bool Handler::receive()
     sessionID = inMessage->bmcSessionID;
     inMessage->rcSessionID = session->getRCSessionID();
     session->updateLastTransactionTime();
+    session->channelPtr = channel;
+    session->remotePort(channel->getPort());
 
     return true;
 }

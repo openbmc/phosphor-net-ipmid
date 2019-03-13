@@ -64,8 +64,8 @@ void Table::executeCommand(uint32_t inCommand,
             std::get<session::Manager&>(singletonPool)
                 .getSession(handler->sessionID);
         std::map<std::string, ipmi::Value> options = {
-            {"userId", ipmi::Value(ipmi::ipmiUserGetUserId(session->userName))},
-            {"privilege", ipmi::Value(static_cast<int>(session->curPrivLevel))},
+            {"userId", ipmi::Value(session->userID())},
+            {"privilege", ipmi::Value(session->currentPrivilege())},
         };
         bus->async_method_call(
             [handler, this](const boost::system::error_code& ec,
