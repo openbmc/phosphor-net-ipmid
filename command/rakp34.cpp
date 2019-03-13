@@ -9,6 +9,8 @@
 #include <algorithm>
 #include <cstring>
 #include <phosphor-logging/log.hpp>
+#include <user_channel/channel_layer.hpp>
+#include <user_channel/user_layer.hpp>
 
 using namespace phosphor::logging;
 
@@ -128,8 +130,11 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
     // Session Privilege Level
     auto sessPrivLevel = static_cast<uint8_t>(session->reqMaxPrivLevel);
 
+    std::string uName;
+    ipmi::ipmiUserGetUserName(session->userID(), uName);
+
     // User Name Length Byte
-    auto userLength = static_cast<uint8_t>(session->userName.size());
+    auto userLength = static_cast<uint8_t>(uName.size());
 
     std::vector<uint8_t> input;
     input.resize(cipher::rakp_auth::BMC_RANDOM_NUMBER_LEN +
@@ -157,7 +162,7 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
     std::copy_n(&userLength, sizeof(userLength), iter);
     std::advance(iter, sizeof(userLength));
 
-    std::copy_n(session->userName.data(), userLength, iter);
+    std::copy_n(uName.data(), userLength, iter);
 
     // Generate Key Exchange Authentication Code - RAKP2
     auto output = authAlgo->generateHMAC(input);
@@ -215,7 +220,7 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
     std::copy_n(&userLength, sizeof(userLength), iter);
     std::advance(iter, sizeof(userLength));
 
-    std::copy_n(session->userName.data(), userLength, iter);
+    std::copy_n(uName.data(), userLength, iter);
 
     // Generate Session Integrity Key
     auto sikOutput = authAlgo->generateHMAC(input);
@@ -272,7 +277,7 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
     // Set the Confidentiality Algorithm
     applyCryptAlgo(session->getBMCSessionID());
 
-    session->state = session::State::ACTIVE;
+    session->state(static_cast<uint8_t>(session::SessionState::ACTIVE));
     return outPayload;
 }
 
