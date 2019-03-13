@@ -29,7 +29,7 @@ std::vector<uint8_t>
 
     if (reqPrivilegeLevel == 0) // Just return present privilege level
     {
-        response->newPrivLevel = static_cast<uint8_t>(session->curPrivLevel);
+        response->newPrivLevel = session->currentPrivilege();
         return outPayload;
     }
     if (reqPrivilegeLevel > (static_cast<uint8_t>(session->reqMaxPrivLevel) &
@@ -40,7 +40,7 @@ std::vector<uint8_t>
         return outPayload;
     }
 
-    uint8_t userId = ipmi::ipmiUserGetUserId(session->userName);
+    uint8_t userId = session->userID();
     if (userId == ipmi::invalidUserId)
     {
         response->completionCode = IPMI_CC_UNSPECIFIED_ERROR;
@@ -48,9 +48,10 @@ std::vector<uint8_t>
     }
     ipmi::PrivAccess userAccess{};
     ipmi::ChannelAccess chAccess{};
-    if ((ipmi::ipmiUserGetPrivilegeAccess(userId, session->chNum, userAccess) !=
-         IPMI_CC_OK) ||
-        (ipmi::getChannelAccessData(session->chNum, chAccess) != IPMI_CC_OK))
+    if ((ipmi::ipmiUserGetPrivilegeAccess(userId, session->channelNum(),
+                                          userAccess) != IPMI_CC_OK) ||
+        (ipmi::getChannelAccessData(session->channelNum(), chAccess) !=
+         IPMI_CC_OK))
     {
         response->completionCode = IPMI_CC_INVALID_PRIV_LEVEL;
         return outPayload;
@@ -73,8 +74,7 @@ std::vector<uint8_t>
     else
     {
         // update current privilege of the session.
-        session->curPrivLevel =
-            static_cast<session::Privilege>(reqPrivilegeLevel);
+        session->currentPrivilege(reqPrivilegeLevel);
         response->newPrivLevel = reqPrivilegeLevel;
     }
 
@@ -109,5 +109,6 @@ std::vector<uint8_t> closeSession(const std::vector<uint8_t>& inPayload,
     }
     return outPayload;
 }
+
 
 } // namespace command
