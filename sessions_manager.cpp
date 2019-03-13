@@ -21,7 +21,11 @@ Manager::Manager()
      * manager comes up, is creates the Session ID  0000_0000h. It is active
      * through the lifetime of the Session Manager.
      */
-    sessionsMap.emplace(0, std::make_shared<Session>());
+
+    auto bus = sdbusplus::bus::new_default();
+    auto objPath = std::string(SESSION_MANAGER_ROOT) + "/" + "0";
+    sessionsMap.emplace(
+        0, std::make_shared<Session>(bus, objPath.c_str(), 0, 0, 0));
 }
 
 std::shared_ptr<Session>
@@ -31,7 +35,7 @@ std::shared_ptr<Session>
                           cipher::crypt::Algorithms cryptAlgo)
 {
     std::shared_ptr<Session> session = nullptr;
-    SessionID sessionID = 0;
+    SessionID sessionID = 0, BMCSessionID = 0;
     cleanStaleEntries();
     auto activeSessions = sessionsMap.size() - MAX_SESSIONLESS_COUNT;
 
@@ -39,8 +43,16 @@ std::shared_ptr<Session>
     {
         do
         {
-            session = std::make_shared<Session>(remoteConsoleSessID, priv);
-
+            BMCSessionID = (crypto::prng::rand());
+            auto bus = sdbusplus::bus::new_default();
+            std::stringstream sstream;
+            sstream << std::hex << BMCSessionID;
+            std::string result = sstream.str();
+            auto objPath =
+                std::string(SESSION_MANAGER_ROOT) + "/" + result.c_str();
+            session = std::make_shared<Session>(
+                bus, objPath.c_str(), remoteConsoleSessID, BMCSessionID,
+                static_cast<uint8_t>(priv));
             /*
              * Every IPMI Session has two ID's attached to it Remote Console
              * Session ID and BMC Session ID. The remote console ID is passed
@@ -88,6 +100,8 @@ std::shared_ptr<Session>
         }
         sessionID = session->getBMCSessionID();
         sessionsMap.emplace(sessionID, session);
+        storeSessionHandle(sessionID);
+        session->sessionHandle(getSessionHandle(sessionID));
         return session;
     }
 
@@ -155,6 +169,7 @@ void Manager::cleanStaleEntries()
         if ((session->getBMCSessionID() != SESSION_ZERO) &&
             !(session->isSessionActive()))
         {
+            sessionHandleMap[getSessionHandle(session->getBMCSessionID())] = 0;
             iter = sessionsMap.erase(iter);
         }
         else
@@ -164,4 +179,53 @@ void Manager::cleanStaleEntries()
     }
 }
 
+uint8_t Manager::storeSessionHandle(SessionID bmcSessionID)
+{
+    // Handler index 0 is  reserved for invalid session.
+    // index starts with 1, for direct usage. Index 0 reserved
+    for (uint8_t i = 1; i <= MAX_SESSION_COUNT; i++)
+    {
+        if (sessionHandleMap[i] == 0)
+        {
+            sessionHandleMap[i] = bmcSessionID;
+            break;
+        }
+    }
+    return 0;
+}
+
+uint32_t Manager::getSessionIDbyHandle(uint8_t sessionHandle) const
+{
+    if (sessionHandle <= MAX_SESSION_COUNT)
+    {
+        return sessionHandleMap[sessionHandle];
+    }
+    return 0;
+}
+
+uint8_t Manager::getSessionHandle(SessionID bmcSessionID) const
+{
+
+    for (uint8_t i = 1; i <= MAX_SESSION_COUNT; i++)
+    {
+        if (sessionHandleMap[i] == bmcSessionID)
+        {
+            return i;
+        }
+    }
+    return 0;
+}
+uint8_t Manager::getActiveSessionCount() const
+{
+    uint8_t count = 0;
+    for (const auto& it : sessionsMap)
+    {
+        const auto& session = it.second;
+        if (session->state == State::ACTIVE)
+        {
+            count++;
+        }
+    }
+    return count;
+}
 } // namespace session
