@@ -100,7 +100,7 @@ std::vector<uint8_t>
         std::get<session::Manager&>(singletonPool)
             .getSession(handler.sessionID);
 
-    if (session->curPrivLevel >= Entry::getPrivilege())
+    if (session->currentPrivilege() >= static_cast<uint8_t>(Entry::getPrivilege()))
     {
         try
         {

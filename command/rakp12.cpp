@@ -64,7 +64,8 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
         return outPayload;
     }
 
-    session->userName.assign(request->user_name, request->user_name_len);
+    std::string uName;
+    uName.assign(request->user_name, request->user_name_len);
 
     // Update transaction time
     session->updateLastTransactionTime();
@@ -91,7 +92,7 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
                  cipher::rakp_auth::REMOTE_CONSOLE_RANDOM_NUMBER_LEN +
                  cipher::rakp_auth::BMC_RANDOM_NUMBER_LEN + BMC_GUID_LEN +
                  sizeof(request->req_max_privilege_level) +
-                 sizeof(request->user_name_len) + session->userName.size());
+                 sizeof(request->user_name_len) + uName.size());
 
     auto iter = input.begin();
 
@@ -129,12 +130,14 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     // established with CALLBACK privilege if requested for callback. All other
     // sessions are initialy set to USER privilege, regardless of the requested
     // maximum privilege.
-    session->curPrivLevel = session::Privilege::CALLBACK;
+    session->currentPrivilege(
+        static_cast<uint8_t>(session::Privilege::CALLBACK));
     if (static_cast<session::Privilege>(request->req_max_privilege_level &
                                         session::reqMaxPrivMask) >
         session::Privilege::CALLBACK)
     {
-        session->curPrivLevel = session::Privilege::USER;
+        session->currentPrivilege(
+            static_cast<uint8_t>(session::Privilege::USER));
     }
     session->reqMaxPrivLevel =
         static_cast<session::Privilege>(request->req_max_privilege_level);
@@ -187,7 +190,8 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
             static_cast<uint8_t>(RAKP_ReturnCode::INACTIVE_ROLE);
         return outPayload;
     }
-    session->chNum = chNum;
+    session->channelNum(chNum);
+    session->userID(userId);
     // minimum privilege of Channel / User / session::privilege::USER/CALLBACK /
     // has to be used as session current privilege level
     uint8_t minPriv = 0;
@@ -199,9 +203,9 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     {
         minPriv = userAccess.privilege;
     }
-    if (session->curPrivLevel > static_cast<session::Privilege>(minPriv))
+    if (session->currentPrivilege() > minPriv)
     {
-        session->curPrivLevel = static_cast<session::Privilege>(minPriv);
+        session->currentPrivilege(minPriv);
     }
     // For username / privilege lookup, fail with UNAUTH_NAME, if requested
     // max privilege does not match user privilege
@@ -239,8 +243,7 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     std::copy_n(&(request->user_name_len), sizeof(request->user_name_len),
                 iter);
     std::advance(iter, sizeof(request->user_name_len));
-
-    std::copy_n(session->userName.data(), session->userName.size(), iter);
+    std::copy_n(uName.data(), uName.size(), iter);
 
     // Generate Key Exchange Authentication Code - RAKP2
     auto output = authAlgo->generateHMAC(input);
