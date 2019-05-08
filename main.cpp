@@ -20,6 +20,7 @@
 #include <phosphor-logging/log.hpp>
 #include <sdbusplus/asio/connection.hpp>
 #include <tuple>
+#include <user_channel/channel_layer.hpp>
 
 using namespace phosphor::logging;
 
@@ -54,9 +55,24 @@ std::shared_ptr<sdbusplus::asio::connection> getSdBus()
     return sdbusp;
 }
 
+static EInterfaceIndex currentInterfaceIndex = interfaceUnknown;
+static void setInterfaceIndex(const std::string& channel)
+{
+    try
+    {
+        currentInterfaceIndex =
+            static_cast<EInterfaceIndex>(ipmi::getChannelByName(channel));
+    }
+    catch (const std::exception& e)
+    {
+        log<level::ERR>("Requested channel name is not a valid channel name",
+                        entry("ERROR=%s", e.what()),
+                        entry("CHANNEL=%s", channel.c_str()));
+    }
+}
 EInterfaceIndex getInterfaceIndex(void)
 {
-    return interfaceLAN1;
+    return currentInterfaceIndex;
 }
 
 int main(int argc, char* argv[])
@@ -77,6 +93,10 @@ int main(int argc, char* argv[])
         log<level::ERR>("Failed to connect to system bus",
                         entry("ERROR=%s", strerror(-rc)));
         return rc;
+    }
+    if (channel.size())
+    {
+        setInterfaceIndex(channel);
     }
 
     sdbusp = std::make_shared<sdbusplus::asio::connection>(*io, bus);
