@@ -164,6 +164,16 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
             static_cast<uint8_t>(RAKP_ReturnCode::INACTIVE_ROLE);
         return outPayload;
     }
+    // User pam authenticate check
+    if (!ipmi::ipmiUserAuthentication(userName.c_str(), passwd.c_str()))
+    {
+        log<level::DEBUG>("Authentication failed",
+                          entry("USER-ID:%d", (uint8_t)userId));
+
+        response->rmcpStatusCode =
+            static_cast<uint8_t>(RAKP_ReturnCode::ILLEGAL_PARAMETER);
+        return outPayload;
+    }
     // Get the user password for RAKP message authenticate
     passwd = ipmi::ipmiUserGetPassword(userName);
     if (passwd.empty())
