@@ -76,7 +76,7 @@ std::vector<uint8_t> closeSession(const std::vector<uint8_t>& inPayload,
 
     // Session 0 is needed to handle session setup, so session zero is never
     // closed
-    if (bmcSessionID == session::SESSION_ZERO)
+    if (bmcSessionID == session::sessionZero)
     {
         response->completionCode = IPMI_CC_INVALID_SESSIONID;
     }

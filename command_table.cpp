@@ -123,7 +123,7 @@ std::vector<uint8_t>
     std::vector<uint8_t> errResponse;
 
     // Check if the command qualifies to be run prior to establishing a session
-    if (!sessionless && (handler->sessionID == session::SESSION_ZERO))
+    if (!sessionless && (handler->sessionID == session::sessionZero))
     {
         errResponse.resize(1);
         errResponse[0] = IPMI_CC_INSUFFICIENT_PRIVILEGE;
