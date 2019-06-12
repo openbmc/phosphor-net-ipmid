@@ -96,6 +96,8 @@ int main(int argc, char* argv[])
     }
     sdbusp = std::make_shared<sdbusplus::asio::connection>(*io, bus);
 
+    std::get<session::Manager&>(singletonPool).managerInit(channel);
+
     ipmi::ipmiChannelInit();
     if (channel.size())
     {
