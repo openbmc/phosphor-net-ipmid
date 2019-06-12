@@ -26,7 +26,7 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
 
     // Session ID zero is reserved for Session Setup
     if (endian::from_ipmi(request->managedSystemSessionID) ==
-        session::SESSION_ZERO)
+        session::sessionZero)
     {
         log<level::INFO>("RAKP12: BMC invalid Session ID");
         response->rmcpStatusCode =
