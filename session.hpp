@@ -9,12 +9,18 @@
 
 #include <chrono>
 #include <exception>
+#include <ipmid/api.hpp>
+#include <ipmid/sessiondef.hpp>
 #include <list>
 #include <memory>
+#include <sdbusplus/bus.hpp>
+#include <sdbusplus/server/object.hpp>
 #include <string>
+#include <unordered_map>
 #include <user_channel/channel_layer.hpp>
 #include <user_channel/user_layer.hpp>
 #include <vector>
+#include <xyz/openbmc_project/Ipmi/SessionInfo/server.hpp>
 
 namespace session
 {
@@ -30,14 +36,6 @@ enum class Privilege : uint8_t
     OPERATOR,
     ADMIN,
     OEM,
-};
-
-enum class State
-{
-    INACTIVE,              // Session is not in use
-    SETUP_IN_PROGRESS,     // Session Setup Sequence is progressing
-    ACTIVE,                // Session is active
-    TEAR_DOWN_IN_PROGRESS, // When Closing Session
 };
 
 // Seconds of inactivity allowed during session setup stage
@@ -98,7 +96,12 @@ struct SequenceNumbers
  * active sessions established with the BMC. It is recommended that a BMC
  * implementation support at least four simultaneous sessions
  */
-class Session
+
+namespace Base = sdbusplus::xyz::openbmc_project;
+using SessionIface =
+    sdbusplus::server::object::object<Base::Ipmi::server::SessionInfo>;
+
+class Session : public SessionIface
 {
   public:
     Session() = default;
@@ -117,10 +120,14 @@ class Session
      * @param[in] inRemoteConsoleSessID - Remote Console Session ID
      * @param[in] priv - Privilege Level requested in the Command
      */
-    Session(SessionID inRemoteConsoleSessID, Privilege priv) :
-        reqMaxPrivLevel(priv), bmcSessionID(crypto::prng::rand()),
-        remoteConsoleSessionID(inRemoteConsoleSessID)
+    Session(sdbusplus::bus::bus& bus, const char* path,
+            SessionID inRemoteConsoleSessID, SessionID BMCSessionID,
+            char priv) :
+        SessionIface(bus, path)
     {
+        reqMaxPrivLevel = static_cast<session::Privilege>(priv);
+        bmcSessionID = BMCSessionID;
+        remoteConsoleSessionID = inRemoteConsoleSessID;
     }
 
     auto getBMCSessionID() const
@@ -244,15 +251,17 @@ class Session
         auto elapsedSeconds = std::chrono::duration_cast<std::chrono::seconds>(
             currentTime - lastTime);
 
+        State state = static_cast<session::State>(State());
+
         switch (state)
         {
-            case State::SETUP_IN_PROGRESS:
+            case State::setupInProgress:
                 if (elapsedSeconds < SESSION_SETUP_TIMEOUT)
                 {
                     return true;
                 }
                 break;
-            case State::ACTIVE:
+            case State::active:
                 if (elapsedSeconds < SESSION_INACTIVITY_TIMEOUT)
                 {
                     return true;
@@ -280,9 +289,8 @@ class Session
     ipmi::PrivAccess sessionUserPrivAccess{};
     ipmi::ChannelAccess sessionChannelAccess{};
 
-    SequenceNumbers sequenceNums;  // Session Sequence Numbers
-    State state = State::INACTIVE; // Session State
-    std::string userName{};        // User Name
+    SequenceNumbers sequenceNums; // Session Sequence Numbers
+    std::string userName{};       // User Name
 
     /** @brief Socket channel for communicating with the remote client.*/
     std::shared_ptr<udpsocket::Channel> channelPtr;

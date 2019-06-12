@@ -1,5 +1,6 @@
 #include "sessions_manager.hpp"
 
+#include "main.hpp"
 #include "session.hpp"
 
 #include <algorithm>
@@ -7,21 +8,69 @@
 #include <iomanip>
 #include <memory>
 #include <phosphor-logging/log.hpp>
+#include <sdbusplus/asio/connection.hpp>
+#include <user_channel/channel_layer.hpp>
 
 using namespace phosphor::logging;
+
+uint8_t ipmiNetworkInstance = 0;
 
 namespace session
 {
 
+static std::array<uint8_t, maxNetworkInstanceSupported>
+    ipmiNetworkChannelNoList = {0};
+
+void Manager::setNetworkInstance(void)
+{
+
+    uint8_t index = 0;
+    // Constructing newtipmid instances list based on channel info
+    for (uint8_t ch = 1;
+         ch < ipmi::maxIpmiChannels && index < maxNetworkInstanceSupported;
+         ch++)
+    {
+        ipmi::ChannelInfo chInfo;
+        ipmi::getChannelInfo(ch, chInfo);
+        if (static_cast<ipmi::EChannelMediumType>(chInfo.mediumType) ==
+            ipmi::EChannelMediumType::lan8032)
+        {
+            ipmiNetworkChannelNoList[index++] = ch;
+        }
+    }
+
+    // Assign the unique netipmid instance number
+    for (uint8_t i = 0; i < maxNetworkInstanceSupported; i++)
+    {
+        if (getInterfaceIndex() == ipmiNetworkChannelNoList[i])
+            ipmiNetworkInstance = i;
+    }
+}
+
 Manager::Manager()
 {
+}
+
+void Manager::managerInit(const std::string& channel)
+{
+
     /*
      * Session ID is 0000_0000h for messages that are sent outside the session.
      * The session setup commands are sent on this session, so when the session
      * manager comes up, is creates the Session ID  0000_0000h. It is active
      * through the lifetime of the Session Manager.
      */
-    sessionsMap.emplace(0, std::make_shared<Session>());
+
+    objManager = std::make_unique<sdbusplus::server::manager::manager>(
+        *getSdBus(), session::sessionManagerRootPath);
+
+    auto objPath = std::string(session::sessionManagerRootPath) + "/" +
+                   channel.c_str() + "/0";
+
+    chName = channel;
+    setNetworkInstance();
+    sessionsMap.emplace(
+        0, std::make_shared<Session>(*getSdBus(), objPath.c_str(), 0, 0, 0));
 }
 
 std::shared_ptr<Session>
@@ -31,16 +80,26 @@ std::shared_ptr<Session>
                           cipher::crypt::Algorithms cryptAlgo)
 {
     std::shared_ptr<Session> session = nullptr;
-    SessionID sessionID = 0;
+    SessionID sessionID = 0, BMCSessionID = 0;
     cleanStaleEntries();
-    auto activeSessions = sessionsMap.size() - MAX_SESSIONLESS_COUNT;
+    auto activeSessions = sessionsMap.size() - session::maxSessionlessCount;
 
-    if (activeSessions < MAX_SESSION_COUNT)
+    if (activeSessions < session::maxSessionCountPerChannel)
     {
         do
         {
-            session = std::make_shared<Session>(remoteConsoleSessID, priv);
-
+            BMCSessionID = (crypto::prng::rand());
+            BMCSessionID &= multiIntfaceSessionIDMask;
+            // In sessionID , BIT 31 BIT30 are used for netipmid instance
+            BMCSessionID |= ipmiNetworkInstance << 30;
+            std::stringstream sstream;
+            sstream << std::hex << BMCSessionID;
+            std::string result = sstream.str();
+            auto objPath = std::string(session::sessionManagerRootPath) + "/" +
+                           chName.c_str() + "/" + result.c_str();
+            session = std::make_shared<Session>(
+                *getSdBus(), objPath.c_str(), remoteConsoleSessID, BMCSessionID,
+                static_cast<uint8_t>(priv));
             /*
              * Every IPMI Session has two ID's attached to it Remote Console
              * Session ID and BMC Session ID. The remote console ID is passed
@@ -88,6 +147,9 @@ std::shared_ptr<Session>
         }
         sessionID = session->getBMCSessionID();
         sessionsMap.emplace(sessionID, session);
+        storeSessionHandle(sessionID);
+        session->sessionHandle(getSessionHandle(sessionID));
+
         return session;
     }
 
@@ -101,7 +163,8 @@ bool Manager::stopSession(SessionID bmcSessionID)
     auto iter = sessionsMap.find(bmcSessionID);
     if (iter != sessionsMap.end())
     {
-        iter->second->state = State::TEAR_DOWN_IN_PROGRESS;
+        iter->second->state(
+            static_cast<uint8_t>(session::State::tearDownInProgress));
         return true;
     }
     else
@@ -152,9 +215,10 @@ void Manager::cleanStaleEntries()
     for (auto iter = sessionsMap.begin(); iter != sessionsMap.end();)
     {
         auto session = iter->second;
-        if ((session->getBMCSessionID() != SESSION_ZERO) &&
+        if ((session->getBMCSessionID() != session::sessionZero) &&
             !(session->isSessionActive()))
         {
+            sessionHandleMap[getSessionHandle(session->getBMCSessionID())] = 0;
             iter = sessionsMap.erase(iter);
         }
         else
@@ -164,4 +228,59 @@ void Manager::cleanStaleEntries()
     }
 }
 
+uint8_t Manager::storeSessionHandle(SessionID bmcSessionID)
+{
+    // Handler index 0 is  reserved for invalid session.
+    // index starts with 1, for direct usage. Index 0 reserved
+    for (uint8_t i = 1; i <= session::maxSessionCountPerChannel; i++)
+    {
+        if (sessionHandleMap[i] == 0)
+        {
+            sessionHandleMap[i] = bmcSessionID;
+            break;
+        }
+    }
+    return 0;
+}
+
+uint32_t Manager::getSessionIDbyHandle(uint8_t sessionHandle) const
+{
+    sessionHandle &= multiIntfaceSessionHandleMask;
+    if (sessionHandle <= session::maxSessionCountPerChannel)
+    {
+        return sessionHandleMap[sessionHandle];
+    }
+    return 0;
+}
+
+uint8_t Manager::getSessionHandle(SessionID bmcSessionID) const
+{
+
+    // Handler index 0 is  reserved for invalid session.
+    // index starts with 1, for direct usage. Index 0 reserved
+
+    for (uint8_t i = 1; i <= session::maxSessionCountPerChannel; i++)
+    {
+        if (sessionHandleMap[i] == bmcSessionID)
+        {
+            // In SessionHandle , BIT7 BIT6 are used for netipmid instance
+            i |= ipmiNetworkInstance << 6;
+            return i;
+        }
+    }
+    return 0;
+}
+uint8_t Manager::getActiveSessionCount() const
+{
+    uint8_t count = 0;
+    for (const auto& it : sessionsMap)
+    {
+        const auto& session = it.second;
+        if (session->state() == static_cast<uint8_t>(session::State::active))
+        {
+            count++;
+        }
+    }
+    return count;
+}
 } // namespace session
