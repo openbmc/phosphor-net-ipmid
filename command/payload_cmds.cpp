@@ -56,6 +56,17 @@ std::vector<uint8_t> activatePayload(const std::vector<uint8_t>& inPayload,
         return outPayload;
     }
 
+    // Is SOL Payload enabled for this user & channel.
+    auto userId = ipmi::ipmiUserGetUserId(session->userName);
+    ipmi::PayloadAccess payloadAccess = {};
+    if ((ipmi::ipmiUserGetPayloadAccess(userId, session->chNum,
+                                        payloadAccess) != IPMI_CC_OK) ||
+        (payloadAccess.stdPayloadEnables1[1] != true))
+    {
+        response->completionCode = IPMI_CC_INVALID_FIELD_REQUEST;
+        return outPayload;
+    }
+
     auto status = std::get<sol::Manager&>(singletonPool)
                       .isPayloadActive(request->payloadInstance);
     if (status)
