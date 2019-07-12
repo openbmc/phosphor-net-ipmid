@@ -9,6 +9,8 @@ namespace command
 
 constexpr uint8_t IPMI_CC_INVALID_PRIV_LEVEL = 0x80;
 constexpr uint8_t IPMI_CC_EXCEEDS_USER_PRIV = 0x81;
+constexpr uint8_t myNetInstanceSessionIdShiftMask = 30;
+constexpr uint8_t myNetInstanceSessionHandleShiftMask = 6;
 
 /**
  * @struct SetSessionPrivLevelReq
@@ -74,9 +76,6 @@ struct SetSessionPrivLevelResp
 std::vector<uint8_t>
     setSessionPrivilegeLevel(const std::vector<uint8_t>& inPayload,
                              const message::Handler& handler);
-
-constexpr uint8_t IPMI_CC_INVALID_SESSIONID = 0x87;
-
 /**
  * @struct CloseSessionRequest
  *
