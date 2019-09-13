@@ -186,6 +186,7 @@ std::vector<uint8_t> deactivatePayload(const std::vector<uint8_t>& inPayload,
 std::vector<uint8_t> getPayloadStatus(const std::vector<uint8_t>& inPayload,
                                       const message::Handler& handler)
 {
+    constexpr size_t maxSolPayloadInstances = 1;
     std::vector<uint8_t> outPayload(sizeof(GetPayloadStatusResponse));
     auto request =
         reinterpret_cast<const GetPayloadStatusRequest*>(inPayload.data());
@@ -200,7 +201,7 @@ std::vector<uint8_t> getPayloadStatus(const std::vector<uint8_t>& inPayload,
     }
 
     response->completionCode = IPMI_CC_OK;
-    response->capacity = MAX_PAYLOAD_INSTANCES;
+    response->capacity = maxSolPayloadInstances;
 
     // Currently we support only one SOL session
     response->instance1 =
