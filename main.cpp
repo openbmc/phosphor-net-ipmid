@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
     auto rc = sd_bus_default_system(&bus);
     if (rc < 0)
     {
-        log<level::ERR>("Failed to connect to system bus",
+        log<level::ERR>("@@@Failed to connect to system bus @@@",
                         entry("ERROR=%s", strerror(-rc)));
         return rc;
     }
