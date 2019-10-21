@@ -54,6 +54,9 @@ class EventLoop
     /** @brief register the async handler for incoming udp packets */
     void startRmcpReceive();
 
+    /** @brief get vlanid  */
+    int getVLANID(void);
+
     /** @brief boost::asio io context to run with
      */
     std::shared_ptr<boost::asio::io_context> io;
