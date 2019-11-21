@@ -81,6 +81,10 @@ void Manager::startHostConsole()
                                       consoleInputHandler();
                                       startHostConsole();
                                   }
+                                  else
+                                  {
+                                      stopHostConsole();
+                                  }
                               });
 }
 
@@ -98,7 +102,18 @@ void Manager::startPayloadInstance(uint8_t payloadInstance,
 {
     if (payloadMap.empty())
     {
-        startHostConsole();
+        try
+        {
+            startHostConsole();
+        }
+        catch (const std::exception& e)
+        {
+            log<level::ERR>("Encountered exception when starting host console. "
+                            "Hence stopping host console.",
+                            entry("EXCEPTION=%s", e.what()));
+            stopHostConsole();
+            throw;
+        }
     }
 
     // Create the SOL Context data for payload instance
