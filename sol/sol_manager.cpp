@@ -98,7 +98,15 @@ void Manager::startPayloadInstance(uint8_t payloadInstance,
 {
     if (payloadMap.empty())
     {
-        startHostConsole();
+        try
+        {
+            startHostConsole();
+        }
+        catch (std::exception& e)
+        {
+            stopHostConsole();
+            throw;
+        }
     }
 
     // Create the SOL Context data for payload instance
