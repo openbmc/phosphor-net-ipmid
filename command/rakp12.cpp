@@ -136,6 +136,13 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
         session->currentPrivilege(
             static_cast<uint8_t>(session::Privilege::USER));
     }
+    else
+    {
+        response->rmcpStatusCode =
+            static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_ROLE_PRIV);
+        return outPayload;
+    }
+
     session->reqMaxPrivLevel =
         static_cast<session::Privilege>(request->req_max_privilege_level);
     if (request->user_name_len == 0)
