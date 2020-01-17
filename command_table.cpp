@@ -114,7 +114,8 @@ void Table::executeCommand(uint32_t inCommand,
         if (elapsedSeconds > 2s)
         {
             log<level::ERR>("IPMI command timed out",
-                            entry("DELAY=%d", elapsedSeconds.count()));
+                            entry("DELAY=%lld", static_cast<long long int>(
+                                                    elapsedSeconds.count())));
         }
     }
 }
