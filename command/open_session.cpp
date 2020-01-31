@@ -5,6 +5,7 @@
 #include "main.hpp"
 
 #include <phosphor-logging/log.hpp>
+#include <user_channel/cipher_mgmt.hpp>
 
 using namespace phosphor::logging;
 
@@ -14,7 +15,6 @@ namespace command
 std::vector<uint8_t> openSession(const std::vector<uint8_t>& inPayload,
                                  const message::Handler& handler)
 {
-
     std::vector<uint8_t> outPayload(sizeof(OpenSessionResponse));
     auto request =
         reinterpret_cast<const OpenSessionRequest*>(inPayload.data());
@@ -52,7 +52,19 @@ std::vector<uint8_t> openSession(const std::vector<uint8_t>& inPayload,
     // permitted privilege level.
     if (!request->maxPrivLevel)
     {
-        priv = session::Privilege::ADMIN;
+        uint8_t chNum = getInterfaceIndex();
+
+        uint8_t csPriv = ipmi::getCipherConfigObject(ipmi::csPrivFileName)
+                             .getHighestLevelMatchProposedAlgorithm(chNum);
+        // if invalid privilege returned, use ADMIN as default privilege
+        if (csPriv > static_cast<uint8_t>(session::Privilege::OEM))
+        {
+            priv = session::Privilege::ADMIN;
+        }
+        else
+        {
+            priv = static_cast<session::Privilege>(csPriv);
+        }
     }
     else
     {
