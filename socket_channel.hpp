@@ -29,7 +29,6 @@ class Channel
     Channel& operator=(const Channel& right) = delete;
     Channel(Channel&&) = delete;
     Channel& operator=(Channel&&) = delete;
-
     /**
      * @brief Constructor
      *
@@ -52,7 +51,7 @@ class Channel
      *
      * @return IP address of the remote peer
      */
-    std::string getRemoteAddress() const
+    std::string getRemoteAddress(uint32_t& remoteIpv4Addr) const
     {
         const char* retval = nullptr;
         if (sockAddrSize == sizeof(sockaddr_in))
@@ -63,6 +62,7 @@ class Channel
                 &(reinterpret_cast<const sockaddr_in*>(&remoteSockAddr)
                       ->sin_addr),
                 ipv4addr, sizeof(ipv4addr));
+            remoteIpv4Addr = inet_addr(retval);
         }
         else if (sockAddrSize == sizeof(sockaddr_in6))
         {
@@ -72,6 +72,10 @@ class Channel
                 &(reinterpret_cast<const sockaddr_in6*>(&remoteSockAddr)
                       ->sin6_addr),
                 ipv6addr, sizeof(ipv6addr));
+            // ipv6 address representation is like "::ffff:<ipv4_addr>"
+            // Eg: ::ffff:255.255.255.255. So removing the prefix header and
+            // passing ipv4 string to inet_addr().
+            remoteIpv4Addr = inet_addr(retval + strlen("::ffff:"));
         }
         if (retval)
         {
