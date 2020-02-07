@@ -44,6 +44,8 @@ bool Handler::receive()
     inMessage->rcSessionID = session->getRCSessionID();
     session->updateLastTransactionTime();
     session->channelPtr = channel;
+    uint32_t ipAddr = channel->getRemoteAddressInBytes();
+    session->remoteIPAddr(ipAddr);
     session->remotePort(channel->getPort());
 
     return true;
