@@ -43,44 +43,51 @@ class Channel
         socket(socket)
     {
     }
-
+    /**
+     * @brief Check if ip address is ipv4 mapped ipv6
+     *
+     *  @param v6Addr : in6_addr obj
+     *
+     * @return true if ipv4 mapped ipv6 else retun false
+     */
+    bool isIpv4InIpv6(const struct in6_addr& v6Addr) const
+    {
+        constexpr uint8_t prefix[12] = {0, 0, 0, 0, 0,    0,
+                                        0, 0, 0, 0, 0xff, 0xff};
+        return 0 == std::memcmp(&v6Addr.s6_addr[0], &prefix[0], sizeof(prefix));
+    }
     /**
      * @brief Fetch the IP address of the remote peer
      *
-     * Returns the IP address of the remote peer which is connected to this
-     * socket
+     *  @param remoteIpv4Addr : ipv4 address is assigned to it.
      *
-     * @return IP address of the remote peer
+     * @return ipv6 address of the remote peer and in case of ipv4 returns null.
      */
-    std::string getRemoteAddress() const
+    std::string getRemoteAddress(uint32_t& remoteIpv4Addr) const
     {
-        const char* retval = nullptr;
+        std::string ipAddr;
         if (sockAddrSize == sizeof(sockaddr_in))
         {
-            char ipv4addr[INET_ADDRSTRLEN];
-            retval = inet_ntop(
-                AF_INET,
-                &(reinterpret_cast<const sockaddr_in*>(&remoteSockAddr)
-                      ->sin_addr),
-                ipv4addr, sizeof(ipv4addr));
+            const sockaddr_in* sa =
+                reinterpret_cast<const sockaddr_in*>(&remoteSockAddr);
+            remoteIpv4Addr = sa->sin_addr.s_addr;
         }
         else if (sockAddrSize == sizeof(sockaddr_in6))
         {
-            char ipv6addr[INET6_ADDRSTRLEN];
-            retval = inet_ntop(
-                AF_INET6,
-                &(reinterpret_cast<const sockaddr_in6*>(&remoteSockAddr)
-                      ->sin6_addr),
-                ipv6addr, sizeof(ipv6addr));
+            const sockaddr_in6* sa =
+                reinterpret_cast<const sockaddr_in6*>(&remoteSockAddr);
+
+            if (isIpv4InIpv6(sa->sin6_addr))
+            {
+                constexpr uint8_t v4v6Index = 12;
+                std::copy_n(&sa->sin6_addr.s6_addr[v4v6Index],
+                            sizeof(remoteIpv4Addr),
+                            reinterpret_cast<uint8_t*>(&remoteIpv4Addr));
+            }
+            ipAddr = reinterpret_cast<const char*>(sa->sin6_addr.s6_addr);
         }
-        if (retval)
-        {
-            return retval;
-        }
-        phosphor::logging::log<phosphor::logging::level::ERR>(
-            "Error in inet_ntop",
-            phosphor::logging::entry("ERROR=%s", strerror(errno)));
-        return std::string();
+
+        return ipAddr;
     }
 
     /**
