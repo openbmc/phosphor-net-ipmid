@@ -153,7 +153,10 @@ class Context
 {
   public:
     Context() = delete;
-    ~Context() = default;
+    ~Context()
+    {
+        session = nullptr;
+    };
     Context(const Context&) = delete;
     Context& operator=(const Context&) = delete;
     Context(Context&&) = delete;

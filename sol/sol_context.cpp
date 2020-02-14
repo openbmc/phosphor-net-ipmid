@@ -31,10 +31,22 @@ void Context::enableAccumulateTimer(bool enable)
     {
         accumulateTimer.expires_after(interval);
         accumulateTimer.async_wait([this](const boost::system::error_code& ec) {
-            if (!ec)
+            if (ec == boost::asio::error::operation_aborted)
             {
-                charAccTimerHandler();
+                return;
             }
+            else if (ec)
+            {
+                log<level::ERR>("timer wait error!");
+                return;
+            }
+
+            if (session == nullptr)
+            {
+                return;
+            }
+
+            charAccTimerHandler();
         });
     }
     else
