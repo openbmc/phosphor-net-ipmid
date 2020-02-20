@@ -18,6 +18,7 @@ Context::Context(std::shared_ptr<boost::asio::io_context> io,
     sendThreshold(sendThreshold), payloadInstance(instance),
     sessionID(sessionID)
 {
+    pAccumulateTimer = &accumulateTimer;
     session = std::get<session::Manager&>(singletonPool).getSession(sessionID);
     enableAccumulateTimer(true);
 }
@@ -31,6 +32,10 @@ void Context::enableAccumulateTimer(bool enable)
     {
         accumulateTimer.expires_after(interval);
         accumulateTimer.async_wait([this](const boost::system::error_code& ec) {
+            if (pAccumulateTimer == nullptr)
+            {
+                return;
+            }
             if (!ec)
             {
                 charAccTimerHandler();

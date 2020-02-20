@@ -153,7 +153,10 @@ class Context
 {
   public:
     Context() = delete;
-    ~Context() = default;
+    ~Context()
+    {
+        pAccumulateTimer = nullptr;
+    };
     Context(const Context&) = delete;
     Context& operator=(const Context&) = delete;
     Context(Context&&) = delete;
@@ -179,6 +182,9 @@ class Context
 
     /** @brief accumulate timer */
     boost::asio::steady_timer accumulateTimer;
+
+    /** @brief pointer to accumulate timer */
+    boost::asio::steady_timer* pAccumulateTimer = nullptr;
 
     /** @brief retry timer */
     boost::asio::steady_timer retryTimer;
