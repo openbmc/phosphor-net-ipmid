@@ -149,7 +149,7 @@ struct SequenceNumbers
  *  interfaces to handle incoming SOL payload, send response and send outbound
  *  SOL payload.
  */
-class Context
+class Context : std::enable_shared_from_this<Context>
 {
   public:
     Context() = delete;
@@ -248,6 +248,12 @@ class Context
      */
     void resendPayload(bool clear);
 
+    /** @brief accumlate timer handler called by timer */
+    void charAccTimerHandler();
+
+    /** @brief retry timer handler called by timer */
+    void retryTimerHandler();
+
   private:
     /** @brief Expected character count.
      *
@@ -281,12 +287,6 @@ class Context
      *  @param[in] out - buffer containing the SOL payload.
      */
     void sendPayload(const std::vector<uint8_t>& out) const;
-
-    /** @brief accumlate timer handler called by timer */
-    void charAccTimerHandler();
-
-    /** @brief retry timer handler called by timer */
-    void retryTimerHandler();
 };
 
 } // namespace sol

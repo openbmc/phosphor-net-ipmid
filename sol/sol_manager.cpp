@@ -113,7 +113,7 @@ void Manager::startPayloadInstance(uint8_t payloadInstance,
     }
 
     // Create the SOL Context data for payload instance
-    auto context = std::make_unique<Context>(io, retryCount, sendThreshold,
+    auto context = std::make_shared<Context>(io, retryCount, sendThreshold,
                                              payloadInstance, sessionID);
 
     payloadMap.emplace(payloadInstance, std::move(context));

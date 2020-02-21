@@ -30,12 +30,15 @@ void Context::enableAccumulateTimer(bool enable)
     if (enable)
     {
         accumulateTimer.expires_after(interval);
-        accumulateTimer.async_wait([this](const boost::system::error_code& ec) {
-            if (!ec)
-            {
-                charAccTimerHandler();
-            }
-        });
+        std::weak_ptr<Context> weakRef = weak_from_this();
+        accumulateTimer.async_wait(
+            [weakRef](const boost::system::error_code& ec) {
+                std::shared_ptr<Context> self = weakRef.lock();
+                if (!ec && self)
+                {
+                    self->charAccTimerHandler();
+                }
+            });
     }
     else
     {
@@ -51,10 +54,12 @@ void Context::enableRetryTimer(bool enable)
         std::chrono::microseconds interval =
             std::get<sol::Manager&>(singletonPool).retryInterval;
         retryTimer.expires_after(interval);
-        retryTimer.async_wait([this](const boost::system::error_code& ec) {
-            if (!ec)
+        std::weak_ptr<Context> weakRef = weak_from_this();
+        retryTimer.async_wait([weakRef](const boost::system::error_code& ec) {
+            std::shared_ptr<Context> self = weakRef.lock();
+            if (!ec && self)
             {
-                retryTimerHandler();
+                self->retryTimerHandler();
             }
         });
     }
