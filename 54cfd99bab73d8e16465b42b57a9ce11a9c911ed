@@ -45,6 +45,30 @@
       "revId": "54cfd99bab73d8e16465b42b57a9ce11a9c911ed",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d23704c_d41f6e83",
+        "filename": "sol/sol_manager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1000304
+      },
+      "writtenOn": "2020-03-09T07:29:54Z",
+      "side": 1,
+      "message": "After SOL is opened, the configuration changes will not impact the current opening session. We only check SOL configuration before one SOL session is started.",
+      "parentUuid": "3123cdcd_6079b574",
+      "range": {
+        "startLine": 162,
+        "startChar": 0,
+        "endLine": 162,
+        "endChar": 52
+      },
+      "revId": "54cfd99bab73d8e16465b42b57a9ce11a9c911ed",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
