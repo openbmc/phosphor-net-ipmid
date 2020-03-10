@@ -93,6 +93,30 @@
       "revId": "54cfd99bab73d8e16465b42b57a9ce11a9c911ed",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d745c55_486ef8dc",
+        "filename": "sol/sol_manager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2020-03-10T22:48:22Z",
+      "side": 1,
+      "message": "That doesn\u0027t match the old behavior. It is fine to not change the parameters on existing sessions, but any new sessions start up with the new parameters in effect. So there needs to be a property changed listener.",
+      "parentUuid": "9d23704c_d41f6e83",
+      "range": {
+        "startLine": 162,
+        "startChar": 0,
+        "endLine": 162,
+        "endChar": 52
+      },
+      "revId": "54cfd99bab73d8e16465b42b57a9ce11a9c911ed",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
