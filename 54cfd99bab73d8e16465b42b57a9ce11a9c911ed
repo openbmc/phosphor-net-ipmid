@@ -117,6 +117,30 @@
       "revId": "54cfd99bab73d8e16465b42b57a9ce11a9c911ed",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "020f7a47_89134b3d",
+        "filename": "sol/sol_manager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1000304
+      },
+      "writtenOn": "2020-03-11T06:06:06Z",
+      "side": 1,
+      "message": "when any new session start up, it will need to run activatePayload command and which will call this updateSOLParameter. So it does not need a listener here.",
+      "parentUuid": "3d745c55_486ef8dc",
+      "range": {
+        "startLine": 162,
+        "startChar": 0,
+        "endLine": 162,
+        "endChar": 52
+      },
+      "revId": "54cfd99bab73d8e16465b42b57a9ce11a9c911ed",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
