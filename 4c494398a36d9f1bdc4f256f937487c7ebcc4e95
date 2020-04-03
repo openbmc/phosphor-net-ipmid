@@ -1,0 +1,10 @@
+Ok-To-Test+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Verified+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Code-Review+1: Joseph Reynolds <joseph-reynolds@charter.net>
+Code-Review+1: Bruce Mitchell <Bruce_Mitchell@Phoenix.com>
+Code-Review+2: Tom Joseph <tomjoseph@in.ibm.com>
+Submitted-by: Tom Joseph <tomjoseph@in.ibm.com>
+Submitted-at: Fri, 03 Apr 2020 03:11:21 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/phosphor-net-ipmid/+/30814
+Project: openbmc/phosphor-net-ipmid
+Branch: refs/heads/master
