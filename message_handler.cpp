@@ -8,16 +8,86 @@
 
 #include <sys/socket.h>
 
+#include <fstream>
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <phosphor-logging/log.hpp>
 #include <string>
 #include <vector>
 
 using namespace phosphor::logging;
+static constexpr const char* channelNvDataFilename =
+    "/var/lib/ipmi/channel_access_nv.json";
 
 namespace message
 {
 using namespace phosphor::logging;
+
+using Json = nlohmann::json;
+
+bool isValidLanChannel(const uint8_t channelNo)
+{
+    ipmi::ChannelInfo chInfo;
+    ipmi::getChannelInfo(channelNo, chInfo);
+
+    if (static_cast<ipmi::EChannelMediumType>(chInfo.mediumType) ==
+        ipmi::EChannelMediumType::lan8032)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool isChannelAccessModeEnable(const uint8_t channelNo)
+{
+    std::ifstream jsonFile(channelNvDataFilename);
+    if (!jsonFile.good())
+    {
+        log<level::INFO>("Channel access file not found");
+        return false;
+    }
+
+    Json data = nullptr;
+    try
+    {
+        data = Json::parse(jsonFile, nullptr, false);
+        if (data == nullptr)
+        {
+            log<level::INFO>("Channel access file contain invalid data");
+            return false;
+        }
+
+        // Get the channel number
+        for (auto it = data.begin(); it != data.end(); ++it)
+        {
+            std::string chKey = it.key();
+            uint8_t chNum = std::stoi(chKey, nullptr, 10);
+            if (chNum == channelNo)
+            {
+                Json jsonChData = it.value();
+                std::string accModeStr =
+                    jsonChData["access_mode"].get<std::string>();
+                if (!accModeStr.compare("disabled"))
+                {
+                    log<level::INFO>("Channel access mode is Disable");
+                    return false;
+                }
+                else
+                {
+                    // Channel access mode is not disabled
+                    return true;
+                }
+            }
+        }
+    }
+    catch (Json::parse_error& e)
+    {
+        log<level::DEBUG>("Corrupted channel config.",
+                          entry("MSG=%s", e.what()));
+        return false;
+    }
+    return true;
+}
 
 bool Handler::receive()
 {
@@ -39,6 +109,21 @@ bool Handler::receive()
 
     auto session = std::get<session::Manager&>(singletonPool)
                        .getSession(inMessage->bmcSessionID);
+
+    const uint8_t channelNo = static_cast<uint8_t>(getInterfaceIndex());
+
+    if (isValidLanChannel(channelNo))
+    {
+        if (!isChannelAccessModeEnable(channelNo))
+        {
+            // stop the session
+            auto currentSession = std::get<session::Manager&>(singletonPool)
+                                      .getSession(inMessage->bmcSessionID);
+            std::get<session::Manager&>(singletonPool)
+                .stopSession(currentSession->getBMCSessionID());
+            return false;
+        }
+    }
 
     sessionID = inMessage->bmcSessionID;
     inMessage->rcSessionID = session->getRCSessionID();
