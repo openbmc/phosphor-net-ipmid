@@ -12,12 +12,15 @@
 #include <boost/asio/write.hpp>
 #include <chrono>
 #include <cmath>
+#include <ipmid/utils.hpp>
 #include <phosphor-logging/log.hpp>
 
 namespace sol
 {
 
 using namespace phosphor::logging;
+
+std::unique_ptr<sdbusplus::bus::match_t> matchPtrSOL(nullptr);
 
 void Manager::initConsoleSocket()
 {
@@ -134,6 +137,56 @@ void Manager::stopPayloadInstance(uint8_t payloadInstance)
         stopHostConsole();
 
         dataBuffer.erase(dataBuffer.size());
+    }
+}
+
+void Manager::stopAllPayloadInstance()
+{
+    // Erase all payload instance
+    payloadMap.erase(payloadMap.begin(), payloadMap.end());
+
+    stopHostConsole();
+
+    dataBuffer.erase(dataBuffer.size());
+}
+
+void getSOLServiceChange()
+{
+    try
+    {
+        auto busp = getSdBus();
+        auto value = std::get<bool>(ipmi::getDbusProperty(*busp,
+                        "xyz.openbmc_project.Control.Service.Manager",
+                        "/xyz/openbmc_project/control/service/obmc_2dconsole_40ttyS2",
+                        "xyz.openbmc_project.Control.Service.Attributes", "Enabled"));
+
+        if (value == false)
+        {
+             std::get<sol::Manager&>(singletonPool).stopAllPayloadInstance();
+        }
+    }
+    catch (std::exception& e)
+    {
+        log<level::ERR>("Failed in getting dbus property for SOL status");
+        return;
+    }
+    return;
+}
+
+void registerSOLServiceChangeCallback()
+{
+    if (matchPtrSOL == nullptr)
+    {
+        using namespace sdbusplus::bus::match::rules;
+        sdbusplus::bus::bus bus{ipmid_get_sd_bus_connection()};
+
+        matchPtrSOL = std::make_unique<sdbusplus::bus::match_t>(
+            bus,
+            path_namespace("/xyz/openbmc_project/control/service/obmc_2dconsole_40ttyS2") + type::signal() +
+                member("PropertiesChanged") + interface("org.freedesktop.DBus.Properties"),
+            [](sdbusplus::message::message&) {
+               getSOLServiceChange();
+            });
     }
 }
 
