@@ -6,6 +6,7 @@
 #include "message.hpp"
 #include "message_handler.hpp"
 #include "socket_channel.hpp"
+#include "sol/sol_manager.hpp"
 #include "sol_module.hpp"
 
 #include <assert.h>
@@ -106,6 +107,9 @@ int main(int argc, char* argv[])
     // Register callback to update cache for a GUID change and cache the GUID
     command::registerGUIDChangeCallback();
     cache::guid = command::getSystemGUID();
+
+    // Register callback to close SOL session for disable SSH SOL
+    sol::registerSOLServiceChangeCallback();
 
     // Register the phosphor-net-ipmid session setup commands
     command::sessionSetupCommands();
