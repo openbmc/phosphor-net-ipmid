@@ -192,6 +192,8 @@ class Manager
      */
     void stopPayloadInstance(uint8_t payloadInstance);
 
+    void stopAllPayloadInstance();
+
     /** @brief Get SOL Context by Payload Instance.
      *
      *  @param[in] payloadInstance - SOL payload instance.
@@ -263,5 +265,7 @@ class Manager
     /** @brief Handle incoming console data on the console socket */
     void consoleInputHandler();
 };
+
+void registerSOLServiceChangeCallback();
 
 } // namespace sol
