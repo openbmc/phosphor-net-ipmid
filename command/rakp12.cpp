@@ -17,6 +17,15 @@ using namespace phosphor::logging;
 namespace command
 {
 
+bool isChannelAccessModeEnabled(const uint8_t accessMode)
+{
+    if (accessMode == static_cast<uint8_t>(ipmi::EChannelAccessMode::disabled))
+    {
+        return false;
+    }
+    return true;
+}
+
 std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
                             const message::Handler& handler)
 {
@@ -193,6 +202,14 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
         (ipmi::getChannelAccessData(chNum, session->sessionChannelAccess) !=
          IPMI_CC_OK))
     {
+        response->rmcpStatusCode =
+            static_cast<uint8_t>(RAKP_ReturnCode::INACTIVE_ROLE);
+        return outPayload;
+    }
+    if (!isChannelAccessModeEnabled(session->sessionChannelAccess.accessMode))
+    {
+        phosphor::logging::log<phosphor::logging::level::ERR>(
+            "Channel access mode disabled.");
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::INACTIVE_ROLE);
         return outPayload;
