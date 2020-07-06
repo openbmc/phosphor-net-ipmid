@@ -141,7 +141,7 @@ uint8_t closeOtherNetInstanceSession(const uint32_t reqSessionId,
 
                 if (currentSessionPriv < closeSessionPriv)
                 {
-                    return ipmi::ccInsufficientPrivilege;
+                    return ipmi::ccCommandNotAvailable;
                 }
                 return setSessionState(busp, service, obj);
             }
@@ -184,7 +184,7 @@ uint8_t closeMyNetInstanceSession(uint32_t reqSessionId,
 
         if (currentSessionPriv < closeSessionPriv)
         {
-            return ipmi::ccInsufficientPrivilege;
+            return ipmi::ccCommandNotAvailable;
         }
         status = std::get<session::Manager&>(singletonPool)
                      .stopSession(reqSessionId);
