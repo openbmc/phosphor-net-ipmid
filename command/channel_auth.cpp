@@ -19,6 +19,7 @@ std::vector<uint8_t>
         std::vector<uint8_t> errorPayload{IPMI_CC_REQ_DATA_LEN_INVALID};
         return errorPayload;
     }
+
     constexpr unsigned int channelMask = 0x0f;
     uint8_t chNum = ipmi::convertCurrentChannelNum(
         request->channelNumber & channelMask, getInterfaceIndex());
