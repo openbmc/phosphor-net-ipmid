@@ -100,6 +100,12 @@ std::shared_ptr<Message> unflatten(std::vector<uint8_t>& inPacket)
 
     auto payloadLen = header->payloadLength;
 
+    // Check if the packet has atleast the Session Header
+    if (inPacket.size() < (sizeof(SessionHeader_t) + payloadLen))
+    {
+        throw std::runtime_error("Invalid data length");
+    }
+
     (message->payload)
         .assign(inPacket.data() + sizeof(SessionHeader_t),
                 inPacket.data() + sizeof(SessionHeader_t) + payloadLen);
@@ -274,6 +280,12 @@ bool verifyPacketIntegrity(const std::vector<uint8_t>& packet,
     auto paddingLen = 4 - ((payloadLen + 2) & 3);
 
     auto sessTrailerPos = sizeof(SessionHeader_t) + payloadLen + paddingLen;
+
+    // Check if the packet size
+    if (packet.size() < (sessTrailerPos + sizeof(SessionTrailer_t)))
+    {
+        return false;
+    }
 
     auto trailer = reinterpret_cast<const SessionTrailer_t*>(packet.data() +
                                                              sessTrailerPos);
