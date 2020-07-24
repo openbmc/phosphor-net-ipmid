@@ -17,12 +17,18 @@ std::vector<uint8_t>
     setSessionPrivilegeLevel(const std::vector<uint8_t>& inPayload,
                              const message::Handler& handler)
 {
-
-    std::vector<uint8_t> outPayload(sizeof(SetSessionPrivLevelResp));
     auto request =
         reinterpret_cast<const SetSessionPrivLevelReq*>(inPayload.data());
+    if (inPayload.size() != sizeof(*request))
+    {
+        std::vector<uint8_t> errorPayload{IPMI_CC_REQ_DATA_LEN_INVALID};
+        return errorPayload;
+    }
+
+    std::vector<uint8_t> outPayload(sizeof(SetSessionPrivLevelResp)) = {0};
     auto response =
         reinterpret_cast<SetSessionPrivLevelResp*>(outPayload.data());
+
     response->completionCode = IPMI_CC_OK;
     uint8_t reqPrivilegeLevel = request->reqPrivLevel;
 
@@ -207,10 +213,17 @@ uint8_t closeMyNetInstanceSession(uint32_t reqSessionId,
 std::vector<uint8_t> closeSession(const std::vector<uint8_t>& inPayload,
                                   const message::Handler& handler)
 {
-    std::vector<uint8_t> outPayload(sizeof(CloseSessionResponse));
     auto request =
         reinterpret_cast<const CloseSessionRequest*>(inPayload.data());
+    if (inPayload.size() != sizeof(*request))
+    {
+        std::vector<uint8_t> errorPayload{IPMI_CC_REQ_DATA_LEN_INVALID};
+        return errorPayload;
+    }
+
+    std::vector<uint8_t> outPayload(sizeof(CloseSessionResponse)) = {0};
     auto response = reinterpret_cast<CloseSessionResponse*>(outPayload.data());
+
     uint32_t reqSessionId = request->sessionID;
     uint8_t ipmiNetworkInstance = 0;
     uint8_t currentSessionPriv = 0;

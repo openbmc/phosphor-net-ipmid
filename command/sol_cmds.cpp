@@ -17,6 +17,12 @@ using namespace phosphor::logging;
 std::vector<uint8_t> payloadHandler(const std::vector<uint8_t>& inPayload,
                                     const message::Handler& handler)
 {
+    // Check inPayload size is at least Payload
+    if (inPayload.size() < sizeof(Payload))
+    {
+        return std::vector<uint8_t>();
+    }
+
     auto request = reinterpret_cast<const Payload*>(inPayload.data());
     auto solDataSize = inPayload.size() - sizeof(Payload);
 
@@ -47,9 +53,15 @@ std::vector<uint8_t> payloadHandler(const std::vector<uint8_t>& inPayload,
 
 void activating(uint8_t payloadInstance, uint32_t sessionID)
 {
-    std::vector<uint8_t> outPayload(sizeof(ActivatingRequest));
-
     auto request = reinterpret_cast<ActivatingRequest*>(outPayload.data());
+
+    if (inPayload.size() != sizeof(*request))
+    {
+        std::vector<uint8_t> errorPayload{IPMI_CC_REQ_DATA_LEN_INVALID};
+        return;
+    }
+
+    std::vector<uint8_t> outPayload(sizeof(ActivatingRequest));
 
     request->sessionState = 0;
     request->payloadInstance = payloadInstance;

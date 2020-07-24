@@ -23,6 +23,13 @@ std::vector<uint8_t>
                                const size_t sessHeaderLen,
                                const size_t payloadLen) const
 {
+    // verify packet size : header + payloadLen
+    if (packet.size() < (sessHeaderLen + payloadLen) ||
+        payloadLen < AESCBC128ConfHeader)
+    {
+        throw std::runtime_error("incorrect packet size");
+    }
+
     auto plainPayload =
         decryptData(packet.data() + sessHeaderLen,
                     packet.data() + sessHeaderLen + AESCBC128ConfHeader,

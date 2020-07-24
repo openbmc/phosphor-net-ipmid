@@ -26,8 +26,14 @@ bool isChannelAccessModeEnabled(const uint8_t accessMode)
 std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
                             const message::Handler& handler)
 {
-    std::vector<uint8_t> outPayload(sizeof(RAKP2response));
     auto request = reinterpret_cast<const RAKP1request*>(inPayload.data());
+    if (inPayload.size() != sizeof(*request))
+    {
+        std::vector<uint8_t> errorPayload{IPMI_CC_REQ_DATA_LEN_INVALID};
+        return errorPayload;
+    }
+
+    std::vector<uint8_t> outPayload(sizeof(RAKP2response)) = {0};
     auto response = reinterpret_cast<RAKP2response*>(outPayload.data());
 
     // Session ID zero is reserved for Session Setup
