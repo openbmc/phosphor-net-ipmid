@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "89d5f39c_6d3037b8",
+        "filename": "command/open_session.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1000295
+      },
+      "writtenOn": "2020-08-05T15:27:58Z",
+      "side": 1,
+      "message": "Why csPriv is greater than OEM. thats means corrupted cipher sutie file right?",
+      "revId": "e1fbd1e6c96dfd7cbdaa0277a2b77132e5fe2e4c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "fc02b774_66649265",
         "filename": "command/open_session.cpp",
         "patchSetId": 5
@@ -22,6 +39,23 @@
       "revId": "e1fbd1e6c96dfd7cbdaa0277a2b77132e5fe2e4c",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ec12a79f_f317ea6b",
+        "filename": "command/open_session.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1000295
+      },
+      "writtenOn": "2020-08-05T15:27:58Z",
+      "side": 1,
+      "message": "+1, why we are assigning Admin priv for corrupted file ?",
+      "revId": "e1fbd1e6c96dfd7cbdaa0277a2b77132e5fe2e4c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
