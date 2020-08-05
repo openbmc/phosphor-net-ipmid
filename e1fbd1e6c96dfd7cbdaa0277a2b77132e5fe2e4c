@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fc02b774_66649265",
+        "filename": "command/open_session.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1000410
+      },
+      "writtenOn": "2020-08-05T06:57:33Z",
+      "side": 1,
+      "message": "If you have an invalid privilege, I think we need to return an error from here.",
+      "range": {
+        "startLine": 64,
+        "startChar": 8,
+        "endLine": 66,
+        "endChar": 45
+      },
+      "revId": "e1fbd1e6c96dfd7cbdaa0277a2b77132e5fe2e4c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    }
+  ]
+}
