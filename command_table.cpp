@@ -20,7 +20,7 @@ namespace ipmi
 using Value = std::variant<bool, uint8_t, int16_t, uint16_t, int32_t, uint32_t,
                            int64_t, uint64_t, double, std::string>;
 
-} // namespace ipmi
+} //namespace ipmi
 
 namespace command
 {
