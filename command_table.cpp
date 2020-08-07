@@ -34,6 +34,7 @@ void Table::registerCommand(CommandID inCommand, std::unique_ptr<Entry>&& entry)
         log<level::DEBUG>(
             "Already Registered",
             phosphor::logging::entry("SKIPPED_ENTRY=0x%x", inCommand.command));
+
         return;
     }
 
