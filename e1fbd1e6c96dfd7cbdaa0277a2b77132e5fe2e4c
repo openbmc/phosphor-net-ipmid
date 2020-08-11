@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "511d21e8_f8b8a760",
+        "filename": "command/open_session.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1000863
+      },
+      "writtenOn": "2020-08-11T06:33:52Z",
+      "side": 1,
+      "message": "Yes",
+      "parentUuid": "89d5f39c_6d3037b8",
+      "revId": "e1fbd1e6c96dfd7cbdaa0277a2b77132e5fe2e4c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fc02b774_66649265",
         "filename": "command/open_session.cpp",
         "patchSetId": 5
@@ -56,6 +74,48 @@
       "revId": "e1fbd1e6c96dfd7cbdaa0277a2b77132e5fe2e4c",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8d0e1f81_b7450a13",
+        "filename": "command/open_session.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1000863
+      },
+      "writtenOn": "2020-08-11T06:33:52Z",
+      "side": 1,
+      "message": "We will assign error value here.",
+      "parentUuid": "ec12a79f_f317ea6b",
+      "revId": "e1fbd1e6c96dfd7cbdaa0277a2b77132e5fe2e4c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "785a6c82_8a23ba78",
+        "filename": "command/open_session.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1000863
+      },
+      "writtenOn": "2020-08-11T06:33:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fc02b774_66649265",
+      "range": {
+        "startLine": 64,
+        "startChar": 8,
+        "endLine": 66,
+        "endChar": 45
+      },
+      "revId": "e1fbd1e6c96dfd7cbdaa0277a2b77132e5fe2e4c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
