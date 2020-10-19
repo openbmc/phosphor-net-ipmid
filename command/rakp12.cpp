@@ -196,6 +196,7 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
 
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
+        passwd.clear();
         return outPayload;
     }
 
@@ -208,6 +209,7 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     {
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::INACTIVE_ROLE);
+        passwd.clear();
         return outPayload;
     }
     if (!isChannelAccessModeEnabled(session->sessionChannelAccess.accessMode))
@@ -216,6 +218,7 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
             "Channel access mode disabled.");
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::INACTIVE_ROLE);
+        passwd.clear();
         return outPayload;
     }
     if (session->sessionUserPrivAccess.privilege >
@@ -223,6 +226,7 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     {
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::INACTIVE_ROLE);
+        passwd.clear();
         return outPayload;
     }
     session->channelNum(chNum);
@@ -254,12 +258,16 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
             "Username/Privilege lookup failed for requested privilege");
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
+        passwd.clear();
         return outPayload;
     }
 
     std::fill(authAlgo->userKey.data(),
               authAlgo->userKey.data() + authAlgo->userKey.size(), 0);
     std::copy_n(passwd.c_str(), passwd.size(), authAlgo->userKey.data());
+
+    // Clear sensitive data
+    passwd.clear();
 
     // Copy the Managed System Random Number to the Authentication Algorithm
     std::copy_n(iter, cipher::rakp_auth::BMC_RANDOM_NUMBER_LEN,
