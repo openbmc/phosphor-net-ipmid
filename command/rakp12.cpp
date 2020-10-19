@@ -261,6 +261,9 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
               authAlgo->userKey.data() + authAlgo->userKey.size(), 0);
     std::copy_n(passwd.c_str(), passwd.size(), authAlgo->userKey.data());
 
+    // Clear sensitive data
+    passwd.clear();
+
     // Copy the Managed System Random Number to the Authentication Algorithm
     std::copy_n(iter, cipher::rakp_auth::BMC_RANDOM_NUMBER_LEN,
                 authAlgo->bmcRandomNum.begin());
