@@ -5,6 +5,7 @@
 #include "guid.hpp"
 #include "main.hpp"
 
+#include <ipmid/types.hpp>
 #include <openssl/rand.h>
 
 #include <algorithm>
@@ -163,7 +164,7 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
 
     // Perform user name based lookup
     std::string userName(request->user_name, request->user_name_len);
-    std::string passwd;
+    ipmi::SecureString passwd;
     uint8_t userId = ipmi::ipmiUserGetUserId(userName);
     if (userId == ipmi::invalidUserId)
     {
