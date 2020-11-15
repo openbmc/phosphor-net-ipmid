@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "373dfa33_59a93f41",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1000295
+      },
+      "writtenOn": "2020-11-15T17:21:09Z",
+      "side": 1,
+      "message": "We need to clear the passed here also right.",
+      "revId": "f1e17cf6bede3924ef47a25ed9e6ecf2c1dedaa2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "655e9255_09b8004d",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1000295
+      },
+      "writtenOn": "2020-11-15T17:21:09Z",
+      "side": 1,
+      "message": "we need to clear the passwd buffer here also.",
+      "revId": "f1e17cf6bede3924ef47a25ed9e6ecf2c1dedaa2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a3dba8c_e692f4d8",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 1000295
+      },
+      "writtenOn": "2020-11-15T17:21:09Z",
+      "side": 1,
+      "message": "here passwd buffer is not cleared",
+      "revId": "f1e17cf6bede3924ef47a25ed9e6ecf2c1dedaa2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "18dfd6ca_12065a4e",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1000295
+      },
+      "writtenOn": "2020-11-15T17:21:09Z",
+      "side": 1,
+      "message": "here also passwd also not cleared.",
+      "revId": "f1e17cf6bede3924ef47a25ed9e6ecf2c1dedaa2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
