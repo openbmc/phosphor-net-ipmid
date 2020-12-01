@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e384f9d9_ed438ee2",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1000900
+      },
+      "writtenOn": "2020-12-01T00:38:46Z",
+      "side": 1,
+      "message": "Does the c++ standard guarantee that clear() will actually zero out the memory? I don\u0027t see any indication of that, and on my desktop libstdc++ it does not.\n\nI think if you want to do this seriously it needs a secure string class so you can control how the underlying memory is being managed.",
+      "revId": "b189c9781efaed44a55d108e167a4d1d9bc30cad",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
