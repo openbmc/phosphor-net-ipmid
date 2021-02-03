@@ -250,6 +250,7 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     }
     session->channelNum(chNum);
     session->userID(userId);
+    session->username(userName);
     // minimum privilege of Channel / User / session::privilege::USER
     // has to be used as session current privilege level
     uint8_t minPriv = 0;
