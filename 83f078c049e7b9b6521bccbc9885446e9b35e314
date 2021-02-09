@@ -46,6 +46,30 @@
       "revId": "83f078c049e7b9b6521bccbc9885446e9b35e314",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25851c3f_4e7238a7",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1000416
+      },
+      "writtenOn": "2021-02-09T10:59:12Z",
+      "side": 1,
+      "message": "1. Fixed \nOPENSSL_cleanse API need first argument as Address. So passing here only address.\nvoid OPENSSL_cleanse(void *ptr, size_t len);\nBoth the cases it is working. \n\nhttps://manpages.debian.org/testing/libssl-doc/OPENSSL_cleanse.3ssl.en.html\n\n2. Defining class, taking variable and defining object to assign password is going to be complex for existing variable. Since Password is already defined as local variable going with same change.",
+      "parentUuid": "d3ad8d48_64b70fe6",
+      "range": {
+        "startLine": 200,
+        "startChar": 8,
+        "endLine": 200,
+        "endChar": 50
+      },
+      "revId": "83f078c049e7b9b6521bccbc9885446e9b35e314",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
