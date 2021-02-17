@@ -70,6 +70,30 @@
       "revId": "83f078c049e7b9b6521bccbc9885446e9b35e314",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc3804b5_d5d5b273",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1000900
+      },
+      "writtenOn": "2021-02-17T02:25:56Z",
+      "side": 1,
+      "message": "\u003e Both the cases it is working.\n\nDo you mean that passing \u0026passwd was working? It cannot work because the address of the std::string object is not the address of its underlying buffer. Sure, it\u0027ll run but it doesn\u0027t do anything useful and may actually corrupt the stack depending on the password length.\n\n\u003e Defining class, taking variable and defining object to assign password is going to be complex for existing variable\n\nPerhaps when you consider this commit alone. But if your goal is to actually clear all traces of the user password from RAM, then a much more thorough change is needed and you will have replace all uses of std::string with a different secure string class throughout the entire IPMI stack. This change alone removes some copies of the user password but there is no guarantee std::string didn\u0027t leave some data in RAM for a hacker to find.",
+      "parentUuid": "25851c3f_4e7238a7",
+      "range": {
+        "startLine": 200,
+        "startChar": 8,
+        "endLine": 200,
+        "endChar": 50
+      },
+      "revId": "83f078c049e7b9b6521bccbc9885446e9b35e314",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
