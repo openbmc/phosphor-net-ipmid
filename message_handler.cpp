@@ -127,6 +127,20 @@ void Handler::executeCommand()
                 return;
             }
 
+            // Whenever receiving commands that may change user password,
+            // we should reload password from file, rather than using cashed
+            // password.
+            // e.g. changing passwd more then once within one second,
+            //      net-ipmid will always fail to establish next session due
+            //      to using outdated passwd.
+            uint8_t netFn = (command & 0xFF00) >> 10; //cmd 8 bits + lun 2 bits
+            uint8_t cmd = command & 0xFF;
+            if (netFn == 0x06 && cmd == 0x47 )
+            {
+                // set fileLastUpdatedTime to '0' to force clean cached passwd
+                ipmi::ipmiForceReloadPasswd();
+            }
+
             auto start =
                 inMessage->payload.begin() + sizeof(LAN::header::Request);
             auto end = inMessage->payload.end() - sizeof(LAN::trailer::Request);
