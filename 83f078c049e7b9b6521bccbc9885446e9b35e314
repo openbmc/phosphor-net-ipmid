@@ -118,6 +118,30 @@
       "revId": "83f078c049e7b9b6521bccbc9885446e9b35e314",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "200712f8_2e19c9e1",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2021-05-19T14:45:46Z",
+      "side": 1,
+      "message": "Once https://gerrit.openbmc-project.xyz/c/openbmc/phosphor-host-ipmid/+/42071 is merged, the ipmi::SecureString class will be available to handle passwords. It will be defined in the user_mgmt.hpp file and be available via the user_channel library.",
+      "parentUuid": "e75f6ea8_42d2e8ad",
+      "range": {
+        "startLine": 200,
+        "startChar": 8,
+        "endLine": 200,
+        "endChar": 50
+      },
+      "revId": "83f078c049e7b9b6521bccbc9885446e9b35e314",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
