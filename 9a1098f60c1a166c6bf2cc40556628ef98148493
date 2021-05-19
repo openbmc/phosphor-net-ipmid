@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1fff009e_4e5c8976",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2021-05-19T14:37:54Z",
+      "side": 1,
+      "message": "https://gerrit.openbmc-project.xyz/c/openbmc/phosphor-host-ipmid/+/42071 is using a new wrapper for strings that will automatically call OPENSSL_cleanse on destruction. This change should follow suit and do that instead of using std::string.",
+      "range": {
+        "startLine": 167,
+        "startChar": 0,
+        "endLine": 167,
+        "endChar": 23
+      },
+      "revId": "9a1098f60c1a166c6bf2cc40556628ef98148493",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
