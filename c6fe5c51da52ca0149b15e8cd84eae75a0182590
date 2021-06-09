@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "00f79633_da37d246",
+        "filename": "message_parsers.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1000064
+      },
+      "writtenOn": "2021-06-09T19:32:17Z",
+      "side": 1,
+      "message": "Can we make the if-statement more readable? Introduce a helper vars like \"isEncrypted\" and \"isAuthenticated\" or do separate checks for not encrypted and unauthenticated messages.",
+      "range": {
+        "startLine": 202,
+        "startChar": 4,
+        "endLine": 206,
+        "endChar": 5
+      },
+      "revId": "c6fe5c51da52ca0149b15e8cd84eae75a0182590",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
