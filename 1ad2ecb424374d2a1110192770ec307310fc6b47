@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3201d903_12b5f3c4",
+        "filename": "command_table.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1000295
+      },
+      "writtenOn": "2021-06-09T18:15:08Z",
+      "side": 1,
+      "message": "sessionZero and session:state is not in-progress or Active. we will clean up the session info in cleanStaleEntries() when new startSession is called right. If sessionZero info are lost inbetween how we are handling the error response. Please educate me",
+      "revId": "1ad2ecb424374d2a1110192770ec307310fc6b47",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
