@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "326ec44b_b7a7fe50",
+        "filename": "command_table.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2021-06-09T20:24:43Z",
+      "side": 1,
+      "message": "By the time we get to this point, the session had better be a valid session, so we reject any sessionless requests.",
+      "parentUuid": "a5d9a5fd_20b0c499",
+      "revId": "1ad2ecb424374d2a1110192770ec307310fc6b47",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d5963234_374b518e",
         "filename": "message_parsers.cpp",
         "patchSetId": 1
@@ -57,6 +75,30 @@
       "revId": "1ad2ecb424374d2a1110192770ec307310fc6b47",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2a1f3c6f_168049bd",
+        "filename": "message_parsers.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2021-06-09T20:24:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d5963234_374b518e",
+      "range": {
+        "startLine": 108,
+        "startChar": 34,
+        "endLine": 108,
+        "endChar": 76
+      },
+      "revId": "1ad2ecb424374d2a1110192770ec307310fc6b47",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
