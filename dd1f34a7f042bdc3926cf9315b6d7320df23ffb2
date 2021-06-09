@@ -22,6 +22,30 @@
       "revId": "dd1f34a7f042bdc3926cf9315b6d7320df23ffb2",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bac8fde5_d6a5f811",
+        "filename": "message_parsers.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2021-06-09T20:24:36Z",
+      "side": 0,
+      "message": "we don\u0027t ignore it. That is what the endian::from_ipmi() does. This line was just moved up to line 181 so we could use it to look up the session.",
+      "parentUuid": "0846c5f1_4f44760c",
+      "range": {
+        "startLine": 184,
+        "startChar": 28,
+        "endLine": 184,
+        "endChar": 62
+      },
+      "revId": "dd1f34a7f042bdc3926cf9315b6d7320df23ffb2",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
