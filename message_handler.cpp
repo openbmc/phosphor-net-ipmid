@@ -121,6 +121,14 @@ void Handler::executeCommand()
         if (this->sessionID == session::sessionZero ||
             session->sessionUserPrivAccess.ipmiEnabled)
         {
+            // Ignore messages that are not part of an active/pre-active session
+            auto state = static_cast<session::State>(session->state());
+            if (sessionID != session::sessionZero &&
+                (state == session::State::tearDownInProgress ||
+                 state == session::State::inactive))
+            {
+                return;
+            }
             if (inMessage->payload.size() <
                 (sizeof(LAN::header::Request) + sizeof(LAN::trailer::Request)))
             {
