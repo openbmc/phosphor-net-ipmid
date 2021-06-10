@@ -61,6 +61,18 @@ void Table::executeCommand(uint32_t inCommand,
                              entry("CMD=%x", command.cmd()));
             return;
         }
+        std::shared_ptr<session::Session> session =
+            std::get<session::Manager&>(singletonPool)
+                .getSession(handler->sessionID);
+
+        // Ignore messages that are not part of an active/pre-active session
+        auto state = static_cast<session::State>(session->state());
+        if (handler->sessionID != session::sessionZero &&
+            (state == session::State::tearDownInProgress ||
+             state == session::State::inactive))
+        {
+            return;
+        }
 
         auto bus = getSdBus();
         // forward the request onto the main ipmi queue
@@ -69,9 +81,7 @@ void Table::executeCommand(uint32_t inCommand,
         uint8_t lun = command.lun();
         uint8_t netFn = command.netFn();
         uint8_t cmd = command.cmd();
-        std::shared_ptr<session::Session> session =
-            std::get<session::Manager&>(singletonPool)
-                .getSession(handler->sessionID);
+
         std::map<std::string, ipmi::Value> options = {
             {"userId", ipmi::Value(static_cast<int>(
                            ipmi::ipmiUserGetUserId(session->userName)))},
