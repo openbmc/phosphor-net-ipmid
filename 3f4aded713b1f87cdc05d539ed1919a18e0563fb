@@ -46,6 +46,30 @@
       "revId": "3f4aded713b1f87cdc05d539ed1919a18e0563fb",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f1daeedc_11ff1805",
+        "filename": "message_parsers.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-06-10T10:59:53Z",
+      "side": 1,
+      "message": "https://github.com/openbmc/phosphor-net-ipmid/blob/master/auth_algo.hpp#L110\nhttps://github.com/openbmc/phosphor-net-ipmid/blob/master/integrity_algo.hpp#L96\n\nOnly algos for C17. Anyways OpenBMC doesn\u0027t support sessions without either.",
+      "parentUuid": "405213b1_9c76af96",
+      "range": {
+        "startLine": 202,
+        "startChar": 0,
+        "endLine": 205,
+        "endChar": 69
+      },
+      "revId": "3f4aded713b1f87cdc05d539ed1919a18e0563fb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
