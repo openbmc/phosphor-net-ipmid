@@ -22,6 +22,30 @@
       "revId": "3f4aded713b1f87cdc05d539ed1919a18e0563fb",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "405213b1_9c76af96",
+        "filename": "message_parsers.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1000064
+      },
+      "writtenOn": "2021-06-10T10:31:43Z",
+      "side": 1,
+      "message": "Isn\u0027t cipher suits are enabled in the config?\nThe netipmid implementation supports several auth algos. E.g. SHA1 is still supported, but disabled in configuration.\nI tho, we should be more verbose and do not assume in the code that other cipher suites are unsupported even weak ones as long as we completely drop the support.",
+      "parentUuid": "acad6135_50b01061",
+      "range": {
+        "startLine": 202,
+        "startChar": 0,
+        "endLine": 205,
+        "endChar": 69
+      },
+      "revId": "3f4aded713b1f87cdc05d539ed1919a18e0563fb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
