@@ -22,6 +22,30 @@
       "revId": "c7fccbcbfb186bdd2703fd54e0f22ff711bea632",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "331c82cf_eae2f94d",
+        "filename": "message_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2021-06-11T14:38:41Z",
+      "side": 1,
+      "message": "I am not sure why this branch exists... It is used to execute non-IPMI commands? Maybe we should just delete this part.\n\nTom? Do you know what is going on here?\n\nAlso, I am responding to this before coffee, so reader beware.",
+      "parentUuid": "518da76c_c2d219fb",
+      "range": {
+        "startLine": 153,
+        "startChar": 0,
+        "endLine": 154,
+        "endChar": 77
+      },
+      "revId": "c7fccbcbfb186bdd2703fd54e0f22ff711bea632",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
