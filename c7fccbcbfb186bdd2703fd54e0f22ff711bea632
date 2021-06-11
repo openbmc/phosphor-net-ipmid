@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "518da76c_c2d219fb",
+        "filename": "message_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1000064
+      },
+      "writtenOn": "2021-06-11T08:48:09Z",
+      "side": 1,
+      "message": "Non-IPMI commands within a session in wrong state will still reach the D-Bus.\nLet\u0027s move the check above into the Table::executeCommand() handler.",
+      "range": {
+        "startLine": 153,
+        "startChar": 0,
+        "endLine": 154,
+        "endChar": 77
+      },
+      "revId": "c7fccbcbfb186bdd2703fd54e0f22ff711bea632",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
