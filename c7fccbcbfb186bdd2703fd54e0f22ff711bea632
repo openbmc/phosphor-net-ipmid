@@ -94,6 +94,30 @@
       "revId": "c7fccbcbfb186bdd2703fd54e0f22ff711bea632",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "caf4435c_0b65d2af",
+        "filename": "message_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1000064
+      },
+      "writtenOn": "2021-06-11T16:18:52Z",
+      "side": 1,
+      "message": "May be I\u0027m wrong. The following code executes any unknown command passed to Table::executeCommand regardless of it\u0027s type:\n\nhttps://github.com/openbmc/phosphor-net-ipmid/blob/master/command_table.cpp#L73\n\nFor instance, SOL commands are registered from sol_module.cpp and are known in the Table list.",
+      "parentUuid": "e02720cc_c4072517",
+      "range": {
+        "startLine": 153,
+        "startChar": 0,
+        "endLine": 154,
+        "endChar": 77
+      },
+      "revId": "c7fccbcbfb186bdd2703fd54e0f22ff711bea632",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
