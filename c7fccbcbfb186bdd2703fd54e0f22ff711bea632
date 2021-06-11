@@ -70,6 +70,30 @@
       "revId": "c7fccbcbfb186bdd2703fd54e0f22ff711bea632",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e02720cc_c4072517",
+        "filename": "message_handler.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2021-06-11T16:12:30Z",
+      "side": 1,
+      "message": "Right. I will move this to the Table::executeCommand() function. But to be clear, I don\u0027t think non-IPMI messages will get to d-bus. The non-IPMI functions all get handled locally.",
+      "parentUuid": "8f074e6f_c9287cff",
+      "range": {
+        "startLine": 153,
+        "startChar": 0,
+        "endLine": 154,
+        "endChar": 77
+      },
+      "revId": "c7fccbcbfb186bdd2703fd54e0f22ff711bea632",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
