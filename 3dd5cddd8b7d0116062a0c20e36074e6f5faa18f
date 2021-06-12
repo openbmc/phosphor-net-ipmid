@@ -22,6 +22,30 @@
       "revId": "3dd5cddd8b7d0116062a0c20e36074e6f5faa18f",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "582112ab_cd53cfc9",
+        "filename": "message_parsers.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2021-06-12T19:32:48Z",
+      "side": 1,
+      "message": "sure. It is the same result, just more verbose.",
+      "parentUuid": "2d719665_caf13976",
+      "range": {
+        "startLine": 106,
+        "startChar": 8,
+        "endLine": 106,
+        "endChar": 17
+      },
+      "revId": "3dd5cddd8b7d0116062a0c20e36074e6f5faa18f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
