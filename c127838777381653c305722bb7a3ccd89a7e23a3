@@ -46,6 +46,30 @@
       "revId": "c127838777381653c305722bb7a3ccd89a7e23a3",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3739c7a_495dd73f",
+        "filename": "command_table.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2021-06-12T19:28:01Z",
+      "side": 1,
+      "message": "Yeah, you are right. At this point, we should only be dealing with active sessions. All sessionZero and setup state stuff will get handled down at line 121.",
+      "parentUuid": "80b0819e_04d98542",
+      "range": {
+        "startLine": 71,
+        "startChar": 13,
+        "endLine": 72,
+        "endChar": 46
+      },
+      "revId": "c127838777381653c305722bb7a3ccd89a7e23a3",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
