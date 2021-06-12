@@ -22,6 +22,30 @@
       "revId": "c127838777381653c305722bb7a3ccd89a7e23a3",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "80b0819e_04d98542",
+        "filename": "command_table.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1000064
+      },
+      "writtenOn": "2021-06-12T11:19:29Z",
+      "side": 1,
+      "message": "Btw, we already check for session::sessionZero above.",
+      "parentUuid": "dab83bfe_be7360d8",
+      "range": {
+        "startLine": 71,
+        "startChar": 13,
+        "endLine": 72,
+        "endChar": 46
+      },
+      "revId": "c127838777381653c305722bb7a3ccd89a7e23a3",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
