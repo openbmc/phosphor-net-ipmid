@@ -244,30 +244,34 @@ class Session : public SessionIface
      * transaction time is compared against the session inactivity timeout.
      *
      */
-    bool isSessionActive(uint8_t sessionState)
+    bool isSessionActive(const std::chrono::microseconds& activeGrace,
+                         const std::chrono::microseconds& lessActiveGrace)
     {
         auto currentTime = std::chrono::steady_clock::now();
-        auto elapsedSeconds = std::chrono::duration_cast<std::chrono::seconds>(
-            currentTime - lastTime);
+        auto elapsedMicros =
+            std::chrono::duration_cast<std::chrono::microseconds>(currentTime -
+                                                                  lastTime);
 
-        State state = static_cast<session::State>(sessionState);
+        State state = static_cast<session::State>(this->state());
 
         switch (state)
         {
-            case State::setupInProgress:
-                if (elapsedSeconds < SESSION_SETUP_TIMEOUT)
+            case State::active:
+                if (elapsedMicros < activeGrace)
                 {
                     return true;
                 }
                 break;
-            case State::active:
-                if (elapsedSeconds < SESSION_INACTIVITY_TIMEOUT)
+            case State::setupInProgress:
+                if (elapsedMicros < lessActiveGrace)
                 {
                     return true;
                 }
+                break;
+            case State::tearDownInProgress:
                 break;
             default:
-                return false;
+                break;
         }
         return false;
     }
