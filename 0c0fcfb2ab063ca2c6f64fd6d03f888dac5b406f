@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "91358e50_225e137e",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-06-14T18:41:56Z",
+      "side": 1,
+      "message": "Do you really need to include \u003copenssl/crypto.h\u003e ?\n\nJust include and try,\n#include \u003cuser_channel/user_mgmt.hpp\u003e",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 27
+      },
+      "revId": "0c0fcfb2ab063ca2c6f64fd6d03f888dac5b406f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7206ca23_70975063",
+        "filename": "command/rakp12.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-06-14T18:41:56Z",
+      "side": 1,
+      "message": "This entire definition chunk not needed.\nYou can directly include it from user_channel/user_mgmt.hpp",
+      "range": {
+        "startLine": 78,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 21
+      },
+      "revId": "0c0fcfb2ab063ca2c6f64fd6d03f888dac5b406f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
