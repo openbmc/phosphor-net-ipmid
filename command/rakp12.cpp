@@ -164,11 +164,18 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     // Perform user name based lookup
     std::string userName(request->user_name, request->user_name_len);
     std::string passwd;
+    std::string message =
+        "Invalid login attempted on RMCP+ session by " + userName;
     uint8_t userId = ipmi::ipmiUserGetUserId(userName);
     if (userId == ipmi::invalidUserId)
     {
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
+        sd_journal_send("MESSAGE=%s", message.c_str(), "PRIORITY=%i", LOG_ERR,
+                        "REDFISH_MESSAGE_ID=%s",
+                        "OpenBMC.0.1.InvalidLoginAttempted",
+                        "REDFISH_MESSAGE_ARGS=%s", "RMCP+", NULL);
+
         return outPayload;
     }
     // check user is enabled before proceeding.
@@ -194,6 +201,10 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
         log<level::ERR>("Authentication failed - user already locked out",
                         entry("USER-ID=%d", static_cast<uint8_t>(userId)));
 
+        sd_journal_send("MESSAGE=%s", message.c_str(), "PRIORITY=%i", LOG_ERR,
+                        "REDFISH_MESSAGE_ID=%s",
+                        "OpenBMC.0.1.InvalidLoginAttempted",
+                        "REDFISH_MESSAGE_ARGS=%s", "RMCP+", NULL);
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
         return outPayload;
@@ -223,6 +234,10 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     {
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::INACTIVE_ROLE);
+        sd_journal_send("MESSAGE=%s", message.c_str(), "PRIORITY=%i", LOG_ERR,
+                        "REDFISH_MESSAGE_ID=%s",
+                        "OpenBMC.0.1.InvalidLoginAttempted",
+                        "REDFISH_MESSAGE_ARGS=%s", "RMCP+", NULL);
         return outPayload;
     }
     session->channelNum(chNum);
@@ -237,6 +252,10 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     }
     else
     {
+        sd_journal_send("MESSAGE=%s", message.c_str(), "PRIORITY=%i", LOG_ERR,
+                        "REDFISH_MESSAGE_ID=%s",
+                        "OpenBMC.0.1.InvalidLoginAttempted",
+                        "REDFISH_MESSAGE_ARGS=%s", "RMCP+", NULL);
         minPriv = session->sessionUserPrivAccess.privilege;
     }
     if (session->currentPrivilege() > minPriv)

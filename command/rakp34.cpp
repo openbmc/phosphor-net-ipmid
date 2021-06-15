@@ -177,6 +177,11 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
         std::get<session::Manager&>(singletonPool)
             .stopSession(session->getBMCSessionID());
 
+        sd_journal_send("MESSAGE=%s",
+                        "Invalid login attempted on RMCP+ session",
+                        "PRIORITY=%i", LOG_ERR, "REDFISH_MESSAGE_ID=%s",
+                        "OpenBMC.0.1.InvalidLoginAttempted",
+                        "REDFISH_MESSAGE_ARGS=%s", "RMCP+", NULL);
         return outPayload;
     }
 
