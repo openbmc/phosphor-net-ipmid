@@ -23,6 +23,20 @@ bool isChannelAccessModeEnabled(const uint8_t accessMode)
            static_cast<uint8_t>(ipmi::EChannelAccessMode::disabled);
 }
 
+void logMessage(const std::string& journalMsg, const std::string& redfishMsg)
+{
+    static constexpr std::string_view openBMCMessageRegistryVersion = "0.1.";
+    std::string messageID = "OpenBMC." +
+                            std::string(openBMCMessageRegistryVersion) +
+                            redfishMsg.c_str();
+    std::string messageArgs = "RMCP+";
+
+    phosphor::logging::log<phosphor::logging::level::ERR>(
+        journalMsg.c_str(),
+        phosphor::logging::entry("REDFISH_MESSAGE_ID=%s", messageID.c_str()),
+        phosphor::logging::entry("REDFISH_MESSAGE_ARGS=%s",
+                                 messageArgs.c_str()));
+}
 std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
                             const message::Handler& handler)
 {
@@ -66,12 +80,15 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     auto rakp1Size =
         sizeof(RAKP1request) - (userNameMaxLen - request->user_name_len);
 
+    std::string message =
+        "Log Redfish event for invalid login on rmcppsession by ";
     // Validate user name length in the message
     if (request->user_name_len > userNameMaxLen ||
         inPayload.size() != rakp1Size)
     {
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::INVALID_NAME_LENGTH);
+        logMessage(message.c_str(), "InvalidLoginAttempted");
         return outPayload;
     }
 
@@ -158,17 +175,20 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
         // Yes, NULL user name is not supported for security reasons.
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
+        logMessage(message.c_str(), "InvalidLoginAttempted");
         return outPayload;
     }
 
     // Perform user name based lookup
     std::string userName(request->user_name, request->user_name_len);
     std::string passwd;
+    message += userName;
     uint8_t userId = ipmi::ipmiUserGetUserId(userName);
     if (userId == ipmi::invalidUserId)
     {
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
+        logMessage(message.c_str(), "InvalidLoginAttempted");
         return outPayload;
     }
     // check user is enabled before proceeding.
@@ -178,6 +198,7 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     {
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::INACTIVE_ROLE);
+        logMessage(message.c_str(), "InvalidLoginAttempted");
         return outPayload;
     }
     // Get the user password for RAKP message authenticate
@@ -186,6 +207,7 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     {
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
+        logMessage(message.c_str(), "InvalidLoginAttempted");
         return outPayload;
     }
     // Check whether user is already locked for failed attempts
@@ -196,6 +218,7 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
 
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
+        logMessage(message.c_str(), "InvalidLoginAttempted");
         return outPayload;
     }
 
@@ -208,6 +231,7 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     {
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::INACTIVE_ROLE);
+        logMessage(message.c_str(), "InvalidLoginAttempted");
         return outPayload;
     }
     if (!isChannelAccessModeEnabled(session->sessionChannelAccess.accessMode))
@@ -216,6 +240,7 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
             "Channel access mode disabled.");
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::INACTIVE_ROLE);
+        logMessage(message.c_str(), "InvalidLoginAttempted");
         return outPayload;
     }
     if (session->sessionUserPrivAccess.privilege >
@@ -223,6 +248,7 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     {
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::INACTIVE_ROLE);
+        logMessage(message.c_str(), "InvalidLoginAttempted");
         return outPayload;
     }
     session->channelNum(chNum);
@@ -230,13 +256,14 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     // minimum privilege of Channel / User / session::privilege::USER
     // has to be used as session current privilege level
     uint8_t minPriv = 0;
-    if (session->sessionChannelAccess.privLimit <
+    if (session->sessionChannelAccess.privLimit <=
         session->sessionUserPrivAccess.privilege)
     {
         minPriv = session->sessionChannelAccess.privLimit;
     }
     else
     {
+        logMessage(message.c_str(), "InvalidLoginAttempted");
         minPriv = session->sessionUserPrivAccess.privilege;
     }
     if (session->currentPrivilege() > minPriv)
@@ -254,6 +281,8 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
             "Username/Privilege lookup failed for requested privilege");
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
+
+        logMessage(message.c_str(), "InvalidLoginAttempted");
         return outPayload;
     }
 
