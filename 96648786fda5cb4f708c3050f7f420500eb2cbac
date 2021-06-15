@@ -94,6 +94,29 @@
     },
     {
       "key": {
+        "uuid": "17330fd6_24a5564d",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1000479
+      },
+      "writtenOn": "2021-06-15T11:27:22Z",
+      "side": 1,
+      "message": "sd_journal_send  is the raw version of event logging. I am not seeing use of sd_journal_send anywhere else. If this repo is not using sd_journal_send then please use phosphor::logging with REDFISH_MESSAGE_ARGS for redfish event logs.",
+      "range": {
+        "startLine": 174,
+        "startChar": 8,
+        "endLine": 174,
+        "endChar": 23
+      },
+      "revId": "96648786fda5cb4f708c3050f7f420500eb2cbac",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3bc9885b_2130aebd",
         "filename": "command/rakp12.cpp",
         "patchSetId": 1
@@ -105,6 +128,29 @@
       "writtenOn": "2021-06-15T06:22:39Z",
       "side": 1,
       "message": "Please log message here also.\n\nYou can use the same Redfish message here i.e.) For security purposes, not revealing too much info about why login failed.",
+      "revId": "96648786fda5cb4f708c3050f7f420500eb2cbac",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d35b66d0_75a55823",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1000479
+      },
+      "writtenOn": "2021-06-15T11:27:22Z",
+      "side": 1,
+      "message": "All these logs seems repetitive. May be extract this to a small function which can be called at all other places.",
+      "range": {
+        "startLine": 204,
+        "startChar": 1,
+        "endLine": 208,
+        "endChar": 0
+      },
       "revId": "96648786fda5cb4f708c3050f7f420500eb2cbac",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
