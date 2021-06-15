@@ -74,5 +74,7 @@ struct RAKP2response
  */
 std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
                             const message::Handler& handler);
+void logMessageHook(const std::string& journalMsg,
+                    const std::string& redfishMsg);
 
 } // namespace command
