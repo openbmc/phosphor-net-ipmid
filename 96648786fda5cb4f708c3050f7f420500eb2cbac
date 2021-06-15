@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d76faa3a_3a093f48",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-06-15T06:22:39Z",
+      "side": 1,
+      "message": "nit: RMCP+ session",
+      "range": {
+        "startLine": 7,
+        "startChar": 39,
+        "endLine": 7,
+        "endChar": 51
+      },
+      "revId": "96648786fda5cb4f708c3050f7f420500eb2cbac",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1921ebec_c4761fb4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-06-15T06:22:39Z",
+      "side": 1,
+      "message": "nit: Redfish\nUse same convention everywhere.",
+      "range": {
+        "startLine": 12,
+        "startChar": 36,
+        "endLine": 12,
+        "endChar": 43
+      },
+      "revId": "96648786fda5cb4f708c3050f7f420500eb2cbac",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78494fbd_686a3aff",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-06-15T06:22:39Z",
+      "side": 1,
+      "message": "Can be rewritten:\nInvalid login attempted on IPMI RMCP+ session",
+      "range": {
+        "startLine": 27,
+        "startChar": 24,
+        "endLine": 27,
+        "endChar": 71
+      },
+      "revId": "96648786fda5cb4f708c3050f7f420500eb2cbac",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7af320bb_a27b21ea",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-06-15T06:22:39Z",
+      "side": 1,
+      "message": "Update the message as per commit message comment.",
+      "range": {
+        "startLine": 168,
+        "startChar": 17,
+        "endLine": 168,
+        "endChar": 42
+      },
+      "revId": "96648786fda5cb4f708c3050f7f420500eb2cbac",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3bc9885b_2130aebd",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-06-15T06:22:39Z",
+      "side": 1,
+      "message": "Please log message here also.\n\nYou can use the same Redfish message here i.e.) For security purposes, not revealing too much info about why login failed.",
+      "revId": "96648786fda5cb4f708c3050f7f420500eb2cbac",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
