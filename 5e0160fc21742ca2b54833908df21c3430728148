@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "30a623af_5b25b3d7",
+        "filename": "session.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-06-15T12:10:59Z",
+      "side": 1,
+      "message": "Yet to cover the patch in detail, good to capture the logic in the doxygen as well. The idea looks good.",
+      "revId": "5e0160fc21742ca2b54833908df21c3430728148",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a5e511ae_b1808e5e",
         "filename": "sessions_manager.cpp",
         "patchSetId": 1
@@ -13,6 +30,30 @@
       "writtenOn": "2021-06-15T09:06:43Z",
       "side": 1,
       "message": "We might potentiall have a race over there. The \"cleanStaleEntries\" is also being called from \"startSession\". We need to guard sessionsMap and sessionHandleMap.",
+      "range": {
+        "startLine": 329,
+        "startChar": 12,
+        "endLine": 329,
+        "endChar": 29
+      },
+      "revId": "5e0160fc21742ca2b54833908df21c3430728148",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47d5428c_e810e01c",
+        "filename": "sessions_manager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-06-15T12:10:59Z",
+      "side": 1,
+      "message": "netipmid is running sd_event_loop, so two invocations of cleanStaleEntries will not happen simultaneously.",
+      "parentUuid": "a5e511ae_b1808e5e",
       "range": {
         "startLine": 329,
         "startChar": 12,
