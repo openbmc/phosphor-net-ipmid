@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "af026059_52175774",
+        "filename": "session.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2021-06-15T18:29:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "30a623af_5b25b3d7",
+      "revId": "5e0160fc21742ca2b54833908df21c3430728148",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a5e511ae_b1808e5e",
         "filename": "sessions_manager.cpp",
         "patchSetId": 1
