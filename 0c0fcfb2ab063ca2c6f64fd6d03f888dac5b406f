@@ -45,6 +45,30 @@
       "revId": "0c0fcfb2ab063ca2c6f64fd6d03f888dac5b406f",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6d71966c_97b1c57b",
+        "filename": "command/rakp12.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1000416
+      },
+      "writtenOn": "2021-06-16T07:11:44Z",
+      "side": 1,
+      "message": "In two ways we can achieve this. \nFirst - in phosphor-host-ipmid recipe, move this class definition to user_channel/user_layer.hpp\nSecond - include this header file in Makefile.am of phosphor-host-ipmid recipe.\n nobase_include_HEADERS \u003d \\\n        user_channel/channel_layer.hpp \\\n-       user_channel/user_layer.hpp\n+       user_channel/user_layer.hpp \\\n+       user_channel/user_mgmt.hpp",
+      "parentUuid": "7206ca23_70975063",
+      "range": {
+        "startLine": 78,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 21
+      },
+      "revId": "0c0fcfb2ab063ca2c6f64fd6d03f888dac5b406f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
