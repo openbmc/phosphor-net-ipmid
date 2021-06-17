@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "244b7ada_fc48fab7",
+        "filename": "sessions_manager.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1000235
+      },
+      "writtenOn": "2021-06-17T22:14:42Z",
+      "side": 1,
+      "message": "The iterator use looks okay, just noting iter++ used above but ++iter used here.",
+      "range": {
+        "startLine": 272,
+        "startChar": 14,
+        "endLine": 272,
+        "endChar": 18
+      },
+      "revId": "186575b72558aa820d6fa854a7283f1987924b76",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "835e7ea5_68cc4513",
+        "filename": "sessions_manager.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1000235
+      },
+      "writtenOn": "2021-06-17T22:14:42Z",
+      "side": 1,
+      "message": "spelling: inversely",
+      "range": {
+        "startLine": 119,
+        "startChar": 44,
+        "endLine": 119,
+        "endChar": 52
+      },
+      "revId": "186575b72558aa820d6fa854a7283f1987924b76",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
