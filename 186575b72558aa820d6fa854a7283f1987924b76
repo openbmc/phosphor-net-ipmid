@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "a31287ed_16fb9b9e",
+        "filename": "sessions_manager.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2021-06-18T02:04:31Z",
+      "side": 1,
+      "message": "I tend to only use pre-increment when it makes a difference. Post increment is what this language was named for, after all.\n\nPlease forgive me for changing a line of code that is out of scope. :)",
+      "parentUuid": "244b7ada_fc48fab7",
+      "range": {
+        "startLine": 272,
+        "startChar": 14,
+        "endLine": 272,
+        "endChar": 18
+      },
+      "revId": "186575b72558aa820d6fa854a7283f1987924b76",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "835e7ea5_68cc4513",
         "filename": "sessions_manager.hpp",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "186575b72558aa820d6fa854a7283f1987924b76",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d00e5dee_24af5f10",
+        "filename": "sessions_manager.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2021-06-18T02:04:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "835e7ea5_68cc4513",
+      "range": {
+        "startLine": 119,
+        "startChar": 44,
+        "endLine": 119,
+        "endChar": 52
+      },
+      "revId": "186575b72558aa820d6fa854a7283f1987924b76",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
