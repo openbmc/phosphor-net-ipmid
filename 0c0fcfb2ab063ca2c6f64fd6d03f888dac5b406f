@@ -69,6 +69,30 @@
       "revId": "0c0fcfb2ab063ca2c6f64fd6d03f888dac5b406f",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c9790a80_7b45dc67",
+        "filename": "command/rakp12.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1000900
+      },
+      "writtenOn": "2021-06-18T17:09:16Z",
+      "side": 1,
+      "message": "It should go somewhere even more generic IMO. ipmid/types.hpp?",
+      "parentUuid": "6d71966c_97b1c57b",
+      "range": {
+        "startLine": 78,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 21
+      },
+      "revId": "0c0fcfb2ab063ca2c6f64fd6d03f888dac5b406f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
