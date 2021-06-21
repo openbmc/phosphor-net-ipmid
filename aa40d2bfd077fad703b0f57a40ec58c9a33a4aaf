@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "52236bb5_b41bfc52",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1001094
+      },
+      "writtenOn": "2021-06-21T05:18:02Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "abfc1012_48421e48",
+      "range": {
+        "startLine": 35,
+        "startChar": 8,
+        "endLine": 35,
+        "endChar": 24
+      },
+      "revId": "aa40d2bfd077fad703b0f57a40ec58c9a33a4aaf",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8ecb932e_f17cc692",
         "filename": "command/rakp12.cpp",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2021-06-18T17:20:08Z",
       "side": 1,
       "message": "you need to log a message without username before this return also:\n\n    std::string message \u003d\n        \"Log Redfish event for invalid login on rmcppsession\";\n    logMessageHook(message.c_str(), \"InvalidLoginAttempted\");\n\nAnd in line 193, message +\u003d userName;",
+      "range": {
+        "startLine": 175,
+        "startChar": 8,
+        "endLine": 175,
+        "endChar": 20
+      },
+      "revId": "aa40d2bfd077fad703b0f57a40ec58c9a33a4aaf",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c89776fd_b1c5bc3e",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1001094
+      },
+      "writtenOn": "2021-06-21T05:18:02Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "8ecb932e_f17cc692",
       "range": {
         "startLine": 175,
         "startChar": 8,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "70333cee_5e154fa2",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1001094
+      },
+      "writtenOn": "2021-06-21T05:18:02Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "c4cb139d_f6e7572b",
+      "range": {
+        "startLine": 187,
+        "startChar": 8,
+        "endLine": 187,
+        "endChar": 11
+      },
+      "revId": "aa40d2bfd077fad703b0f57a40ec58c9a33a4aaf",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "625593ed_095911b9",
         "filename": "command/rakp12.cpp",
         "patchSetId": 4
@@ -82,6 +154,30 @@
       "writtenOn": "2021-06-18T17:20:08Z",
       "side": 1,
       "message": "This return also needs to be covered.",
+      "range": {
+        "startLine": 243,
+        "startChar": 8,
+        "endLine": 243,
+        "endChar": 15
+      },
+      "revId": "aa40d2bfd077fad703b0f57a40ec58c9a33a4aaf",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d360c6e0_79c26d2e",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 1001094
+      },
+      "writtenOn": "2021-06-21T05:18:02Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "625593ed_095911b9",
       "range": {
         "startLine": 243,
         "startChar": 8,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "83c39191_7aa9510a",
+        "filename": "command/rakp12.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1001094
+      },
+      "writtenOn": "2021-06-21T05:18:02Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "ce7c5c01_ea734b47",
+      "range": {
+        "startLine": 77,
+        "startChar": 5,
+        "endLine": 77,
+        "endChar": 19
+      },
+      "revId": "aa40d2bfd077fad703b0f57a40ec58c9a33a4aaf",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f3a9305e_79499fd5",
         "filename": "command/rakp12.hpp",
         "patchSetId": 4
@@ -137,6 +257,30 @@
       "revId": "aa40d2bfd077fad703b0f57a40ec58c9a33a4aaf",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8dca8055_47d219b5",
+        "filename": "command/rakp12.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1001094
+      },
+      "writtenOn": "2021-06-21T05:18:02Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "f3a9305e_79499fd5",
+      "range": {
+        "startLine": 77,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 51
+      },
+      "revId": "aa40d2bfd077fad703b0f57a40ec58c9a33a4aaf",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": false
     }
   ]
 }
