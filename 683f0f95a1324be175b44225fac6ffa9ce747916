@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a2f22dcd_d4cb19f8",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-06-22T18:18:04Z",
+      "side": 1,
+      "message": "nit: This can also be made \nstatic constexpr",
+      "range": {
+        "startLine": 32,
+        "startChar": 4,
+        "endLine": 32,
+        "endChar": 28
+      },
+      "revId": "683f0f95a1324be175b44225fac6ffa9ce747916",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "263ebd06_fd6773de",
+        "filename": "command/rakp12.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-06-22T18:18:04Z",
+      "side": 1,
+      "message": "\"@brief\" missing. You can treat this as subject line.\n\nAdd body section also, refer previous API RAKP12()",
+      "range": {
+        "startLine": 79,
+        "startChar": 2,
+        "endLine": 79,
+        "endChar": 3
+      },
+      "revId": "683f0f95a1324be175b44225fac6ffa9ce747916",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
