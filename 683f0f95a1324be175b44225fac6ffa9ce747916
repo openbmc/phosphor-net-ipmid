@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "e66d87b9_a5359cce",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1000269
+      },
+      "writtenOn": "2021-06-24T07:05:19Z",
+      "side": 1,
+      "message": ":) I like this.\n\nThis should be checked after event log is generated. This should be 3 step in you test.",
+      "range": {
+        "startLine": 16,
+        "startChar": 3,
+        "endLine": 16,
+        "endChar": 36
+      },
+      "revId": "683f0f95a1324be175b44225fac6ffa9ce747916",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "89841efb_56c9da4d",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000269
+      },
+      "writtenOn": "2021-06-24T07:05:19Z",
+      "side": 1,
+      "message": "redfishMessageID",
+      "range": {
+        "startLine": 31,
+        "startChar": 28,
+        "endLine": 31,
+        "endChar": 38
+      },
+      "revId": "683f0f95a1324be175b44225fac6ffa9ce747916",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a2f22dcd_d4cb19f8",
         "filename": "command/rakp12.cpp",
         "patchSetId": 5
@@ -18,6 +64,75 @@
         "startChar": 4,
         "endLine": 32,
         "endChar": 28
+      },
+      "revId": "683f0f95a1324be175b44225fac6ffa9ce747916",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "677ed5f9_9a8baf9c",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1000269
+      },
+      "writtenOn": "2021-06-24T07:05:19Z",
+      "side": 1,
+      "message": "Initially I thought, This method \"logMessage\" is defined for generic, so that it can be used for any kind of redfish event logs.  So input argument i.e messageID \"const std::string\u0026 redfishMsg\" is step towards that but Arguments defers for each message ID so that also need to be generalized.\n\nThis case you can make it specific like below without any input params or make it generic by passing Arguments as inut params to this API.\ninline void logInvalidLoginRedfishEvent()\n{\n   .....\n}",
+      "range": {
+        "startLine": 32,
+        "startChar": 4,
+        "endLine": 32,
+        "endChar": 38
+      },
+      "revId": "683f0f95a1324be175b44225fac6ffa9ce747916",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "17a1326a_66fae2ee",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1000269
+      },
+      "writtenOn": "2021-06-24T07:05:19Z",
+      "side": 1,
+      "message": "This doesn\u0027t make sense as journalctl logs. You can just log like \"Invalid login attempted via RCMPP interface\"",
+      "range": {
+        "startLine": 84,
+        "startChar": 9,
+        "endLine": 84,
+        "endChar": 63
+      },
+      "revId": "683f0f95a1324be175b44225fac6ffa9ce747916",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4eff1622_704842a3",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1000269
+      },
+      "writtenOn": "2021-06-24T07:05:19Z",
+      "side": 1,
+      "message": "out of scope of this change. make this as separate patch,\n\nAnyway why \"\u003d\" is needed? Its doesn\u0027t matter in case of equal. minPriv will be same.",
+      "range": {
+        "startLine": 259,
+        "startChar": 49,
+        "endLine": 259,
+        "endChar": 50
       },
       "revId": "683f0f95a1324be175b44225fac6ffa9ce747916",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
