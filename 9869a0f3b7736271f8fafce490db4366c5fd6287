@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "23bd9e8b_1f338731",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-07-14T17:11:22Z",
+      "side": 1,
+      "message": "Why you make it as \u0027INFO\u0027 when messageArgs.empty() ?\nI guess you intended this also as \u0027ERR\u0027.",
+      "range": {
+        "startLine": 36,
+        "startChar": 57,
+        "endLine": 36,
+        "endChar": 61
+      },
+      "revId": "9869a0f3b7736271f8fafce490db4366c5fd6287",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
