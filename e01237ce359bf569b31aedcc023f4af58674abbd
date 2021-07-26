@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e22d43f0_86fc668f",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1000269
+      },
+      "writtenOn": "2021-07-26T13:18:41Z",
+      "side": 1,
+      "message": "This argument also not needed, given that function name is not change to represent single message entry instead of generic.",
+      "range": {
+        "startLine": 201,
+        "startChar": 46,
+        "endLine": 201,
+        "endChar": 67
+      },
+      "revId": "e01237ce359bf569b31aedcc023f4af58674abbd",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
