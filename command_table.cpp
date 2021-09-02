@@ -1,11 +1,11 @@
 #include "command_table.hpp"
-
 #include "main.hpp"
 #include "message_handler.hpp"
 #include "message_parsers.hpp"
 #include "sessions_manager.hpp"
 
 #include <iomanip>
+#include <ipmid/types.hpp>
 #include <main.hpp>
 #include <phosphor-logging/elog-errors.hpp>
 #include <phosphor-logging/log.hpp>
@@ -14,13 +14,6 @@
 
 using namespace sdbusplus::xyz::openbmc_project::Common::Error;
 using namespace phosphor::logging;
-
-namespace ipmi
-{
-using Value = std::variant<bool, uint8_t, int16_t, uint16_t, int32_t, uint32_t,
-                           int64_t, uint64_t, double, std::string>;
-
-} // namespace ipmi
 
 namespace command
 {
