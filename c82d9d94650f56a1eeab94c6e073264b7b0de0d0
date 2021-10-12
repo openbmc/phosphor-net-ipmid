@@ -16,6 +16,24 @@
       "revId": "c82d9d94650f56a1eeab94c6e073264b7b0de0d0",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5ea1bda4_9553490a",
+        "filename": "command/session_cmds.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1000416
+      },
+      "writtenOn": "2021-10-12T19:27:30Z",
+      "side": 1,
+      "message": "This is already covered in line#49.\nBelow are the test results.\n\n~$ipmitool -I lanplus -H \u003cBMC-IP\u003e -U \u003cusername\u003e -P \u003cpwd\u003e -C 17 raw 0x06 0x3B 0x04\n 04\n~$ipmitool -I lanplus -H \u003cBMC-IP\u003e -U \u003cusername\u003e -P \u003cpwd\u003e -C 17 raw 0x06 0x3B 0x03\n 03\n~$ipmitool -I lanplus -H \u003cBMC-IP\u003e -U \u003cusername\u003e -P \u003cpwd\u003e -C 17 raw 0x06 0x3B 0x02\n 02\n~$ipmitool -I lanplus -H \u003cBMC-IP\u003e -U \u003cusername\u003e -P \u003cpwd\u003e -C 17 raw 0x06 0x3B 0x01\n 01\n~$ipmitool -I lanplus -H \u003cBMC-IP\u003e -U \u003cusername\u003e -P \u003cpwd\u003e -C 17 raw 0x06 0x3B 0x0\n 04\n~$ipmitool -I lanplus -H \u003cBMC-IP\u003e -U \u003cusername\u003e -P \u003cpwd\u003e -C 17 raw 0x06 0x3B 0x06\nUnable to send RAW command (channel\u003d0x0 netfn\u003d0x6 lun\u003d0x0 cmd\u003d0x3b rsp\u003d0x81): Unknown (0x81)\n~$ipmitool -I lanplus -H \u003cBMC-IP\u003e -U \u003cusername\u003e -P \u003cpwd\u003e -C 17 raw 0x06 0x3B 0x07\nUnable to send RAW command (channel\u003d0x0 netfn\u003d0x6 lun\u003d0x0 cmd\u003d0x3b rsp\u003d0x81): Unknown (0x81)\n~$ipmitool -I lanplus -H \u003cBMC-IP\u003e -U \u003cusername\u003e -P \u003cpwd\u003e -C 17 raw 0x06 0x3B 0x0f\nUnable to send RAW command (channel\u003d0x0 netfn\u003d0x6 lun\u003d0x0 cmd\u003d0x3b rsp\u003d0x81): Unknown (0x81)\n~$ipmitool -I lanplus -H \u003cBMC-IP\u003e -U \u003cusername\u003e -P \u003cpwd\u003e -C 17 raw 0x06 0x3B 0x0a\nUnable to send RAW command (channel\u003d0x0 netfn\u003d0x6 lun\u003d0x0 cmd\u003d0x3b rsp\u003d0x81): Unknown (0x81)",
+      "parentUuid": "39e6455c_ec821e57",
+      "revId": "c82d9d94650f56a1eeab94c6e073264b7b0de0d0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
