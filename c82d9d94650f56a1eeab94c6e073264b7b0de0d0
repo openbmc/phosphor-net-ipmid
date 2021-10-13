@@ -34,6 +34,24 @@
       "revId": "c82d9d94650f56a1eeab94c6e073264b7b0de0d0",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0f9c777e_058110c6",
+        "filename": "command/session_cmds.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-10-13T11:57:31Z",
+      "side": 1,
+      "message": "IPMI spec says, 1h (callback) value is not allowed.\ni.e.) session created with USER privilege can not go back to callback privilege (or) session created with default CALLBACK privilege can not set again to callback privilege (reasonable). \nI don\u0027t know the full rationale behind that though 😊\n\nGoing by that this command should fail.\n~$ipmitool -I lanplus -H \u003cBMC-IP\u003e -U \u003cusername\u003e -P \u003cpwd\u003e -C 17 raw 0x06 0x3B 0x01",
+      "parentUuid": "5ea1bda4_9553490a",
+      "revId": "c82d9d94650f56a1eeab94c6e073264b7b0de0d0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
