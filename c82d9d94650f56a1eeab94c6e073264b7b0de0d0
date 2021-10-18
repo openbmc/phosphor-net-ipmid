@@ -52,6 +52,24 @@
       "revId": "c82d9d94650f56a1eeab94c6e073264b7b0de0d0",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ff6eefed_4071063c",
+        "filename": "command/session_cmds.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1000416
+      },
+      "writtenOn": "2021-10-18T06:56:51Z",
+      "side": 1,
+      "message": "Fixed. Thanks",
+      "parentUuid": "0f9c777e_058110c6",
+      "revId": "c82d9d94650f56a1eeab94c6e073264b7b0de0d0",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
