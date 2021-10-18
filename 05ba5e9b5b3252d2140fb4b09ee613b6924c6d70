@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "28c0b342_da3476b1",
+        "filename": "command/session_cmds.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-10-18T17:13:18Z",
+      "side": 1,
+      "message": "As per spec, Only CALLBACK privilege is reserved. \nOEM privilege needs to be supported, right ?\nAlso, please move this check to line number 35 like:\n\nif (reqPrivilegeLevel \u003d\u003d\n            static_cast\u003cuint8_t\u003e(session::Privilege::CALLBACK)\n{\n        response-\u003ecompletionCode \u003d IPMI_CC_INVALID_FIELD_REQUEST;\n        return outPayload;\n}",
+      "range": {
+        "startLine": 51,
+        "startChar": 8,
+        "endLine": 51,
+        "endChar": 73
+      },
+      "revId": "05ba5e9b5b3252d2140fb4b09ee613b6924c6d70",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
