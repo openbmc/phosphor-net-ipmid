@@ -22,6 +22,30 @@
       "revId": "05ba5e9b5b3252d2140fb4b09ee613b6924c6d70",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc9ddc9f_c869af4c",
+        "filename": "command/session_cmds.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1000416
+      },
+      "writtenOn": "2021-10-19T18:27:35Z",
+      "side": 1,
+      "message": "1. Since response \u0026 reqPrivilegeLevel declared in line#37 and 40, Unable to move this code snippet to line#35.\n2. Yes as per the IPMI spec, only CALLBACK is reserved. But as per line#57, OEM privilege is not allowed. Below is not allowing if the privilege is OEM and till 0x0f.\nif (reqPrivilegeLevel \u003e (static_cast\u003cuint8_t\u003e(session-\u003ereqMaxPrivLevel) \u0026\n                             session::reqMaxPrivMask))\n    {\n        // Requested level exceeds Channel and/or User Privilege Limit\n        response-\u003ecompletionCode \u003d IPMI_CC_EXCEEDS_USER_PRIV;\n        return outPayload;\n    }",
+      "parentUuid": "28c0b342_da3476b1",
+      "range": {
+        "startLine": 51,
+        "startChar": 8,
+        "endLine": 51,
+        "endChar": 73
+      },
+      "revId": "05ba5e9b5b3252d2140fb4b09ee613b6924c6d70",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
