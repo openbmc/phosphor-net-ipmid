@@ -70,6 +70,30 @@
       "revId": "05ba5e9b5b3252d2140fb4b09ee613b6924c6d70",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "69694bb3_c05d9074",
+        "filename": "command/session_cmds.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1000418
+      },
+      "writtenOn": "2021-10-20T16:58:52Z",
+      "side": 1,
+      "message": "Yes. As per spec, only values session::Privilege::CALLBACK and values greater than ession::Privilege::OEM are reserved values and we should return IPMI_CC_INVALID_FIELD_REQUEST only for these values.\nThanks for fixing. Done.",
+      "parentUuid": "707822da_4422103a",
+      "range": {
+        "startLine": 51,
+        "startChar": 8,
+        "endLine": 51,
+        "endChar": 73
+      },
+      "revId": "05ba5e9b5b3252d2140fb4b09ee613b6924c6d70",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
