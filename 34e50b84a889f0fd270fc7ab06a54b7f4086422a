@@ -22,6 +22,30 @@
       "revId": "34e50b84a889f0fd270fc7ab06a54b7f4086422a",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a64a1d2_4b83cc93",
+        "filename": "command/session_cmds.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1000416
+      },
+      "writtenOn": "2021-10-26T05:34:07Z",
+      "side": 1,
+      "message": "Only CALLBACK privilege is reserved. PrivilegeLevel 0 (zero) is still valid. So fixed like this.",
+      "parentUuid": "34a0bff0_4c970eb4",
+      "range": {
+        "startLine": 49,
+        "startChar": 26,
+        "endLine": 49,
+        "endChar": 28
+      },
+      "revId": "34e50b84a889f0fd270fc7ab06a54b7f4086422a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
     }
   ]
 }
