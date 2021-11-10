@@ -9,6 +9,7 @@
 #include <ipmid/sessionhelper.hpp>
 #include <ipmid/utils.hpp>
 #include <phosphor-logging/log.hpp>
+#include <variant>
 
 using namespace std::chrono_literals;
 
@@ -87,95 +88,36 @@ std::vector<uint8_t>
     return outPayload;
 }
 
-/**
- * @brief set the session state as teardown
- *
- * This function is to set the session state to tear down in progress if the
- * state is active.
- *
- * @param[in] busp - Dbus obj
- * @param[in] service - service name
- * @param[in] obj - object path
- *
- * @return success completion code if it sets the session state to
- * tearDownInProgress else return the corresponding error completion code.
- **/
-uint8_t setSessionState(std::shared_ptr<sdbusplus::asio::connection>& busp,
-                        const std::string& service, const std::string& obj)
-{
-    try
-    {
-        uint8_t sessionState = std::get<uint8_t>(ipmi::getDbusProperty(
-            *busp, service, obj, session::sessionIntf, "State"));
-
-        if (sessionState == static_cast<uint8_t>(session::State::active))
-        {
-            ipmi::setDbusProperty(
-                *busp, service, obj, session::sessionIntf, "State",
-                static_cast<uint8_t>(session::State::tearDownInProgress));
-            return ipmi::ccSuccess;
-        }
-    }
-    catch (const std::exception& e)
-    {
-        log<level::ERR>("Failed in getting session state property",
-                        entry("service=%s", service.c_str()),
-                        entry("object path=%s", obj.c_str()),
-                        entry("interface=%s", session::sessionIntf));
-        return ipmi::ccUnspecifiedError;
-    }
-
-    return ipmi::ccInvalidFieldRequest;
-}
-
 uint8_t closeOtherNetInstanceSession(const uint32_t reqSessionId,
                                      const uint8_t reqSessionHandle,
                                      const uint8_t currentSessionPriv)
 {
-    auto busp = getSdBus();
-
-    try
+    auto session = session::Manager::get().getSession(reqSessionId);
+    if (!session)
     {
-        ipmi::ObjectTree objectTree = ipmi::getAllDbusObjects(
-            *busp, session::sessionManagerRootPath, session::sessionIntf);
-
-        for (auto& objectTreeItr : objectTree)
-        {
-            const std::string obj = objectTreeItr.first;
-
-            if (isSessionObjectMatched(obj, reqSessionId, reqSessionHandle))
-            {
-                auto& serviceMap = objectTreeItr.second;
-
-                if (serviceMap.size() != 1)
-                {
-                    return ipmi::ccUnspecifiedError;
-                }
-
-                auto itr = serviceMap.begin();
-                const std::string service = itr->first;
-                uint8_t closeSessionPriv =
-                    std::get<uint8_t>(ipmi::getDbusProperty(
-                        *busp, service, obj, session::sessionIntf,
-                        "CurrentPrivilege"));
-
-                if (currentSessionPriv < closeSessionPriv)
-                {
-                    return ipmi::ccInsufficientPrivilege;
-                }
-                return setSessionState(busp, service, obj);
-            }
-        }
-    }
-    catch (const sdbusplus::exception::exception& e)
-    {
-        log<level::ERR>("Failed to fetch object from dbus",
-                        entry("INTERFACE=%s", session::sessionIntf),
-                        entry("ERRMSG=%s", e.what()));
+        log<level::ERR>("Trying to close unknown session");
         return ipmi::ccUnspecifiedError;
     }
 
-    return ipmi::ccInvalidFieldRequest;
+    auto closeSessionPriv = session->currentPrivilege();
+    if (currentSessionPriv < closeSessionPriv)
+    {
+        return ipmi::ccInsufficientPrivilege;
+    }
+
+    uint8_t sessionState = session->state();
+
+    if (sessionState != static_cast<uint8_t>(session::State::active))
+    {
+        return ipmi::ccInvalidFieldRequest;
+    }
+
+    if (!session::Manager::get().stopSession(reqSessionId))
+    {
+        return session::ccInvalidSessionId;
+    }
+
+    return ipmi::ccSuccess;
 }
 
 uint8_t closeMyNetInstanceSession(uint32_t reqSessionId,
@@ -213,6 +155,9 @@ uint8_t closeMyNetInstanceSession(uint32_t reqSessionId,
     }
     catch (const std::exception& e)
     {
+        std::string x =
+            "closeSession: 4.8: " + std::string(session::sessionIntf);
+        log<level::ERR>(x.c_str());
         log<level::ERR>("Failed to get session manager instance",
                         entry("ERRMSG=%s", e.what()));
         return ipmi::ccUnspecifiedError;
@@ -285,6 +230,7 @@ std::vector<uint8_t> closeSession(const std::vector<uint8_t>& inPayload,
         return outPayload;
     }
 
+    log<level::ERR>(info.c_str());
     if (reqSessionId >> myNetInstanceSessionIdShiftMask ==
             ipmiNetworkInstance ||
         (reqSessionId == session::sessionZero &&
