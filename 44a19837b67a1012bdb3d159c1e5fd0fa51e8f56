@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "784f3bdd_7170f117",
+        "filename": "command/session_cmds.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1001048
+      },
+      "writtenOn": "2021-11-24T04:18:31Z",
+      "side": 1,
+      "message": "nit : before returning its better to add error log message.",
+      "range": {
+        "startLine": 111,
+        "startChar": 8,
+        "endLine": 111,
+        "endChar": 14
+      },
+      "revId": "44a19837b67a1012bdb3d159c1e5fd0fa51e8f56",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "676c71ad_4f5b873c",
+        "filename": "command/session_cmds.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1001048
+      },
+      "writtenOn": "2021-11-24T04:18:31Z",
+      "side": 1,
+      "message": "same as line number 111.",
+      "range": {
+        "startLine": 116,
+        "startChar": 8,
+        "endLine": 116,
+        "endChar": 14
+      },
+      "revId": "44a19837b67a1012bdb3d159c1e5fd0fa51e8f56",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    }
+  ]
+}
