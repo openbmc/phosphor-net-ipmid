@@ -1,0 +1,8 @@
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+1: Saravanan Palanisamy <saravanan.palanisamy@linux.intel.com>
+Code-Review+2: Vernon Mauery <vernon.mauery@linux.intel.com>
+Submitted-by: Vernon Mauery <vernon.mauery@linux.intel.com>
+Submitted-at: Mon, 24 Jan 2022 19:35:59 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/phosphor-net-ipmid/+/50266
+Project: openbmc/phosphor-net-ipmid
+Branch: refs/heads/master
