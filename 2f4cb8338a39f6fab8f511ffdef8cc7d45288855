@@ -24,6 +24,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "963ecd35_0eb87240",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1001156
+      },
+      "writtenOn": "2022-02-01T13:48:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7978e2f5_e7baacbe",
+      "range": {
+        "startLine": 155,
+        "startChar": 0,
+        "endLine": 155,
+        "endChar": 62
+      },
+      "revId": "2f4cb8338a39f6fab8f511ffdef8cc7d45288855",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "338b41be_e90a9eb4",
@@ -47,6 +71,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1226ac50_9a85f678",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1001156
+      },
+      "writtenOn": "2022-02-01T13:48:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "338b41be_e90a9eb4",
+      "range": {
+        "startLine": 156,
+        "startChar": 0,
+        "endLine": 156,
+        "endChar": 68
+      },
+      "revId": "2f4cb8338a39f6fab8f511ffdef8cc7d45288855",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "dd3024b1_72aba6f8",
@@ -60,6 +108,30 @@
       "writtenOn": "2022-01-27T23:20:01Z",
       "side": 1,
       "message": "why are you comparing to DefaultCipherIndex (0) here? Cipher suite 0 is not implemented so this might be problematic. Also, I think it should be comparing to the actual cipher suite that is being requested by the OpenSession packet. This we will need to convert from the triplet of authentication, integrity, confidentiality numbers to a cipher suite number.",
+      "range": {
+        "startLine": 168,
+        "startChar": 28,
+        "endLine": 168,
+        "endChar": 46
+      },
+      "revId": "2f4cb8338a39f6fab8f511ffdef8cc7d45288855",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3eae79ea_20c077a2",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1001156
+      },
+      "writtenOn": "2022-02-01T13:48:43Z",
+      "side": 1,
+      "message": "Currently we are only supporting cipher id 17 which is available at index 0 by default. we are having cipher suite number already available in cipher_list.json file, I think no need to convert from authentication, integrity and confidentiality.",
+      "parentUuid": "dd3024b1_72aba6f8",
       "range": {
         "startLine": 168,
         "startChar": 28,
