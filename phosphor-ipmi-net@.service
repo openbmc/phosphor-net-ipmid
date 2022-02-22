@@ -1,7 +1,9 @@
 [Unit]
 Description=Network IPMI daemon
 Requires=phosphor-ipmi-host.service
+Requires=xyz.openbmc_project.Network.service
 After=phosphor-ipmi-host.service
+After=xyz.openbmc_project.Network.service
 
 [Service]
 ExecStart=/usr/bin/netipmid -c %i
