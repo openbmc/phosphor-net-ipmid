@@ -10,6 +10,7 @@
 #include <map>
 #include <sdbusplus/asio/connection.hpp>
 #include <string>
+#include <thread>
 
 namespace ipmi
 {
@@ -38,6 +39,9 @@ constexpr auto INTF_VLAN = "xyz.openbmc_project.Network.VLAN";
 constexpr auto INTF_ETHERNET = "xyz.openbmc_project.Network.EthernetInterface";
 constexpr auto METHOD_GET = "Get";
 constexpr auto PROP_INTF = "org.freedesktop.DBus.Properties";
+
+constexpr auto networkdQueryTimeout = 15;
+constexpr auto networkdQueryInterval = 1;
 
 class EventLoop
 {
