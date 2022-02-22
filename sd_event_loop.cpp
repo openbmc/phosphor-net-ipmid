@@ -12,6 +12,7 @@
 #include <boost/asio/signal_set.hpp>
 #include <phosphor-logging/log.hpp>
 #include <sdbusplus/asio/sd_event.hpp>
+#include <thread>
 #include <user_channel/channel_layer.hpp>
 
 namespace eventloop
@@ -65,8 +66,21 @@ int EventLoop::getVLANID(const std::string channel)
     ObjectTree objs;
     try
     {
-        auto reply = bus.call(req);
-        reply.read(objs);
+        // It takes phosphor-networkd about 10s to create its dbus objects on
+        // statup. Wait for at most 15s here to get the correct response.
+        constexpr int networkdQueryTimeout = 15;
+        constexpr int networkdQueryInterval = 1;
+        for (int i = 0; i < (networkdQueryTimeout / networkdQueryInterval); i++)
+        {
+            auto reply = bus.call(req);
+            reply.read(objs);
+            if (!objs.empty())
+            {
+                break;
+            }
+            std::this_thread::sleep_for(
+                std::chrono::seconds(networkdQueryInterval));
+        }
     }
     catch (const std::exception& e)
     {
