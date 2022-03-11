@@ -220,6 +220,16 @@ struct GetConfParamsResponse
     uint8_t paramRev;       //!< Parameter revision.
 } __attribute__((packed));
 
+/** @brief Set SOL configuration parameters command.
+ *
+ *  @param[in] inPayload - Request data for the command.
+ *  @param[in] handler - Reference to the message handler.
+ *
+ *  @return Response data for the command.
+ */
+std::vector<uint8_t> setConfParams(const std::vector<uint8_t>& inPayload,
+                                   std::shared_ptr<message::Handler>& handler);
+
 /** @brief Get SOL configuration parameters command.
  *
  *  @param[in] inPayload - Request data for the command.

@@ -4,6 +4,7 @@
 #include "sol/sol_context.hpp"
 #include "sol/sol_manager.hpp"
 
+#include <ipmid/utils.hpp>
 #include <phosphor-logging/log.hpp>
 
 namespace sol
@@ -67,6 +68,128 @@ void activating(uint8_t payloadInstance, uint32_t sessionID)
 
     msgHandler.sendUnsolicitedIPMIPayload(netfnTransport, solActivatingCmd,
                                           outPayload);
+}
+
+std::vector<uint8_t> setConfParams(const std::vector<uint8_t>& inPayload,
+                                   std::shared_ptr<message::Handler>& handler)
+{
+    std::vector<uint8_t> outPayload(sizeof(SetConfParamsResponse));
+    auto request =
+        reinterpret_cast<const SetConfParamsRequest*>(inPayload.data());
+    auto response = reinterpret_cast<SetConfParamsResponse*>(outPayload.data());
+    response->completionCode = IPMI_CC_OK;
+
+    sdbusplus::bus::bus dbus(ipmid_get_sd_bus_connection());
+    static std::string solService{};
+    ipmi::PropertyMap properties;
+    std::string ethdevice = ipmi::getChannelName(ipmi::convertCurrentChannelNum(
+        ipmi::currentChNum, getInterfaceIndex()));
+
+    std::string solPathWitheEthName = solPath + ethdevice;
+    if (solService.empty())
+    {
+        try
+        {
+            solService =
+                ipmi::getService(dbus, solInterface, solPathWitheEthName);
+        }
+        catch (const std::runtime_error& e)
+        {
+            solService.clear();
+            phosphor::logging::log<phosphor::logging::level::ERR>(
+                "Error: get SOL service failed");
+            response->completionCode = IPMI_CC_BUSY;
+            return outPayload;
+        }
+    }
+
+    try
+    {
+        switch (static_cast<Parameter>(request->paramSelector))
+        {
+            case Parameter::PROGRESS:
+            {
+                uint8_t progress =
+                    static_cast<uint8_t>(request->value & progressMask);
+                ipmi::setDbusProperty(dbus, solService, solPathWitheEthName,
+                                      solInterface, "Progress",
+                                      static_cast<uint8_t>(progress));
+                break;
+            }
+            case Parameter::ENABLE:
+            {
+                bool enable = static_cast<bool>(request->value & enableMask);
+                ipmi::setDbusProperty(dbus, solService, solPathWitheEthName,
+                                      solInterface, "Enable",
+                                      static_cast<bool>(enable));
+                break;
+            }
+            case Parameter::AUTHENTICATION:
+            {
+                bool encrypt = static_cast<bool>(request->auth.encrypt);
+                bool auth = static_cast<bool>(request->auth.auth);
+                uint8_t privilege =
+                    static_cast<uint8_t>(request->auth.privilege);
+
+                ipmi::setDbusProperty(dbus, solService, solPathWitheEthName,
+                                      solInterface, "ForceEncryption",
+                                      static_cast<bool>(encrypt));
+                ipmi::setDbusProperty(dbus, solService, solPathWitheEthName,
+                                      solInterface, "ForceAuthentication",
+                                      static_cast<bool>(auth));
+                ipmi::setDbusProperty(dbus, solService, solPathWitheEthName,
+                                      solInterface, "Privilege",
+                                      static_cast<uint8_t>(privilege));
+                break;
+            }
+            case Parameter::ACCUMULATE:
+            {
+                if (request->acc.threshold == 0)
+                {
+                    response->completionCode = IPMI_CC_INVALID_FIELD_REQUEST;
+                    break;
+                }
+                ipmi::setDbusProperty(
+                    dbus, solService, solPathWitheEthName, solInterface,
+                    "AccumulateIntervalMS",
+                    static_cast<uint8_t>(request->acc.interval));
+                ipmi::setDbusProperty(
+                    dbus, solService, solPathWitheEthName, solInterface,
+                    "Threshold", static_cast<uint8_t>(request->acc.threshold));
+                break;
+            }
+            case Parameter::RETRY:
+            {
+                ipmi::setDbusProperty(
+                    dbus, solService, solPathWitheEthName, solInterface,
+                    "RetryCount", static_cast<uint8_t>(request->retry.count));
+                ipmi::setDbusProperty(
+                    dbus, solService, solPathWitheEthName, solInterface,
+                    "RetryIntervalMS",
+                    static_cast<uint8_t>(request->retry.interval));
+                break;
+            }
+            case Parameter::PORT:
+            {
+                response->completionCode = ipmiCCWriteReadParameter;
+                break;
+            }
+            case Parameter::NVBITRATE:
+            case Parameter::VBITRATE:
+            case Parameter::CHANNEL:
+            default:
+                response->completionCode = ipmiCCParamNotSupported;
+        }
+    }
+    catch (const std::runtime_error&)
+    {
+        phosphor::logging::log<phosphor::logging::level::ERR>(
+            "Error setting sol parameter");
+        response->completionCode = IPMI_CC_BUSY;
+        return outPayload;
+    }
+
+    return outPayload;
 }
 
 std::vector<uint8_t> getConfParams(const std::vector<uint8_t>& inPayload,

@@ -12,6 +12,10 @@
 #include <memory>
 #include <string>
 
+constexpr const char* solInterface = "xyz.openbmc_project.Ipmi.SOL";
+constexpr const char* solPath = "/xyz/openbmc_project/ipmi/sol/";
+constexpr const char* PROP_INTF = "org.freedesktop.DBus.Properties";
+
 namespace sol
 {
 
