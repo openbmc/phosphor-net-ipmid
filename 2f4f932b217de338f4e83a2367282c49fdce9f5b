@@ -16,6 +16,24 @@
       "message": "I don\u0027t think this is the change you are looking for. The code that you are removing is so that a close session call can be made from one channel and close a session on another channel. Without that code, it is not possible for the various netipmid instances to do this.\n\nIf you are running out of sessions on a single interface just because of an ending session, this seems like there is another bug in the code. It should not be invoking closeOtherNetInstanceSession to close the current session. That should be calling closeMyNetInstanceSession.",
       "revId": "2f4f932b217de338f4e83a2367282c49fdce9f5b",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c85a66b_6ea1c7fc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000885
+      },
+      "writtenOn": "2022-03-16T23:48:12Z",
+      "side": 1,
+      "message": "The issue that I was facing was that none of the session was closing and resulted in the error.\n\n\u003e I don\u0027t think this is the change you are looking for. The code that you are removing is so that a close session call can be made from one channel and close a session on another channel. Without that code, it is not possible for the various netipmid instances to do this.\n\nWhat do you mean by various netipmid instances, Multiple instances of running binary? I thought that would be blocked since the dbus stuff will break it?\n\nAlso for closing one sesson from one channel to another, wouldn\u0027t all of the sessions be fetchable from session::Manager::get().getSession(reqSessionId)?",
+      "parentUuid": "d3bf284b_d50cbb83",
+      "revId": "2f4f932b217de338f4e83a2367282c49fdce9f5b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
