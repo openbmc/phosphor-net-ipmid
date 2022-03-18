@@ -18,6 +18,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7fc22070_0a8597b0",
+        "filename": "command/sol_cmds.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1001371
+      },
+      "writtenOn": "2022-03-18T02:55:37Z",
+      "side": 1,
+      "message": "I\u0027ll move set/get sol config parameter command from net-ipmid to\nhost-ipmid, these commands should could set by other interface,\nnot Lan only.\n\nSo, please re-review. thanks",
+      "parentUuid": "37834521_6da6e52e",
+      "revId": "8f1d21c15c782a586f5e31f5be7b8cdab31b695a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "bedf06c6_907c9c9f",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-03-15T00:25:43Z",
       "side": 1,
       "message": "This case statement updates the settings for the SOL manager, but does not actually update the SOL manager (unless you do a get on the params, which then invokes an update.)\n\nWe should probably set the settings in the sol manager here as well, or make the call (as in the get conf params below) to update the settings in the sol manager from dbus. I would prefer the former, since it involves fewer dbus calls.",
+      "revId": "8f1d21c15c782a586f5e31f5be7b8cdab31b695a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05a7646f_7f6f0993",
+        "filename": "command/sol_cmds.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1001371
+      },
+      "writtenOn": "2022-03-18T02:55:37Z",
+      "side": 1,
+      "message": "I\u0027ll move set/get sol config parameter command from net-ipmid to\nhost-ipmid, these commands should could set by other interface,\nnot Lan only.\n\nSo, please re-review. thanks",
+      "parentUuid": "bedf06c6_907c9c9f",
       "revId": "8f1d21c15c782a586f5e31f5be7b8cdab31b695a",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
