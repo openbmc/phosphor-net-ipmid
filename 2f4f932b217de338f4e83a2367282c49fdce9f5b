@@ -34,6 +34,24 @@
       "parentUuid": "d3bf284b_d50cbb83",
       "revId": "2f4f932b217de338f4e83a2367282c49fdce9f5b",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9c7f80e0_ef5c164d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2022-03-18T00:24:33Z",
+      "side": 1,
+      "message": "On some systems, we have two instances of netipmid running simultaneously, one for each of the network interfaces the BMC has access to. netipmid was designed so that it binds to a single network interface only, so any system that has more than one ipmi network channel will have this as well.\n\nI understood the symptoms of your issue from the test case you used for resolution, but I don\u0027t know why it would be doing that. It should not be calling into the closeOtherNetInstanceSession at the end of a session. That is reserved for some session attempting to close another session by embedding a close session command with some other session ID inside a session.",
+      "parentUuid": "1c85a66b_6ea1c7fc",
+      "revId": "2f4f932b217de338f4e83a2367282c49fdce9f5b",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
