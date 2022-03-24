@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "919cd024_4818446f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000044
+      },
+      "writtenOn": "2022-03-24T02:36:44Z",
+      "side": 1,
+      "message": "`could be`",
+      "range": {
+        "startLine": 10,
+        "startChar": 27,
+        "endLine": 10,
+        "endChar": 40
+      },
+      "revId": "6f971dccfba6d364869e53fbe006ee6fa6232d39",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ff7fdfa7_25ea8845",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000044
+      },
+      "writtenOn": "2022-03-24T02:36:44Z",
+      "side": 1,
+      "message": "it will be implemented in transporthandler",
+      "range": {
+        "startLine": 12,
+        "startChar": 14,
+        "endLine": 12,
+        "endChar": 51
+      },
+      "revId": "6f971dccfba6d364869e53fbe006ee6fa6232d39",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
