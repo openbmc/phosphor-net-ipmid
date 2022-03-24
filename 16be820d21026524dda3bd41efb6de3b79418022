@@ -18,6 +18,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "48ebc945_caccb38f",
+        "filename": "sol/sol_manager.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1001371
+      },
+      "writtenOn": "2022-03-24T07:01:22Z",
+      "side": 1,
+      "message": "Done, got property from msg and update.",
+      "parentUuid": "058a83b0_76f2b214",
+      "revId": "16be820d21026524dda3bd41efb6de3b79418022",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a01a6ea9_62aa3fce",
@@ -31,6 +49,30 @@
       "writtenOn": "2022-03-24T02:47:10Z",
       "side": 1,
       "message": "Could this be replaced by `propertiesChangedNamespace(servicePath, xxxInterface)`?",
+      "range": {
+        "startLine": 345,
+        "startChar": 17,
+        "endLine": 347,
+        "endChar": 65
+      },
+      "revId": "16be820d21026524dda3bd41efb6de3b79418022",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4778ac9d_fad027b9",
+        "filename": "sol/sol_manager.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 347,
+      "author": {
+        "id": 1001371
+      },
+      "writtenOn": "2022-03-24T07:01:22Z",
+      "side": 1,
+      "message": "done",
+      "parentUuid": "a01a6ea9_62aa3fce",
       "range": {
         "startLine": 345,
         "startChar": 17,
