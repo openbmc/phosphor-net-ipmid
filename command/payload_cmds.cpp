@@ -64,6 +64,13 @@ std::vector<uint8_t> activatePayload(const std::vector<uint8_t>& inPayload,
         return outPayload;
     }
 
+    if (session->currentPrivilege() <
+        static_cast<uint8_t>(sol::Manager::get().solMinPrivilege))
+    {
+        response->completionCode = IPMI_CC_INSUFFICIENT_PRIVILEGE;
+        return outPayload;
+    }
+
     // Is SOL Payload enabled for this user & channel.
     auto userId = ipmi::ipmiUserGetUserId(session->userName);
     ipmi::PayloadAccess payloadAccess = {};
@@ -144,6 +151,14 @@ std::vector<uint8_t>
     if (!status)
     {
         response->completionCode = IPMI_CC_PAYLOAD_DEACTIVATED;
+        return outPayload;
+    }
+
+    auto session = session::Manager::get().getSession(handler->sessionID);
+    if (session->currentPrivilege() <
+        static_cast<uint8_t>(sol::Manager::get().solMinPrivilege))
+    {
+        response->completionCode = IPMI_CC_INSUFFICIENT_PRIVILEGE;
         return outPayload;
     }
 
