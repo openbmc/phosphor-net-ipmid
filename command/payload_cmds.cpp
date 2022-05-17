@@ -62,6 +62,13 @@ std::vector<uint8_t> activatePayload(const std::vector<uint8_t>& inPayload,
         return outPayload;
     }
 
+    if (session->currentPrivilege() <
+        static_cast<uint8_t>(sol::Manager::get().solMinPrivilege))
+    {
+        response->completionCode = IPMI_CC_INSUFFICIENT_PRIVILEGE;
+        return outPayload;
+    }
+
     // Is SOL Payload enabled for this user & channel.
     auto userId = ipmi::ipmiUserGetUserId(session->userName);
     ipmi::PayloadAccess payloadAccess = {};
@@ -109,7 +116,7 @@ std::vector<uint8_t> activatePayload(const std::vector<uint8_t>& inPayload,
 
 std::vector<uint8_t>
     deactivatePayload(const std::vector<uint8_t>& inPayload,
-                      std::shared_ptr<message::Handler>& /* handler */)
+                      std::shared_ptr<message::Handler>& handler)
 {
     auto request =
         reinterpret_cast<const DeactivatePayloadRequest*>(inPayload.data());
@@ -145,12 +152,20 @@ std::vector<uint8_t>
         return outPayload;
     }
 
+    auto deactivateSession =
+        session::Manager::get().getSession(handler->sessionID);
+    auto& context = sol::Manager::get().getContext(request->payloadInstance);
+    auto sessionID = context.sessionID;
+    auto activateSession = session::Manager::get().getSession(sessionID);
+    if (deactivateSession->currentPrivilege() <
+        activateSession->currentPrivilege())
+    {
+        response->completionCode = IPMI_CC_INSUFFICIENT_PRIVILEGE;
+        return outPayload;
+    }
+
     try
     {
-        auto& context =
-            sol::Manager::get().getContext(request->payloadInstance);
-        auto sessionID = context.sessionID;
-
         sol::Manager::get().stopPayloadInstance(request->payloadInstance);
 
         try
