@@ -59,10 +59,10 @@ int EventLoop::getVLANID(const std::string channel)
     sdbusplus::bus::bus bus{ipmid_get_sd_bus_connection()};
     // Enumerate all VLAN + ETHERNET interfaces
     auto req = bus.new_method_call(MAPPER_BUS_NAME, MAPPER_OBJ, MAPPER_INTF,
-                                   "GetSubTree");
+                                   "GetSubTreePaths");
     req.append(PATH_ROOT, 0,
-               std::vector<std::string>{INTF_VLAN, INTF_ETHERNET});
-    ObjectTree objs;
+               std::array<const char*, 2>{INTF_VLAN, INTF_ETHERNET});
+    std::vector<std::string> objPaths;
     try
     {
         // It takes phosphor-networkd about 10s to create its dbus objects on
@@ -70,8 +70,8 @@ int EventLoop::getVLANID(const std::string channel)
         for (int i = 0; i < (networkdQueryTimeout / networkdQueryInterval); i++)
         {
             auto reply = bus.call(req);
-            reply.read(objs);
-            if (!objs.empty())
+            reply.read(objPaths);
+            if (!objPaths.empty())
             {
                 break;
             }
@@ -85,66 +85,38 @@ int EventLoop::getVLANID(const std::string channel)
         return 0;
     }
 
-    std::string ifService, logicalPath;
-    for (const auto& [path, impls] : objs)
+    for (const auto& path : objPaths)
     {
-        if (path.find(channel) == path.npos)
+        if (path.find(channel) == std::string::npos)
         {
             continue;
         }
-        for (const auto& [service, intfs] : impls)
+
+        std::string interface =
+            sdbusplus::message::object_path(path).filename();
+        auto index = interface.find("_");
+        if (index == std::string::npos)
         {
-            bool vlan = false;
-            bool ethernet = false;
-            for (const auto& intf : intfs)
-            {
-                if (intf == INTF_VLAN)
-                {
-                    vlan = true;
-                }
-                else if (intf == INTF_ETHERNET)
-                {
-                    ethernet = true;
-                }
-            }
-            if (ifService.empty() && (vlan || ethernet))
-            {
-                ifService = service;
-            }
-            if (logicalPath.empty() && vlan)
-            {
-                logicalPath = path;
-            }
+            continue;
         }
-    }
 
-    // VLAN devices will always have a separate logical object
-    if (logicalPath.empty())
-    {
-        return 0;
-    }
+        auto idStr = interface.substr(index + 1);
+        int id = 0;
+        try
+        {
+            id = std::stol(idStr);
+        }
+        catch (const std::exception& e)
+        {
+            log<level::ERR>("Failed to parse VLAN ID from interface name");
+            continue;
+        }
 
-    Value value;
-    auto method = bus.new_method_call(ifService.c_str(), logicalPath.c_str(),
-                                      PROP_INTF, METHOD_GET);
-    method.append(INTF_VLAN, "Id");
-    try
-    {
-        auto method_reply = bus.call(method);
-        method_reply.read(value);
-    }
-    catch (const std::exception& e)
-    {
-        log<level::ERR>("getVLANID: failed to execute/read VLAN Id");
-        return 0;
-    }
-
-    vlanid = std::get<uint32_t>(value);
-    if ((vlanid & VLAN_VALUE_MASK) != vlanid)
-    {
-        log<level::ERR>("networkd returned an invalid vlan",
-                        entry("VLAN=%", vlanid));
-        return 0;
+        // Select the smallest VLAN on system
+        if (vlanid == 0 || id < vlanid)
+        {
+            vlanid = id;
+        }
     }
 
     return vlanid;
