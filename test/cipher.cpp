@@ -8,10 +8,10 @@
 #include <openssl/rand.h>
 #include <openssl/sha.h>
 
+#include <iostream>
 #include <vector>
 
 #include <gtest/gtest.h>
-
 TEST(IntegrityAlgo, HMAC_SHA1_96_GenerateIntegrityDataCheck)
 {
     /*
@@ -151,7 +151,7 @@ TEST(IntegrityAlgo, HMAC_SHA1_96_VerifyIntegrityDataFail)
 
     // Point to the integrity data in the packet
     auto integrityIter = packet.cbegin();
-    std::advance(integrityIter, packet.size());
+    std::advance(integrityIter, integrity.size());
 
     /*
      * Step-2 Invoke the verifyIntegrityData API and validate the response
@@ -315,7 +315,7 @@ TEST(IntegrityAlgo, HMAC_SHA256_128_VerifyIntegrityDataFail)
 
     // Point to the integrity data in the packet
     auto integrityIter = packet.cbegin();
-    std::advance(integrityIter, packet.size());
+    std::advance(integrityIter, integrity.size());
 
     /*
      * Step-2 Invoke the verifyIntegrityData API and validate the response
