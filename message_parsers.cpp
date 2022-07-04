@@ -133,8 +133,9 @@ std::shared_ptr<Message> unflatten(std::vector<uint8_t>& inPacket)
     return message;
 }
 
-std::vector<uint8_t> flatten(const std::shared_ptr<Message>& outMessage,
-                             const std::shared_ptr<session::Session>& session)
+std::vector<uint8_t>
+    flatten(const std::shared_ptr<Message>& outMessage,
+            const std::shared_ptr<session::Session>& /* session */)
 {
     std::vector<uint8_t> packet(sizeof(SessionHeader_t));
 
