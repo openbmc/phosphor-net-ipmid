@@ -48,7 +48,8 @@ bool AlgoSHA1::verifyIntegrityData(
 
     // Verify if the generated integrity data for the packet and the received
     // integrity data matches.
-    return (std::equal(output.begin(), output.end(), integrityData));
+    return (std::equal(output.begin(), output.end(), integrityData,
+                       [](uint8_t x, uint8_t y) { return x == y; }));
 }
 
 std::vector<uint8_t>
@@ -112,7 +113,8 @@ bool AlgoSHA256::verifyIntegrityData(
 
     // Verify if the generated integrity data for the packet and the received
     // integrity data matches.
-    return (std::equal(output.begin(), output.end(), integrityData));
+    return (std::equal(output.begin(), output.end(), integrityData,
+                       [](uint8_t x, uint8_t y) { return x == y; }));
 }
 
 std::vector<uint8_t>
