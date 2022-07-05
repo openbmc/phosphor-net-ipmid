@@ -22,6 +22,30 @@
       },
       "revId": "121fa3c306767afc73cd1ac50221570b70ad1d6f",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b46bda7_ed830275",
+        "filename": "meson.build",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-07-05T03:27:54Z",
+      "side": 1,
+      "message": "\u003e better to add \"required\" feild while adding dependency\n\u003e if we are planning for standalone build need to add support for subprojects for each dependency\n\nThanks @gokulsvg, I will update it when the commits below allow it.\nhttps://gerrit.openbmc.org/c/openbmc/phosphor-host-ipmid/+/55082",
+      "parentUuid": "918fc587_0ffc5e01",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 47
+      },
+      "revId": "121fa3c306767afc73cd1ac50221570b70ad1d6f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
