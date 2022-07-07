@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f883d55_b7c2f00d",
+        "filename": "test/cipher.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-07-07T13:06:18Z",
+      "side": 1,
+      "message": "The update here and integrity_algo.cpp because CI will report the following error after switching to meson:\n\n```\n\u003d\u003d1090\u003d\u003dERROR: AddressSanitizer: heap-buffer-overflow on address 0x60300002a448 at pc 0x555d4cf2f007 bp 0x7fff09b5d000 sp 0x7fff09b5cff0\nREAD of size 1 at 0x60300002a448 thread T0\n    #0 0x555d4cf2f006 in bool std::equal\u003c__gnu_cxx::__normal_iterator\u003cunsigned char*, std::vector\u003cunsigned char, std::allocator\u003cunsigned char\u003e \u003e \u003e, __gnu_cxx::__normal_iterator\u003cunsigned char const*, std::vector\u003cunsigned char, std::allocator\u003cunsigned char\u003e \u003e \u003e, bool (*)(unsigned char, unsigned char)\u003e(__gnu_cxx::__normal_iterator\u003cunsigned char*, std::vector\u003cunsigned char, std::allocator\u003cunsigned char\u003e \u003e \u003e, __gnu_cxx::__normal_iterator\u003cunsigned char*, std::vector\u003cunsigned char, std::allocator\u003cunsigned char\u003e \u003e \u003e, __gnu_cxx::__normal_iterator\u003cunsigned char const*, std::vector\u003cunsigned char, std::allocator\u003cunsigned char\u003e \u003e \u003e, bool (*)(unsigned char, unsigned char)) /usr/include/c++/11/bits/stl_algobase.h:1586\n    #1 0x555d4cf2c3a9 in cipher::integrity::AlgoSHA1::verifyIntegrityData(std::vector\u003cunsigned char, std::allocator\u003cunsigned char\u003e \u003e const\u0026, unsigned long, __gnu_cxx::__normal_iterator\u003cunsigned char const*, std::vector\u003cunsigned char, std::allocator\u003cunsigned char\u003e \u003e \u003e) const ../integrity_algo.cpp:61\n    #2 0x555d4ceec395 in IntegrityAlgo_HMAC_SHA1_96_VerifyIntegrityDataFail_Test::TestBody() ../test/cipher.cpp:170\n```",
+      "range": {
+        "startLine": 318,
+        "startChar": 32,
+        "endLine": 318,
+        "endChar": 41
+      },
+      "revId": "0a2d7aa5919b89299eb23a9bb7fa04429abb2459",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
