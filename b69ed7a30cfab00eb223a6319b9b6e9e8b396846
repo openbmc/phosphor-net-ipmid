@@ -16,6 +16,24 @@
       "message": "Do you need a wrap for phosphor-ipmi-host as well? This uses some header files from there and links against some of its generated libs.",
       "revId": "b69ed7a30cfab00eb223a6319b9b6e9e8b396846",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "925ca443_9dc4932e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-07-08T02:50:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6e3018f0_063e70ad",
+      "revId": "b69ed7a30cfab00eb223a6319b9b6e9e8b396846",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
