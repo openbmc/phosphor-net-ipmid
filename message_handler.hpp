@@ -138,6 +138,9 @@ class Handler : public std::enable_shared_from_this<Handler>
     parser::SessionHeader sessionHeader = parser::SessionHeader::IPMI20;
 
     std::shared_ptr<message::Message> inMessage;
+
+    /** @brief The IPMI session of the handler */
+    std::shared_ptr<session::Session> session;
 };
 
 } // namespace message
