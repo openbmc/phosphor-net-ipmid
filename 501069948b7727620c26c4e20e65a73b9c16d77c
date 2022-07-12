@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "959443d1_58e327f0",
+        "filename": ".gitignore",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-07-12T11:38:45Z",
+      "side": 1,
+      "message": "Ah, you did the autotools removal here.",
+      "revId": "501069948b7727620c26c4e20e65a73b9c16d77c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a4178e2_3b6c7fed",
+        "filename": "integrity_algo.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-07-12T11:38:45Z",
+      "side": 1,
+      "message": "Why did this need to get added for Meson?\n\n...\n\nI see the issue in the test file, but I still don\u0027t understand what this change does and why.  The lambda here _should_ be the _default_ comparison already.",
+      "revId": "501069948b7727620c26c4e20e65a73b9c16d77c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ffbbbb50_9767ebc7",
+        "filename": "meson.build",
+        "patchSetId": 7
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-07-12T11:38:45Z",
+      "side": 1,
+      "message": "Why is there \u0027required: false\u0027 on all of these?  Aren\u0027t these hard dependencies?",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 49
+      },
+      "revId": "501069948b7727620c26c4e20e65a73b9c16d77c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5131ac49_c9443c13",
+        "filename": "test/cipher.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-07-12T11:38:45Z",
+      "side": 1,
+      "message": "Couldn\u0027t this pattern been refactored to be this?\n\n    auto integrityIter \u003d packet.insert(...);\n    \nThis fix probably belongs in a separate commit because it looks to be fixing a valid bug.",
+      "range": {
+        "startLine": 314,
+        "startChar": 0,
+        "endLine": 318,
+        "endChar": 50
+      },
+      "revId": "501069948b7727620c26c4e20e65a73b9c16d77c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
