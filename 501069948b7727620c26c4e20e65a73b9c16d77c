@@ -22,6 +22,30 @@
       },
       "revId": "501069948b7727620c26c4e20e65a73b9c16d77c",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ef344e08_a5f55719",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1001252
+      },
+      "writtenOn": "2022-07-12T14:30:26Z",
+      "side": 0,
+      "message": "Yes, these need to be kept for logging redfish events. I think it should be something like\n\nlg2::error(\"{MSG}\", \"MSG\", journalMsg, \"REDFISH_MESSAGE_ID\", messageID, \"REDFISH_MESSAGE_ARGS\", messageArgs.value());",
+      "parentUuid": "7f8a45a9_904d8d31",
+      "range": {
+        "startLine": 37,
+        "startChar": 33,
+        "endLine": 37,
+        "endChar": 56
+      },
+      "revId": "501069948b7727620c26c4e20e65a73b9c16d77c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
