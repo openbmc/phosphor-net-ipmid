@@ -18,6 +18,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "38da468c_902cac85",
+        "filename": ".gitignore",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-07-13T09:28:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "959443d1_58e327f0",
+      "revId": "501069948b7727620c26c4e20e65a73b9c16d77c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5a4178e2_3b6c7fed",
@@ -31,6 +49,24 @@
       "writtenOn": "2022-07-12T11:38:45Z",
       "side": 1,
       "message": "Why did this need to get added for Meson?\n\n...\n\nI see the issue in the test file, but I still don\u0027t understand what this change does and why.  The lambda here _should_ be the _default_ comparison already.",
+      "revId": "501069948b7727620c26c4e20e65a73b9c16d77c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bee63bf2_525e1064",
+        "filename": "integrity_algo.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-07-13T09:28:07Z",
+      "side": 1,
+      "message": "\u003e Why did this need to get added for Meson?\n\u003e \n\u003e ...\n\u003e \n\u003e I see the issue in the test file, but I still don\u0027t understand what this change does and why.  The lambda here _should_ be the _default_ comparison already.\n\nI am not sure, I used the following and UT passed:\nhttps://en.cppreference.com/w/cpp/algorithm/equal\n```\ntemplate\u003c class InputIt1, class InputIt2 \u003e\nconstexpr bool equal( InputIt1 first1, InputIt1 last1,\n                      InputIt2 first2, InputIt2 last2 );\n                      \n(since C++20)\n```",
+      "parentUuid": "5a4178e2_3b6c7fed",
       "revId": "501069948b7727620c26c4e20e65a73b9c16d77c",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -60,6 +96,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6a01a395_914c1269",
+        "filename": "meson.build",
+        "patchSetId": 7
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-07-13T09:28:07Z",
+      "side": 1,
+      "message": "\u003e Why is there \u0027required: false\u0027 on all of these?  Aren\u0027t these hard dependencies?\n\nYes, I agree with you\nBut @gokulsvg has different opinions\nhttps://gerrit.openbmc.org/c/openbmc/phosphor-net-ipmid/+/55087/1/meson.build#27\n\n@gokulsvg, what do you think?",
+      "parentUuid": "ffbbbb50_9767ebc7",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 49
+      },
+      "revId": "501069948b7727620c26c4e20e65a73b9c16d77c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5131ac49_c9443c13",
         "filename": "test/cipher.cpp",
         "patchSetId": 7
@@ -71,6 +131,30 @@
       "writtenOn": "2022-07-12T11:38:45Z",
       "side": 1,
       "message": "Couldn\u0027t this pattern been refactored to be this?\n\n    auto integrityIter \u003d packet.insert(...);\n    \nThis fix probably belongs in a separate commit because it looks to be fixing a valid bug.",
+      "range": {
+        "startLine": 314,
+        "startChar": 0,
+        "endLine": 318,
+        "endChar": 50
+      },
+      "revId": "501069948b7727620c26c4e20e65a73b9c16d77c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "acb9a288_5ed4199b",
+        "filename": "test/cipher.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-07-13T09:28:07Z",
+      "side": 1,
+      "message": "\u003e Couldn\u0027t this pattern been refactored to be this?\n\u003e \n\u003e     auto integrityIter \u003d packet.insert(...);\n\u003e     \n\u003e This fix probably belongs in a separate commit because it looks to be fixing a valid bug.\n\nsure, I will push a new patch for this issue",
+      "parentUuid": "5131ac49_c9443c13",
       "range": {
         "startLine": 314,
         "startChar": 0,
