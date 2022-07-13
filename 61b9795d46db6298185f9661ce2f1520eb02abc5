@@ -159,6 +159,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "03ee8a61_b6635146",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-07-13T12:51:49Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "eeb41826_442eb97c",
+      "range": {
+        "startLine": 35,
+        "startChar": 8,
+        "endLine": 35,
+        "endChar": 13
+      },
+      "revId": "61b9795d46db6298185f9661ce2f1520eb02abc5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "aa031737_1b9af4b7",
@@ -337,6 +361,30 @@
       "side": 1,
       "message": "\u003e ERROR is fine on this one since you\u0027ve called `strerror`, but I wonder why in some cases we log the ERRNO directly and in other cases we call strerror.\n\nI have changed all places to error and used strerror",
       "parentUuid": "c231ffbf_bc894846",
+      "range": {
+        "startLine": 88,
+        "startChar": 53,
+        "endLine": 88,
+        "endChar": 70
+      },
+      "revId": "61b9795d46db6298185f9661ce2f1520eb02abc5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "abb9d5ea_8e25986e",
+        "filename": "main.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-07-13T12:51:49Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4c3e3760_c204a870",
       "range": {
         "startLine": 88,
         "startChar": 53,
