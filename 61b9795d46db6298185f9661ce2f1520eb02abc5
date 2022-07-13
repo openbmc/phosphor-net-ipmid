@@ -24,6 +24,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bb15cca7_14a44abb",
+        "filename": "auth_algo.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-07-13T10:09:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5f3455e6_bc0e27d9",
+      "range": {
+        "startLine": 27,
+        "startChar": 43,
+        "endLine": 27,
+        "endChar": 48
+      },
+      "revId": "61b9795d46db6298185f9661ce2f1520eb02abc5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "35cb1b46_ff0d7deb",
@@ -37,6 +61,30 @@
       "writtenOn": "2022-07-12T11:29:23Z",
       "side": 1,
       "message": "mapper_get_service follows systemd conventions, which is to return a -ERRNO in the rc, not have errno set.  You\u0027ve changed many of the places in this file from (-rc) to (errno) incorrectly.",
+      "range": {
+        "startLine": 50,
+        "startChar": 44,
+        "endLine": 50,
+        "endChar": 58
+      },
+      "revId": "61b9795d46db6298185f9661ce2f1520eb02abc5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "71539c49_cb25f176",
+        "filename": "command/guid.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-07-13T10:09:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "35cb1b46_ff0d7deb",
       "range": {
         "startLine": 50,
         "startChar": 44,
@@ -89,6 +137,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "eeb41826_442eb97c",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-07-13T10:09:54Z",
+      "side": 1,
+      "message": "\u003e prefer long ones (MESSAGE).\n\nNo, We cant use MESSAGE:\n```\n../command/rakp12.cpp:36:52:   in ‘constexpr’ expansion of ‘lg2::details::header_str(\"MESSAGE\")’\n/usr/local/include/phosphor-logging/lg2/header.hpp:46:25: error: call to non-‘constexpr’ function ‘static void lg2::details::header_str::report_error(const char*)’\n   46 |             report_error(\"Header name is reserved.\");\n      |             ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/usr/local/include/phosphor-logging/lg2/header.hpp:64:17: note: ‘static void lg2::details::header_str::report_error(const char*)’ declared here\n   64 |     static void report_error(const char*);\n      |                 ^~~~~~~~~~~~\n```",
+      "parentUuid": "884454d9_918ed8b5",
+      "range": {
+        "startLine": 35,
+        "startChar": 8,
+        "endLine": 35,
+        "endChar": 13
+      },
+      "revId": "61b9795d46db6298185f9661ce2f1520eb02abc5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "aa031737_1b9af4b7",
         "filename": "command/session_cmds.cpp",
         "patchSetId": 5
@@ -100,6 +172,30 @@
       "writtenOn": "2022-07-12T11:29:23Z",
       "side": 1,
       "message": "Any reason to shorten this one?",
+      "range": {
+        "startLine": 123,
+        "startChar": 46,
+        "endLine": 123,
+        "endChar": 50
+      },
+      "revId": "61b9795d46db6298185f9661ce2f1520eb02abc5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0e1c1ab9_a32b893f",
+        "filename": "command/session_cmds.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-07-13T10:09:54Z",
+      "side": 1,
+      "message": "\u003e Any reason to shorten this one?\n\nUpdated.",
+      "parentUuid": "aa031737_1b9af4b7",
       "range": {
         "startLine": 123,
         "startChar": 46,
@@ -133,6 +229,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4bd29824_824e191b",
+        "filename": "command_table.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-07-13T10:09:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4a0418f1_e593a845",
+      "range": {
+        "startLine": 24,
+        "startChar": 40,
+        "endLine": 24,
+        "endChar": 52
+      },
+      "revId": "61b9795d46db6298185f9661ce2f1520eb02abc5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4de181ec_37783e55",
@@ -156,6 +276,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8acf9d48_4bafefb2",
+        "filename": "command_table.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-07-13T10:09:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4de181ec_37783e55",
+      "range": {
+        "startLine": 47,
+        "startChar": 97,
+        "endLine": 47,
+        "endChar": 102
+      },
+      "revId": "61b9795d46db6298185f9661ce2f1520eb02abc5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c231ffbf_bc894846",
@@ -169,6 +313,30 @@
       "writtenOn": "2022-07-12T11:29:23Z",
       "side": 1,
       "message": "ERROR is fine on this one since you\u0027ve called `strerror`, but I wonder why in some cases we log the ERRNO directly and in other cases we call strerror.",
+      "range": {
+        "startLine": 88,
+        "startChar": 53,
+        "endLine": 88,
+        "endChar": 70
+      },
+      "revId": "61b9795d46db6298185f9661ce2f1520eb02abc5",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c3e3760_c204a870",
+        "filename": "main.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-07-13T10:09:54Z",
+      "side": 1,
+      "message": "\u003e ERROR is fine on this one since you\u0027ve called `strerror`, but I wonder why in some cases we log the ERRNO directly and in other cases we call strerror.\n\nI have changed all places to error and used strerror",
+      "parentUuid": "c231ffbf_bc894846",
       "range": {
         "startLine": 88,
         "startChar": 53,
