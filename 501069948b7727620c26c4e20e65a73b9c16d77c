@@ -202,6 +202,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b020f7a3_d906f226",
+        "filename": "meson.build",
+        "patchSetId": 7
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-07-14T00:53:56Z",
+      "side": 1,
+      "message": "\u003e I agree, these are all required, and should not be marked as optional.\n\nI agree, removed all required.",
+      "parentUuid": "6ae94cbf_6da02a20",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 49
+      },
+      "revId": "501069948b7727620c26c4e20e65a73b9c16d77c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5131ac49_c9443c13",
