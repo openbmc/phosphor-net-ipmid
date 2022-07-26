@@ -145,6 +145,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2086dad3_4c706358",
+        "filename": "integrity_algo.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-07-26T06:01:19Z",
+      "side": 1,
+      "message": "\u003e The maintainers can decide what to do here.  It looks odd to me but Vernon seems to think it is better.\n\nSure, Thanks Patrick\n\n@Vernon, Could you take a look at this patch? thanks 😊",
+      "parentUuid": "8f590cf9_9825ef30",
+      "revId": "501069948b7727620c26c4e20e65a73b9c16d77c",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ffbbbb50_9767ebc7",
         "filename": "meson.build",
         "patchSetId": 7
