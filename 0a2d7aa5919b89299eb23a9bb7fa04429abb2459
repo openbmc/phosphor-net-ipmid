@@ -22,6 +22,30 @@
       },
       "revId": "0a2d7aa5919b89299eb23a9bb7fa04429abb2459",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3ad2e3dc_4af0a35f",
+        "filename": "test/cipher.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-08-04T12:34:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4f883d55_b7c2f00d",
+      "range": {
+        "startLine": 318,
+        "startChar": 32,
+        "endLine": 318,
+        "endChar": 41
+      },
+      "revId": "0a2d7aa5919b89299eb23a9bb7fa04429abb2459",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
