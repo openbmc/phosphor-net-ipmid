@@ -1,0 +1,8 @@
+Code-Review+1: Patrick Williams <patrick@stwcx.xyz>
+Code-Review+2: Vernon Mauery <vernon.mauery@linux.intel.com>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Submitted-by: George Liu <liuxiwei@inspur.com>
+Submitted-at: Fri, 05 Aug 2022 00:24:04 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/phosphor-net-ipmid/+/55085
+Project: openbmc/phosphor-net-ipmid
+Branch: refs/heads/master
