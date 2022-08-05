@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bde35697_99bc1f85",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001239
+      },
+      "writtenOn": "2022-08-05T20:30:10Z",
+      "side": 1,
+      "message": "Looks good to me.\nThanks Vernon!\nSujoy",
+      "revId": "8653f047e3000bfeecd5da9da30a622e2702c813",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
