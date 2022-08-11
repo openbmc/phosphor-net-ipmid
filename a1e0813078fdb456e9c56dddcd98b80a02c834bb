@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "27457cfb_9f46085e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2022-08-11T00:35:38Z",
+      "side": 1,
+      "message": "@Vernon\nSince https://gerrit.openbmc.org/c/openbmc/openbmc/+/56346 has been merged, could you take a look at this patch? Thanks ;)",
+      "revId": "a1e0813078fdb456e9c56dddcd98b80a02c834bb",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
