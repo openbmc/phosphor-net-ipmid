@@ -40,6 +40,13 @@ void Context::enableAccumulateTimer(bool enable)
 {
     // fetch the timeout from the SOL manager
     std::chrono::microseconds interval = sol::Manager::get().accumulateInterval;
+
+    auto bufferSize = sol::Manager::get().dataBuffer.size();
+    if (bufferSize > sendThreshold)
+    {
+        interval = 1us;
+    }
+
     if (enable)
     {
         accumulateTimer.expires_after(interval);
