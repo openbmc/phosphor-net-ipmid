@@ -82,12 +82,13 @@ void Context::enableRetryTimer(bool enable)
 }
 
 void Context::processInboundPayload(uint8_t seqNum, uint8_t ackSeqNum,
-                                    uint8_t count, bool status,
+                                    uint8_t count, bool status, bool isBreak,
                                     const std::vector<uint8_t>& input)
 {
     uint8_t respAckSeqNum = 0;
     uint8_t acceptedCount = 0;
     auto ack = false;
+    bool breakFlag = false;
 
     /*
      * Check if the Inbound sequence number is same as the expected one.
@@ -145,10 +146,23 @@ void Context::processInboundPayload(uint8_t seqNum, uint8_t ackSeqNum,
         payloadCache.clear();
     }
 
+    if (isBreak && seqNum)
+    {
+        lg2::info("Writing break to console socket descriptor");
+        std::vector<uint8_t> test(1);
+        test[0] = 72;
+        auto ret = sol::Manager::get().writeConsoleSocket(test, isBreak);
+        if (ret)
+        {
+            lg2::error("Writing to console socket descriptor failed: {ERROR}",
+                       "ERROR", strerror(errno));
+        }
+    }
+
     // Write character data to the Host Console
     if (!input.empty() && seqNum)
     {
-        auto rc = sol::Manager::get().writeConsoleSocket(input);
+        auto rc = sol::Manager::get().writeConsoleSocket(input, breakFlag);
         if (rc)
         {
             lg2::error("Writing to console socket descriptor failed: {ERROR}",
