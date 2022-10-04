@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "703bc133_4fcc5c52",
+        "filename": "command/rakp12.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1000416
+      },
+      "writtenOn": "2022-10-04T12:16:47Z",
+      "side": 1,
+      "message": "RMCPP?",
+      "range": {
+        "startLine": 81,
+        "startChar": 55,
+        "endLine": 81,
+        "endChar": 61
+      },
+      "revId": "0e0546f1d0ef7c5960edd710f137ed75fb024cc3",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
