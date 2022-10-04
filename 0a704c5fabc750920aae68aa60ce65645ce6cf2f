@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "893cd637_0c622d64",
+        "filename": "sol/sol_context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2022-10-04T23:57:17Z",
+      "side": 1,
+      "message": "Did you mean to always pass false here? or should this somehow be tied to isBreak?",
+      "range": {
+        "startLine": 165,
+        "startChar": 64,
+        "endLine": 165,
+        "endChar": 73
+      },
+      "revId": "0a704c5fabc750920aae68aa60ce65645ce6cf2f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9c95e5c4_967242ac",
+        "filename": "sol/sol_manager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2022-10-04T23:57:17Z",
+      "side": 1,
+      "message": "It looks like breakFlag is only an input here, so it does not need to be an l-ref here.",
+      "range": {
+        "startLine": 74,
+        "startChar": 36,
+        "endLine": 74,
+        "endChar": 37
+      },
+      "revId": "0a704c5fabc750920aae68aa60ce65645ce6cf2f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
