@@ -24,6 +24,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0e4ff8cf_6f502bee",
+        "filename": "sol/sol_context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1001613
+      },
+      "writtenOn": "2022-10-08T03:04:17Z",
+      "side": 1,
+      "message": "Yes, I think there is no need to handle \"isBreak\" since \"isBreak\" already be handled before(when isBreak is true), so for normal data, always send false flag here.",
+      "parentUuid": "893cd637_0c622d64",
+      "range": {
+        "startLine": 165,
+        "startChar": 64,
+        "endLine": 165,
+        "endChar": 73
+      },
+      "revId": "0a704c5fabc750920aae68aa60ce65645ce6cf2f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9c95e5c4_967242ac",
