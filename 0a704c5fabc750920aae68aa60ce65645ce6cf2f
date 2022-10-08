@@ -69,6 +69,30 @@
       },
       "revId": "0a704c5fabc750920aae68aa60ce65645ce6cf2f",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b0d1373_1ff2bcc4",
+        "filename": "sol/sol_manager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1001613
+      },
+      "writtenOn": "2022-10-08T03:29:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9c95e5c4_967242ac",
+      "range": {
+        "startLine": 74,
+        "startChar": 36,
+        "endLine": 74,
+        "endChar": 37
+      },
+      "revId": "0a704c5fabc750920aae68aa60ce65645ce6cf2f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
