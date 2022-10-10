@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d594a28_e9b510b5",
+        "filename": "sol/sol_context.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2022-10-10T21:34:12Z",
+      "side": 1,
+      "message": "if breakFlag is always false, it should be a constexpr bool.",
+      "range": {
+        "startLine": 91,
+        "startChar": 9,
+        "endLine": 91,
+        "endChar": 19
+      },
+      "revId": "4d03f654672bcea4aac548594567b6a235dcfdb1",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9dd5225b_2731950f",
+        "filename": "sol/sol_context.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2022-10-10T21:34:12Z",
+      "side": 1,
+      "message": "shouldn\u0027t this just be the buffer that is passed in (input) rather than hard-coded to \u0027H\u0027?",
+      "range": {
+        "startLine": 152,
+        "startChar": 8,
+        "endLine": 153,
+        "endChar": 21
+      },
+      "revId": "4d03f654672bcea4aac548594567b6a235dcfdb1",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
