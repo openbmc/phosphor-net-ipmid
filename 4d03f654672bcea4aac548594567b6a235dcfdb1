@@ -45,6 +45,30 @@
       },
       "revId": "4d03f654672bcea4aac548594567b6a235dcfdb1",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ca971684_1a5c7efe",
+        "filename": "sol/sol_context.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1001613
+      },
+      "writtenOn": "2022-10-12T08:19:48Z",
+      "side": 1,
+      "message": "MSG_OOB maybe also used for other case, so hard-code this to send a byte to tell obmc-console this is a break signal(any byte is ok but need match with obmc-console),please see below for detail information:\nhttps://gerrit.openbmc.org/c/openbmc/obmc-console/+/57452",
+      "parentUuid": "9dd5225b_2731950f",
+      "range": {
+        "startLine": 152,
+        "startChar": 8,
+        "endLine": 153,
+        "endChar": 21
+      },
+      "revId": "4d03f654672bcea4aac548594567b6a235dcfdb1",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
