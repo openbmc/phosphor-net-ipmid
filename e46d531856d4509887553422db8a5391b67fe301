@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9615cc36_95395333",
+        "filename": "sol/sol_context.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2022-10-25T17:51:20Z",
+      "side": 1,
+      "message": "Better to simply send it without a timer.",
+      "revId": "e46d531856d4509887553422db8a5391b67fe301",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "423198f3_86d41012",
+        "filename": "sol/sol_context.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2022-10-25T17:51:20Z",
+      "side": 1,
+      "message": "auto bufferSize \u003d sol::Manager::get().dataBuffer.size();\nif (buffersize \u003e sendThreshold)\n{\n    charAccTimerHandler();\n    return;\n}",
+      "revId": "e46d531856d4509887553422db8a5391b67fe301",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
