@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "69275375_f9a6b0c7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2022-11-29T23:25:01Z",
+      "side": 1,
+      "message": "There must have been a miscommunication as to what I was hoping to see. I tried to explain more clearly this time.",
+      "revId": "fa4f3c96aa9c15fec38d0b264552c135338fb4f6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9abdc8fd_b0dc46b5",
+        "filename": "command/payload_cmds.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2022-11-29T23:25:01Z",
+      "side": 1,
+      "message": "not needed",
+      "range": {
+        "startLine": 155,
+        "startChar": 4,
+        "endLine": 156,
+        "endChar": 63
+      },
+      "revId": "fa4f3c96aa9c15fec38d0b264552c135338fb4f6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf25af06_d5b89c67",
+        "filename": "command/payload_cmds.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2022-11-29T23:25:01Z",
+      "side": 1,
+      "message": "This would be better named activeSession instead of activateSession",
+      "range": {
+        "startLine": 159,
+        "startChar": 9,
+        "endLine": 159,
+        "endChar": 24
+      },
+      "revId": "fa4f3c96aa9c15fec38d0b264552c135338fb4f6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d29392a_c4a8ae5a",
+        "filename": "command/payload_cmds.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2022-11-29T23:25:01Z",
+      "side": 1,
+      "message": "if (activeSession-\u003ecurrentPrivilege() !\u003d session::Privilege::ADMIN)\n{\n  // insufficient privilege\n}",
+      "range": {
+        "startLine": 160,
+        "startChar": 8,
+        "endLine": 161,
+        "endChar": 43
+      },
+      "revId": "fa4f3c96aa9c15fec38d0b264552c135338fb4f6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
