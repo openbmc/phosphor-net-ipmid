@@ -85,6 +85,30 @@
       },
       "revId": "fa4f3c96aa9c15fec38d0b264552c135338fb4f6",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb0de5ba_5e5e32c5",
+        "filename": "command/payload_cmds.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1001385
+      },
+      "writtenOn": "2022-12-12T03:20:03Z",
+      "side": 1,
+      "message": "Why compare activeSession with ADMIN? We need to deactivate payload in this function.",
+      "parentUuid": "8d29392a_c4a8ae5a",
+      "range": {
+        "startLine": 160,
+        "startChar": 8,
+        "endLine": 161,
+        "endChar": 43
+      },
+      "revId": "fa4f3c96aa9c15fec38d0b264552c135338fb4f6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
