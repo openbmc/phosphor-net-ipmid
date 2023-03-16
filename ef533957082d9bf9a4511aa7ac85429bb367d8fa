@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cffcdf94_c1076345",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2023-03-16T14:21:50Z",
+      "side": 1,
+      "message": "I don\u0027t have a real problem with this, but the ipmi bridges (kcs, bt, net) cannot really do anything without phosphor-ipmi-host, so I am curious why you want the change.",
+      "revId": "ef533957082d9bf9a4511aa7ac85429bb367d8fa",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
