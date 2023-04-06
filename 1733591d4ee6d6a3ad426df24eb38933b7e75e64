@@ -1,0 +1,10 @@
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+1: Jiaqing Zhao <jiaqing.zhao@intel.com>
+Code-Review+2: Vernon Mauery <vernon.mauery@linux.intel.com>
+Code-Review+1: Benjamin Fair <benjaminfair@google.com>
+Code-Review+1: Willy Tu <wltu@google.com>
+Submitted-by: Anthony <anthonyhkf@google.com>
+Submitted-at: Thu, 06 Apr 2023 01:30:22 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/phosphor-net-ipmid/+/61546
+Project: openbmc/phosphor-net-ipmid
+Branch: refs/heads/master
