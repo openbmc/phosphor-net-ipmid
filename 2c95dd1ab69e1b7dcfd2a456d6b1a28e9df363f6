@@ -1,0 +1,9 @@
+Code-Review+1: Tom Tung <shes050117@gmail.com>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+2: Vernon Mauery <vernon.mauery@linux.intel.com>
+Code-Review+1: Anthony <anthonyhkf@google.com>
+Submitted-by: Willy Tu <wltu@google.com>
+Submitted-at: Wed, 12 Apr 2023 00:32:53 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/phosphor-net-ipmid/+/61424
+Project: openbmc/phosphor-net-ipmid
+Branch: refs/heads/master
