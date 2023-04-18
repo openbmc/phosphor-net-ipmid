@@ -6,12 +6,12 @@ AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignEscapedNewlines: Right
-AlignOperands:   true
+AlignOperands:  Align
 AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: true
-AllowShortBlocksOnASingleLine: false
+AllowShortBlocksOnASingleLine: Empty
 AllowShortCaseLabelsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: None
+AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 AlwaysBreakAfterReturnType: None
@@ -75,9 +75,11 @@ IncludeCategories:
   - Regex:           '.*'
     Priority:        6
 IndentCaseLabels: true
+IndentRequiresClause: true
 IndentWidth:     4
 IndentWrappedFunctionNames: true
 KeepEmptyLinesAtTheStartOfBlocks: false
+LambdaBodyIndentation: OuterScope
 MacroBlockBegin: ''
 MacroBlockEnd:   ''
 MaxEmptyLinesToKeep: 1
@@ -85,13 +87,18 @@ NamespaceIndentation: None
 ObjCBlockIndentWidth: 2
 ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
+PenaltyBreakAssignment: 25
 PenaltyBreakBeforeFirstCallParameter: 19
 PenaltyBreakComment: 300
 PenaltyBreakFirstLessLess: 120
 PenaltyBreakString: 1000
 PenaltyExcessCharacter: 1000000
 PenaltyReturnTypeOnItsOwnLine: 60
+PenaltyIndentedWhitespace: 0
+QualifierAlignment: Left
+ReferenceAlignment: Left
 ReflowComments:  true
+RequiresClausePosition: OwnLine
 SortIncludes:    true
 SortUsingDeclarations: true
 SpaceAfterCStyleCast: false
@@ -114,3 +121,4 @@ TabWidth:        4
 UseCRLF: false
 UseTab:          Never
 ...
+
