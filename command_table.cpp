@@ -77,8 +77,8 @@ void Table::executeCommand(uint32_t inCommand,
              ipmi::Value(static_cast<uint32_t>(session->getBMCSessionID()))},
         };
         bus->async_method_call(
-            [handler, this](const boost::system::error_code& ec,
-                            const IpmiDbusRspType& response) {
+            [handler, netFn, cmd, this](const boost::system::error_code& ec,
+                                        const IpmiDbusRspType& response) {
             if (!ec)
             {
                 const uint8_t& cc = std::get<3>(response);
@@ -90,6 +90,26 @@ void Table::executeCommand(uint32_t inCommand,
                 payload.insert(payload.end(), responseData.begin(),
                                responseData.end());
                 handler->outPayload = std::move(payload);
+
+                if (netFn == ipmi::netFnApp && cc == IPMI_CC_OK)
+                {
+                    if (cmd == ipmi::app::cmdSetUserPasswordCommand ||
+                        cmd == ipmi::app::cmdSetUserName)
+                    {
+                        // hack to reload password if it was changed now!
+                        // refactor it in future
+                        ipmi::ipmiReloadPassword();
+                    }
+
+                    if (cmd == ipmi::app::cmdSetUserAccessCommand ||
+                        cmd == ipmi::app::cmdSetUserPayloadAccess ||
+                        cmd == ipmi::app::cmdSetUserName)
+                    {
+                        // hack to reload user access if it was changed now!
+                        // refactor it in future
+                        ipmi::ipmiReloadUserAccess();
+                    }
+                }
             }
             else
             {
