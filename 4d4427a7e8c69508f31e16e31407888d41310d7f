@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "82ecd875_41156d86",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1000269
+      },
+      "writtenOn": "2023-06-21T11:52:34Z",
+      "side": 1,
+      "message": "Commit message should provide more details - You need to add, what is the issue this commit caused and why we decided to revert it.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 19
+      },
+      "revId": "4d4427a7e8c69508f31e16e31407888d41310d7f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
