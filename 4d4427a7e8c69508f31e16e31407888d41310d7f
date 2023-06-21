@@ -22,6 +22,30 @@
       },
       "revId": "4d4427a7e8c69508f31e16e31407888d41310d7f",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "88e343c8_60a8f35f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1000269
+      },
+      "writtenOn": "2023-06-21T12:37:04Z",
+      "side": 1,
+      "message": "Thanks for adding details.\n\nNIT: Better move \"This revert commit ....\" above information sentence.",
+      "parentUuid": "82ecd875_41156d86",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 19
+      },
+      "revId": "4d4427a7e8c69508f31e16e31407888d41310d7f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
