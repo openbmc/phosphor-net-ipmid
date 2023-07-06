@@ -133,6 +133,30 @@
       },
       "revId": "fa4f3c96aa9c15fec38d0b264552c135338fb4f6",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d09bc3de_482c22af",
+        "filename": "command/payload_cmds.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1000940
+      },
+      "writtenOn": "2023-07-06T07:52:37Z",
+      "side": 1,
+      "message": "I think that if I have privilege to activate a SOL session, I should be able to deactivate it (wonder if I can deactivate other\u0027s sessions with the same level). Checking with ADMIN means that only ADMIN can deactivate sessions.",
+      "parentUuid": "97288dff_83218394",
+      "range": {
+        "startLine": 160,
+        "startChar": 8,
+        "endLine": 161,
+        "endChar": 43
+      },
+      "revId": "fa4f3c96aa9c15fec38d0b264552c135338fb4f6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
