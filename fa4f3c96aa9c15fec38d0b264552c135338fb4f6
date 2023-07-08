@@ -181,6 +181,30 @@
       },
       "revId": "fa4f3c96aa9c15fec38d0b264552c135338fb4f6",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "04d9142e_1dfcc900",
+        "filename": "command/payload_cmds.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1000940
+      },
+      "writtenOn": "2023-07-08T04:26:38Z",
+      "side": 1,
+      "message": "Having only session owner and Administrator to be able to deactivate a session is fine for me",
+      "parentUuid": "62d50aac_45117515",
+      "range": {
+        "startLine": 160,
+        "startChar": 8,
+        "endLine": 161,
+        "endChar": 43
+      },
+      "revId": "fa4f3c96aa9c15fec38d0b264552c135338fb4f6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
