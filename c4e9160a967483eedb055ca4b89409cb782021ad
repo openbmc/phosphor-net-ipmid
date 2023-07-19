@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b914427_c9b83086",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000940
+      },
+      "writtenOn": "2023-07-19T04:28:01Z",
+      "side": 1,
+      "message": "With patchiest 5, it works for me for the sol activate. However, I can\u0027t deactivate my SOL session.\nBelow is my test:\n1. Create new user ampsw with Operator privilege\n2. Set privilege to USER\n $ ipmitool sol set privilege-level user\n3. Activate SOL session\n $ ipmitool -U ampsw -P Amp@sw123 -C 17 -I lanplus -H 10.38.153.105 -L USER sol activate\n4. On another console, deactivate my session\n $ ipmitool -U ampsw -P Amp@sw123 -C 17 -I lanplus -H 10.38.153.105 -L USER sol deactivate\nError de-activating SOL payload: Insufficient privilege level\n $ ipmitool -U ampsw -P Amp@sw123 -C 17 -I lanplus -H 10.38.153.105 sol deactivate\nSet Session Privilege Level to ADMINISTRATOR failed: Unknown (0x81)\nError: Unable to establish IPMI v2 / RMCP+ session",
+      "revId": "c4e9160a967483eedb055ca4b89409cb782021ad",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
