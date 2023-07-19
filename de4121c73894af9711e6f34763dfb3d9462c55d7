@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0fed4cae_9349bc4e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000940
+      },
+      "writtenOn": "2023-07-19T09:41:38Z",
+      "side": 1,
+      "message": "I checked on my Mt.Jade platform and it\u0027s good for me now. Administrator and I can deactivate my session",
+      "revId": "de4121c73894af9711e6f34763dfb3d9462c55d7",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
