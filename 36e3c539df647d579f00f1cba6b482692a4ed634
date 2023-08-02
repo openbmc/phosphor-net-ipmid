@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c994936_f9eae6ce",
+        "filename": "command/guid.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1000559
+      },
+      "writtenOn": "2023-08-02T18:11:46Z",
+      "side": 1,
+      "message": "This failure case is not caused by timing issue, but maybe a mal-formatted UUID from the service that provides it? \nThere is no issue, just trying to understand.",
+      "range": {
+        "startLine": 107,
+        "startChar": 0,
+        "endLine": 107,
+        "endChar": 24
+      },
+      "revId": "36e3c539df647d579f00f1cba6b482692a4ed634",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
