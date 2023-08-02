@@ -22,6 +22,30 @@
       },
       "revId": "36e3c539df647d579f00f1cba6b482692a4ed634",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6691c9ed_62b428db",
+        "filename": "command/guid.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1000163
+      },
+      "writtenOn": "2023-08-02T22:50:32Z",
+      "side": 1,
+      "message": "Yup. We have to return something, so the fake guid is as good as any.",
+      "parentUuid": "7c994936_f9eae6ce",
+      "range": {
+        "startLine": 107,
+        "startChar": 0,
+        "endLine": 107,
+        "endChar": 24
+      },
+      "revId": "36e3c539df647d579f00f1cba6b482692a4ed634",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
