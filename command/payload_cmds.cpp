@@ -156,7 +156,8 @@ std::vector<uint8_t>
         session::Manager::get().getSession(handler->sessionID);
     auto solSessionID =
         sol::Manager::get().getContext(request->payloadInstance).sessionID;
-    auto solActiveSession = session::Manager::get().getSession(solSessionID);
+    auto solActiveSession =
+        sol::Manager::get().getContext(request->payloadInstance).session;
     // The session owner or the ADMIN could deactivate the session
     if (currentSession->userName != solActiveSession->userName &&
         currentSession->currentPrivilege() !=
