@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "43df1809_1a9fbe13",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000900
+      },
+      "writtenOn": "2023-09-08T23:45:38Z",
+      "side": 1,
+      "message": "Need to clarify the high-level problem and solution more in the subject and commit body. The issue as I understand it is that the `sol::Manager` will keep references to stale sessions that are no longer tracked by `session::Manager`. This can happen when you activate the SOL payload but then immediately close the session, i.e. by running\n\n```\nipmitool -I lanplus -H $OBMC_BMC -U $OBMC_USER -P $OBMC_PASS raw 6 0x48 1 1 0xc0 0 0 0\n```\n\nThis command is arguably user error since the session will be closed by ipmitool and therefore it\u0027s pointless to run. But since the SOL payload is not deactivateable then it is a real bug in this code.",
+      "revId": "7e78c88b5ec60efc529178cc048fccd333156305",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "73d25bcf_07d965a5",
+        "filename": "command/payload_cmds.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1000900
+      },
+      "writtenOn": "2023-09-08T23:45:38Z",
+      "side": 1,
+      "message": "If the session is closed (unknown by `session::Manager`) then we should do more here to clear out the stale data from `sol::Manager`.",
+      "revId": "7e78c88b5ec60efc529178cc048fccd333156305",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
