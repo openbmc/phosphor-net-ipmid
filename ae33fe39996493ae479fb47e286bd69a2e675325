@@ -1,0 +1,159 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e0577878_c68bd1c1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000900
+      },
+      "writtenOn": "2023-09-11T22:32:38Z",
+      "side": 1,
+      "message": "Handle SOL payload deactivation for stale session",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 35
+      },
+      "revId": "ae33fe39996493ae479fb47e286bd69a2e675325",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "211bda86_ccbd601d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1000900
+      },
+      "writtenOn": "2023-09-11T22:32:38Z",
+      "side": 1,
+      "message": "typo: unable",
+      "range": {
+        "startLine": 9,
+        "startChar": 8,
+        "endLine": 9,
+        "endChar": 14
+      },
+      "revId": "ae33fe39996493ae479fb47e286bd69a2e675325",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1ffdcb9e_40374c63",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000900
+      },
+      "writtenOn": "2023-09-11T22:32:38Z",
+      "side": 1,
+      "message": "failing -\u003e not returning any response",
+      "range": {
+        "startLine": 12,
+        "startChar": 12,
+        "endLine": 12,
+        "endChar": 19
+      },
+      "revId": "ae33fe39996493ae479fb47e286bd69a2e675325",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "03cebf2f_c52d2e55",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1000900
+      },
+      "writtenOn": "2023-09-11T22:32:38Z",
+      "side": 1,
+      "message": "This is not expected behavior. According to the IPMI spec (24.2):\n\n\u003e When a session terminates all payloads that were active under that session are automatically deactivated by the BMC.\n\nThe payload should be deactivated after the session for the first command is ended. But we can fix this in another commit.",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 18
+      },
+      "revId": "ae33fe39996493ae479fb47e286bd69a2e675325",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c351ac7_ab9a838f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1000900
+      },
+      "writtenOn": "2023-09-11T22:32:38Z",
+      "side": 1,
+      "message": "This should return `80h: Payload already deactivated`",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 32
+      },
+      "revId": "ae33fe39996493ae479fb47e286bd69a2e675325",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4f772ace_478ab429",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000900
+      },
+      "writtenOn": "2023-09-11T22:32:38Z",
+      "side": 1,
+      "message": "I am good with this change if you update the commit message and add the 0x80 CC.",
+      "revId": "ae33fe39996493ae479fb47e286bd69a2e675325",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "abf7a3b8_424ef8a3",
+        "filename": "command/payload_cmds.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1000900
+      },
+      "writtenOn": "2023-09-11T22:32:38Z",
+      "side": 1,
+      "message": "So in the test case, execution will pass through here when `activating()` throws an exception - but in this case we should return 0x80. Need to change to\n\n```\nresponse-\u003ecompletionCode \u003d IPMI_CC_PAYLOAD_DEACTIVATED;\n```\n\nand also update or delete the preceding comment block.\n\nEven though in the implementation we are only deactivating the payload right now (suggesting a return code of 0), logically it happened earlier when the session was closed so to adhere to the IPMI spec we should return 0x80.",
+      "range": {
+        "startLine": 182,
+        "startChar": 0,
+        "endLine": 188,
+        "endChar": 30
+      },
+      "revId": "ae33fe39996493ae479fb47e286bd69a2e675325",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
