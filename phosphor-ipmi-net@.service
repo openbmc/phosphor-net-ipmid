@@ -2,7 +2,8 @@
 Description=Network IPMI daemon
 Wants=phosphor-ipmi-host.service
 After=phosphor-ipmi-host.service
-Requires=sys-subsystem-net-devices-%i.device
+After=network-online.target
+Wants=sys-subsystem-net-devices-%i.device
 After=sys-subsystem-net-devices-%i.device
 ConditionPathExists=/sys/class/net/%i
 
