@@ -16,6 +16,24 @@
       "message": "@Tom Tung, does this change break things for you?",
       "revId": "2a25edc4fcc469f39cf54c0ebe3675c456895eae",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ec6d2a7_6fa7d34c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001087
+      },
+      "writtenOn": "2023-12-06T04:51:00Z",
+      "side": 1,
+      "message": "Oh, sorry, for the late reply. I missed this.\n\nLet me check for my system. From the naming of network-online.target, it should be fine but I didn\u0027t see much dependencies when I checked `systemctl list-dependencies  network-online.target`.\n\ncc @wak@google.com and @anthonyhkf@google.com",
+      "parentUuid": "cb760c14_61779e8a",
+      "revId": "2a25edc4fcc469f39cf54c0ebe3675c456895eae",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
