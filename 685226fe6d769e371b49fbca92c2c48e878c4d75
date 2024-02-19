@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7fc6d163_7efa9366",
+        "filename": "sol/sol_context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1001396
+      },
+      "writtenOn": "2024-02-19T09:13:00Z",
+      "side": 1,
+      "message": "ipmitool will search for the pattern \"new line\" ~ B, but it will output new line followed by a BREAK, so there should already be a new line before the BREAK and I think \u0027~\u0027 + \u0027B\u0027 is enough to avoid one more \\n in this sequence.",
+      "revId": "685226fe6d769e371b49fbca92c2c48e878c4d75",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
