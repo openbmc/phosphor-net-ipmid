@@ -16,6 +16,23 @@
       "message": "phosphor-ipmi-host is failing with include/ipmid/handler.hpp.",
       "revId": "51d4af0a6427ab3ac300f9b9683c4d2ed2feba91",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "086e3553_06aba9fd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000940
+      },
+      "writtenOn": "2024-02-20T03:57:03Z",
+      "side": 1,
+      "message": "Tested on Ampere Mt.Jade",
+      "revId": "51d4af0a6427ab3ac300f9b9683c4d2ed2feba91",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
