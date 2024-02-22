@@ -16,6 +16,24 @@
       "message": "ipmitool will search for the pattern \"new line\" ~ B, but it will output new line followed by a BREAK, so there should already be a new line before the BREAK and I think \u0027~\u0027 + \u0027B\u0027 is enough to avoid one more \\n in this sequence.",
       "revId": "685226fe6d769e371b49fbca92c2c48e878c4d75",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "beaced3e_eebaa71c",
+        "filename": "sol/sol_context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1001852
+      },
+      "writtenOn": "2024-02-22T07:12:11Z",
+      "side": 1,
+      "message": "Fixed in patchset 2",
+      "parentUuid": "7fc6d163_7efa9366",
+      "revId": "685226fe6d769e371b49fbca92c2c48e878c4d75",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
