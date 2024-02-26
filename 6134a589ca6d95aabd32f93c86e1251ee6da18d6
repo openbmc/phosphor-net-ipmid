@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "86ad44f9_4dd064bb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2024-02-26T04:15:24Z",
+      "side": 1,
+      "message": "Just noting that there\u0027s still some debate happening on the obmc-console patch.",
+      "revId": "6134a589ca6d95aabd32f93c86e1251ee6da18d6",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
