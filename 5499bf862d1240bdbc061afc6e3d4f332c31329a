@@ -1,4 +1,22 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "72e791af_5c59b1fd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000926
+      },
+      "writtenOn": "2024-03-11T12:10:34Z",
+      "side": 1,
+      "message": "Doesn\u0027t look like it solve the issue. I\u0027m still experience phosphor-ipmi-net coredump, if I type too fast in the SoL session",
+      "revId": "5499bf862d1240bdbc061afc6e3d4f332c31329a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ],
   "submitRequirementResults": []
 }
