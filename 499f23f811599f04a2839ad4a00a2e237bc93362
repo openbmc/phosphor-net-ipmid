@@ -33,6 +33,24 @@
       "message": "I am not sure that this return and the one below on line 63 should be there.\n\nIf attempting to send now fails, I don\u0027t think that should mean that the timer should not be enabled. The name of the function is to enable the timer, and sending now if there are sufficient bytes is just an optimization. Just because sending now didn\u0027t work doesn\u0027t mean that we shouldn\u0027t try again in some time.",
       "revId": "499f23f811599f04a2839ad4a00a2e237bc93362",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e748c422_aaf14208",
+        "filename": "sol/sol_context.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1000926
+      },
+      "writtenOn": "2024-03-15T08:33:18Z",
+      "side": 1,
+      "message": "Here we return when send operation was successful, therefore there is no need for the timer.\n\nAs for the `line 63` I guess we can remove `return` from there. But generally this part of code was copied from the `charAccTimerHandler()`, and that function doesn\u0027t relaunch timer on exception. If we would just do it here it would create some sort of inconsistency.",
+      "parentUuid": "b3c828e0_1d24a079",
+      "revId": "499f23f811599f04a2839ad4a00a2e237bc93362",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
