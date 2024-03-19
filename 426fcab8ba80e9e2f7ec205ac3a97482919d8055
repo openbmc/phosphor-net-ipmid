@@ -1,0 +1,11 @@
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+2: Vernon Mauery <vernon.mauery@linux.intel.com>
+Code-Review+1: <smriti.ayushi@linux.intel.com>
+Code-Review+1: Jian Zhang <zhangjian3032@gmail.com>
+Submitted-by: Konstantin Aladyshev <aladyshev22@gmail.com>
+Submitted-at: Tue, 19 Mar 2024 06:35:10 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/phosphor-net-ipmid/+/70028
+Comments-Total: 5
+Comments-Unresolved: 1
+Project: openbmc/phosphor-net-ipmid
+Branch: refs/heads/master
