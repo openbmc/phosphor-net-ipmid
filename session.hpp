@@ -117,8 +117,7 @@ class Session : public SessionIface
      */
     Session(sdbusplus::bus_t& bus, const char* path,
             SessionID inRemoteConsoleSessID, SessionID BMCSessionID,
-            char priv) :
-        SessionIface(bus, path)
+            char priv) : SessionIface(bus, path)
     {
         reqMaxPrivLevel = static_cast<session::Privilege>(priv);
         bmcSessionID = BMCSessionID;

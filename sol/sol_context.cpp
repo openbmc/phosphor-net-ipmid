@@ -17,10 +17,9 @@ using namespace phosphor::logging;
 Context::Context(std::shared_ptr<boost::asio::io_context> io,
                  uint8_t maxRetryCount, uint8_t sendThreshold, uint8_t instance,
                  session::SessionID sessionID) :
-    accumulateTimer(*io),
-    retryTimer(*io), maxRetryCount(maxRetryCount), retryCounter(maxRetryCount),
-    sendThreshold(sendThreshold), payloadInstance(instance),
-    sessionID(sessionID)
+    accumulateTimer(*io), retryTimer(*io), maxRetryCount(maxRetryCount),
+    retryCounter(maxRetryCount), sendThreshold(sendThreshold),
+    payloadInstance(instance), sessionID(sessionID)
 {
     session = session::Manager::get().getSession(sessionID);
 }

@@ -52,8 +52,7 @@ class Interface
   public:
     explicit Interface(integrity::Algorithms intAlgo,
                        crypt::Algorithms cryptAlgo) :
-        intAlgo(intAlgo),
-        cryptAlgo(cryptAlgo)
+        intAlgo(intAlgo), cryptAlgo(cryptAlgo)
     {}
 
     Interface() = delete;
