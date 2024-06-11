@@ -232,8 +232,9 @@ class Manager
             return *(iter->second);
         }
 
-        std::string msg = "Invalid SOL payload instance " + payloadInstance;
-        throw std::runtime_error(msg.c_str());
+        std::string msg = "Invalid SOL payload instance " +
+                          std::to_string(payloadInstance);
+        throw std::runtime_error(msg);
     }
 
     /** @brief Get SOL Context by Session ID.
@@ -252,8 +253,8 @@ class Manager
             }
         }
 
-        std::string msg = "Invalid SOL SessionID " + sessionID;
-        throw std::runtime_error(msg.c_str());
+        std::string msg = "Invalid SOL SessionID " + std::to_string(sessionID);
+        throw std::runtime_error(msg);
     }
 
     /** @brief Check if SOL payload is active.
