@@ -97,6 +97,9 @@ class EventLoop
     /** @brief get vlanid  */
     int getVLANID(const std::string channel);
 
+    /** @brief set up boost::asio signal handling */
+    void setupSignal();
+
     /** @brief boost::asio io context to run with
      */
     std::shared_ptr<boost::asio::io_context> io;
