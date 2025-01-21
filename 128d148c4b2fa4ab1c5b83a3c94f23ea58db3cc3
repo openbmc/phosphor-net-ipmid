@@ -1,0 +1,7 @@
+Code-Review+2: Tom Joseph <rushtotom@gmail.com>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Submitted-by: Patrick Williams <patrick@stwcx.xyz>
+Submitted-at: Tue, 21 Jan 2025 15:44:24 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/phosphor-net-ipmid/+/76754
+Project: openbmc/phosphor-net-ipmid
+Branch: refs/heads/master
