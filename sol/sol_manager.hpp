@@ -69,7 +69,7 @@ class Manager
         static std::shared_ptr<Manager> ptr = nullptr;
         if (!ptr)
         {
-            std::shared_ptr<boost::asio::io_context> io = getIo();
+            std::shared_ptr<boost::asio::io_context> io = getIoContext();
             ptr = std::make_shared<Manager>(io, Private());
         }
         return *ptr;

@@ -13,4 +13,4 @@ static const auto IPMI_STD_PORT = 623;
 extern sd_bus* bus;
 
 std::shared_ptr<sdbusplus::asio::connection> getSdBus();
-std::shared_ptr<boost::asio::io_context> getIo();
+std::shared_ptr<boost::asio::io_context> getIoContext();
