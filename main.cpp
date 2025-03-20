@@ -26,7 +26,7 @@
 #include <tuple>
 
 static auto io = std::make_shared<boost::asio::io_context>();
-std::shared_ptr<boost::asio::io_context> getIo()
+std::shared_ptr<boost::asio::io_context> getIoContext()
 {
     return io;
 }

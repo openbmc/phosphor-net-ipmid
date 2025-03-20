@@ -67,7 +67,7 @@ class EventLoop
         static std::shared_ptr<EventLoop> ptr = nullptr;
         if (!ptr)
         {
-            std::shared_ptr<boost::asio::io_context> io = getIo();
+            std::shared_ptr<boost::asio::io_context> io = getIoContext();
             ptr = std::make_shared<EventLoop>(io, Private());
         }
         return *ptr;
