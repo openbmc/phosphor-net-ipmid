@@ -85,6 +85,24 @@
       "message": "This looks fine, but openbmc has not moved to v258 yet.",
       "revId": "2edac1fab307f1da11fb481b8aaabe494ff4896d",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ae278141_a1482b94",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000936
+      },
+      "writtenOn": "2025-04-15T18:01:57Z",
+      "side": 1,
+      "message": "\u003e This looks fine, but openbmc has not moved to v258 yet.\n\nIt shouldn\u0027t hurt, just the warning will change from `Invalid interface name, ignoring: sys-subsystem-net-devices-%i.device` to `Invalid interface name, ignoring: %i` until systemd version is bumped.",
+      "parentUuid": "875bda94_d3a9a688",
+      "revId": "2edac1fab307f1da11fb481b8aaabe494ff4896d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
