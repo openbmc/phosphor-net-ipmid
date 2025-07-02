@@ -30,7 +30,7 @@ std::vector<uint8_t> activatePayload(const std::vector<uint8_t>& inPayload,
     auto response =
         reinterpret_cast<ActivatePayloadResponse*>(outPayload.data());
 
-    response->completionCode = IPMI_CC_OK;
+    response->completionCode = ipmi::ccSuccess;
 
     // SOL is the payload currently supported for activation.
     if (static_cast<uint8_t>(message::PayloadType::SOL) != request->payloadType)
@@ -73,7 +73,8 @@ std::vector<uint8_t> activatePayload(const std::vector<uint8_t>& inPayload,
     auto userId = ipmi::ipmiUserGetUserId(session->userName);
     ipmi::PayloadAccess payloadAccess = {};
     if ((ipmi::ipmiUserGetUserPayloadAccess(session->channelNum(), userId,
-                                            payloadAccess) != IPMI_CC_OK) ||
+                                            payloadAccess) !=
+         ipmi::ccSuccess) ||
         !(payloadAccess.stdPayloadEnables1[static_cast<uint8_t>(
             message::PayloadType::SOL)]))
     {
@@ -129,7 +130,7 @@ std::vector<uint8_t> deactivatePayload(
     std::vector<uint8_t> outPayload(sizeof(DeactivatePayloadResponse));
     auto response =
         reinterpret_cast<DeactivatePayloadResponse*>(outPayload.data());
-    response->completionCode = IPMI_CC_OK;
+    response->completionCode = ipmi::ccSuccess;
 
     // SOL is the payload currently supported for deactivation
     if (static_cast<uint8_t>(message::PayloadType::SOL) != request->payloadType)
@@ -224,7 +225,7 @@ std::vector<uint8_t> getPayloadStatus(
         return outPayload;
     }
 
-    response->completionCode = IPMI_CC_OK;
+    response->completionCode = ipmi::ccSuccess;
 
     constexpr size_t maxSolPayloadInstances = 1;
     response->capacity = maxSolPayloadInstances;
@@ -274,7 +275,7 @@ std::vector<uint8_t> getPayloadInfo(
         // No active payload - return session id as 0
         response->sessionID = 0;
     }
-    response->completionCode = IPMI_CC_OK;
+    response->completionCode = ipmi::ccSuccess;
     return outPayload;
 }
 
