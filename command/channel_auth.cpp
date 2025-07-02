@@ -52,7 +52,7 @@ std::vector<uint8_t> GetChannelCapabilities(
         reinterpret_cast<GetChannelCapabilitiesResp*>(outPayload.data());
 
     // A canned response, since there is no user and channel management.
-    response->completionCode = IPMI_CC_OK;
+    response->completionCode = ipmi::ccSuccess;
 
     response->channelNumber = chNum;
 
@@ -278,7 +278,7 @@ std::vector<uint8_t> getChannelCipherSuites(
     auto size = end - start;
 
     std::vector<uint8_t> rsp;
-    rsp.push_back(IPMI_CC_OK);
+    rsp.push_back(ipmi::ccSuccess);
     rsp.push_back(rspChannel);
     std::copy_n(records.data() + start, size, std::back_inserter(rsp));
 

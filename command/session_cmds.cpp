@@ -36,7 +36,7 @@ std::vector<uint8_t> setSessionPrivilegeLevel(
     std::vector<uint8_t> outPayload(sizeof(SetSessionPrivLevelResp));
     auto response =
         reinterpret_cast<SetSessionPrivLevelResp*>(outPayload.data());
-    response->completionCode = IPMI_CC_OK;
+    response->completionCode = ipmi::ccSuccess;
     uint8_t reqPrivilegeLevel = request->reqPrivLevel;
 
     auto session = session::Manager::get().getSession(handler->sessionID);

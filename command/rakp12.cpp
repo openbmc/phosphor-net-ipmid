@@ -223,10 +223,11 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
 
     uint8_t chNum = static_cast<uint8_t>(getInterfaceIndex());
     // Get channel based access information
-    if ((ipmi::ipmiUserGetPrivilegeAccess(
-             userId, chNum, session->sessionUserPrivAccess) != IPMI_CC_OK) ||
+    if ((ipmi::ipmiUserGetPrivilegeAccess(userId, chNum,
+                                          session->sessionUserPrivAccess) !=
+         ipmi::ccSuccess) ||
         (ipmi::getChannelAccessData(chNum, session->sessionChannelAccess) !=
-         IPMI_CC_OK))
+         ipmi::ccSuccess))
     {
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::INACTIVE_ROLE);
