@@ -32,7 +32,6 @@
 # data within them will be kept sorted.
 
 owners:
-- rushtotom@gmail.com
 - vernon.mauery@gmail.com
 
 reviewers:
@@ -40,9 +39,6 @@ reviewers:
 matchers:
 
 openbmc:
-- name: Tom Joseph
-  email: rushtotom@gmail.com
-  discord: tomjose
 - name: Vernon Mauery
   email: vernon.mauery@gmail.com
   discord: vmauery
