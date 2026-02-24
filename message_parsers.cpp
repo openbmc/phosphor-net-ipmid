@@ -16,7 +16,7 @@ namespace parser
 std::tuple<std::shared_ptr<Message>, SessionHeader> unflatten(
     std::vector<uint8_t>& inPacket)
 {
-    // Check if the packet has atleast the size of the RMCP Header
+    // Check if the packet has at least the size of the RMCP Header
     if (inPacket.size() < sizeof(RmcpHeader_t))
     {
         throw std::runtime_error("RMCP Header missing");
@@ -172,7 +172,7 @@ namespace ipmi20parser
 
 std::shared_ptr<Message> unflatten(std::vector<uint8_t>& inPacket)
 {
-    // Check if the packet has atleast the Session Header
+    // Check if the packet has at least the Session Header
     if (inPacket.size() < sizeof(SessionHeader_t))
     {
         throw std::runtime_error("IPMI2.0 Session Header Missing");

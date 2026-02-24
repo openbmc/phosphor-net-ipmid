@@ -268,7 +268,7 @@ class Context : public std::enable_shared_from_this<Context>
      */
     void resendPayload(bool clear);
 
-    /** @brief accumlate timer handler called by timer */
+    /** @brief accumulate timer handler called by timer */
     void charAccTimerHandler();
 
     /** @brief retry timer handler called by timer */
