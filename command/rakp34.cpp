@@ -3,6 +3,7 @@
 #include "comm_module.hpp"
 #include "endian.hpp"
 #include "guid.hpp"
+#include "memcmp.hpp"
 #include "rmcp.hpp"
 #include "sessions_manager.hpp"
 
@@ -156,8 +157,10 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
     // Generate Key Exchange Authentication Code - RAKP2
     auto output = authAlgo->generateHMAC(input);
 
-    if (inPayload.size() != (sizeof(RAKP3request) + output.size()) ||
-        std::memcmp(output.data(), request + 1, output.size()))
+    auto authCode =
+        std::span{inPayload.begin() + sizeof(*request), inPayload.end()};
+    if (output.size() == 0 ||
+        !crypto_memcmp(std::span<const uint8_t>{output}, authCode))
     {
         lg2::info("Mismatch in HMAC sent by remote console");
 

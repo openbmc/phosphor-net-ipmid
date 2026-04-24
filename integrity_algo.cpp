@@ -1,5 +1,6 @@
 #include "integrity_algo.hpp"
 
+#include "memcmp.hpp"
 #include "message_parsers.hpp"
 
 #include <openssl/evp.h>
@@ -49,8 +50,8 @@ bool AlgoSHA1::verifyIntegrityData(
 
     // Verify if the generated integrity data for the packet and the received
     // integrity data matches.
-    return (std::equal(output.begin(), output.end(), integrityDataBegin,
-                       integrityDataEnd));
+    return crypto_memcmp(std::span<const uint8_t>{output},
+                         std::span{integrityDataBegin, integrityDataEnd});
 }
 
 std::vector<uint8_t> AlgoSHA1::generateIntegrityData(
@@ -115,8 +116,8 @@ bool AlgoSHA256::verifyIntegrityData(
 
     // Verify if the generated integrity data for the packet and the received
     // integrity data matches.
-    return (std::equal(output.begin(), output.end(), integrityDataBegin,
-                       integrityDataEnd));
+    return crypto_memcmp(std::span<const uint8_t>{output},
+                         std::span{integrityDataBegin, integrityDataEnd});
 }
 
 std::vector<uint8_t> AlgoSHA256::generateIntegrityData(
