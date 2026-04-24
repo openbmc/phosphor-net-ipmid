@@ -65,7 +65,11 @@ std::vector<uint8_t> GetChannelCapabilities(
     response->md2 = 0;
 
     response->reserved3 = 0;
-    response->KGStatus = 0;       // KG is set to default
+    response->KGStatus = 0; // KG is set to default
+    std::string chsecuritykeys = ipmi::ipmiGetChannelSecurityKeys(ipmi::ID_KG);
+    if (!chsecuritykeys.empty())
+        response->KGStatus = 1;
+
     response->perMessageAuth = 0; // Per-message Authentication is enabled
     response->userAuth = 0;       // User Level Authentication is enabled
     uint8_t maxChUsers = 0;

@@ -209,6 +209,15 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
     std::advance(iter, sizeof(userLength));
 
     std::copy_n(session->userName.data(), userLength, iter);
+    std::string chsecuritykeys = ipmi::ipmiGetChannelSecurityKeys(ipmi::ID_KG);
+
+    if (!chsecuritykeys.empty())
+    {
+        std::fill(authAlgo->userKey.data(),
+                  authAlgo->userKey.data() + authAlgo->userKey.size(), 0);
+        std::copy_n(chsecuritykeys.c_str(), chsecuritykeys.size(),
+                    authAlgo->userKey.data());
+    }
 
     // Generate Session Integrity Key
     auto sikOutput = authAlgo->generateHMAC(input);
