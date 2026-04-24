@@ -416,8 +416,12 @@ TEST(CryptAlgo, AES_CBC_128_DecryptPayloadValidate)
 
     std::vector<uint8_t> payload = {1, 2,  3,  4,  5,  6,  7,  8,
                                     9, 10, 11, 12, 13, 14, 15, 16};
-    payload.resize(payload.size() + 1);
-    payload.back() = 0;
+    // add proper padding
+    for (uint8_t i = 1; i < 16; i++)
+    {
+        payload.push_back(i);
+    }
+    payload.push_back(15);
 
     // Hardcoded Session Integrity Key
     std::vector<uint8_t> sik = {1,  2,  3,  4,  5,  6,  7,  8,  9,  10,
