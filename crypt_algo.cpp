@@ -1,5 +1,6 @@
 #include "crypt_algo.hpp"
 
+#include "memcmp.hpp"
 #include "message_parsers.hpp"
 
 #include <openssl/evp.h>
@@ -35,20 +36,28 @@ std::vector<uint8_t> AlgoAES128::decryptPayload(
                     packet.data() + sessHeaderLen + AESCBC128ConfHeader,
                     payloadLen - AESCBC128ConfHeader);
 
+    if (plainPayload.size() == 0)
+    {
+        throw std::runtime_error("Packet failed to decrypt");
+    }
     /*
      * The confidentiality pad length is the last byte in the payload, it would
      * tell the number of pad bytes in the payload. We added a condition, so
      * that buffer overrun doesn't happen.
      */
-    size_t confPadLength = plainPayload.back();
-    auto padLength = std::min(plainPayload.size() - 1, confPadLength);
-
+    size_t padLength = plainPayload.back();
+    if (padLength >= (plainPayload.size() - 1) ||
+        padLength > confPadBytes.size())
+    {
+        throw std::runtime_error("Confidentiality pad size is invalid");
+    }
     auto plainPayloadLen = plainPayload.size() - padLength - 1;
 
+    std::span<const uint8_t> payloadPadding{
+        plainPayload.begin() + plainPayloadLen, padLength};
+    std::span<const uint8_t> confPadLimited{confPadBytes.begin(), padLength};
     // Additional check if the confidentiality pad bytes are as expected
-    if (!std::equal(plainPayload.begin() + plainPayloadLen,
-                    plainPayload.begin() + plainPayloadLen + padLength,
-                    confPadBytes.begin()))
+    if (!crypto_memcmp(payloadPadding, confPadLimited))
     {
         throw std::runtime_error("Confidentiality pad bytes check failed");
     }
