@@ -1,5 +1,6 @@
 #include "crypt_algo.hpp"
 #include "integrity_algo.hpp"
+#include "memcmp.hpp"
 #include "message_parsers.hpp"
 #include "rmcp.hpp"
 
@@ -416,8 +417,12 @@ TEST(CryptAlgo, AES_CBC_128_DecryptPayloadValidate)
 
     std::vector<uint8_t> payload = {1, 2,  3,  4,  5,  6,  7,  8,
                                     9, 10, 11, 12, 13, 14, 15, 16};
-    payload.resize(payload.size() + 1);
-    payload.back() = 0;
+    // add proper padding
+    for (uint8_t i = 1; i < 16; i++)
+    {
+        payload.push_back(i);
+    }
+    payload.push_back(15);
 
     // Hardcoded Session Integrity Key
     std::vector<uint8_t> sik = {1,  2,  3,  4,  5,  6,  7,  8,  9,  10,
@@ -483,4 +488,44 @@ TEST(CryptAlgo, AES_CBC_128_DecryptPayloadValidate)
      */
     auto check = std::equal(payload.begin(), payload.end(), plain.begin());
     EXPECT_EQ(true, check);
+}
+
+TEST(cryptoMemcmp, matching_buffers_ok)
+{
+    std::vector<uint8_t> buf1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+    std::vector<uint8_t> buf2 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+
+    auto check = cryptoMemcmp(std::span{buf1}, std::span{buf2});
+
+    EXPECT_EQ(true, check);
+}
+
+TEST(cryptoMemcmp, mismatching_buffers_fail)
+{
+    std::vector<uint8_t> buf1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+    std::vector<uint8_t> buf2 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 11, 12};
+
+    auto check = cryptoMemcmp(std::span{buf1}, std::span{buf2});
+
+    EXPECT_EQ(false, check);
+}
+
+TEST(cryptoMemcmp, buf1_too_short_fail)
+{
+    std::vector<uint8_t> buf1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+    std::vector<uint8_t> buf2 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+
+    auto check = cryptoMemcmp(std::span{buf1}, std::span{buf2});
+
+    EXPECT_EQ(false, check);
+}
+
+TEST(cryptoMemcmp, buf2_too_short_fail)
+{
+    std::vector<uint8_t> buf1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+    std::vector<uint8_t> buf2 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+
+    auto check = cryptoMemcmp(std::span{buf1}, std::span{buf2});
+
+    EXPECT_EQ(false, check);
 }
