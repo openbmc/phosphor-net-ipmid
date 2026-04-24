@@ -81,6 +81,8 @@ int main(int argc, char* argv[])
     app.add_option("-v,--verbose", verbose, "print more verbose output");
     CLI11_PARSE(app, argc, argv);
 
+    EVP_set_default_properties(NULL, "provider!=fips");
+
     // Connect to system bus
     auto rc = sd_bus_default_system(&bus);
     if (rc < 0)
