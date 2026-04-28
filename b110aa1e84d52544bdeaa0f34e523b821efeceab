@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "db65c919_488d2247",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000235
+      },
+      "writtenOn": "2026-04-28T15:47:27Z",
+      "side": 1,
+      "message": "This change puts the \"IPMI user password authentication function\" outside of the FIPS 140-3 boundary.  See the related password change function here: https://gerrit.openbmc.org/c/openbmc/pam-ipmi/+/88973",
+      "revId": "b110aa1e84d52544bdeaa0f34e523b821efeceab",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
