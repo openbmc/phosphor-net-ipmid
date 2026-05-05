@@ -194,7 +194,7 @@ struct Message
      */
     std::shared_ptr<Message> createResponse(std::vector<uint8_t>& output)
     {
-        // SOL packets don't reply; return NULL
+        // SOL packets don't reply; return nullptr
         if (payloadType == PayloadType::SOL)
         {
             return nullptr;

@@ -1,5 +1,6 @@
 Checks: '-*,
     bugprone-unchecked-optional-access,
+    modernize-use-nullptr,
     readability-identifier-naming
     '
 
