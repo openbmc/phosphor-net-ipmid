@@ -176,6 +176,14 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
         return outPayload;
     }
 
+    // Now that RAKP3 shows the user has the correct credentials,
+    // the session can carry the corresponding privilege details.
+    uint8_t channelPrivLimit = session->sessionChannelAccess.privLimit;
+    uint8_t userPrivilege = session->sessionUserPrivAccess.privilege;
+    uint8_t minPriv = std::min(channelPrivLimit, userPrivilege);
+    session->currentPrivilege(std::min<uint8_t>(
+        static_cast<uint8_t>(session::Privilege::USER), minPriv));
+
     /*
      * Session Integrity Key
      *

@@ -162,7 +162,6 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
             static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_ROLE_PRIV);
         return outPayload;
     }
-    session->currentPrivilege(static_cast<uint8_t>(session::Privilege::USER));
 
     session->reqMaxPrivLevel =
         static_cast<session::Privilege>(request->req_max_privilege_level);
@@ -252,22 +251,6 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     }
     session->channelNum(chNum);
     session->userID(userId);
-    // minimum privilege of Channel / User / session::privilege::USER
-    // has to be used as session current privilege level
-    uint8_t minPriv = 0;
-    if (session->sessionChannelAccess.privLimit <
-        session->sessionUserPrivAccess.privilege)
-    {
-        minPriv = session->sessionChannelAccess.privLimit;
-    }
-    else
-    {
-        minPriv = session->sessionUserPrivAccess.privilege;
-    }
-    if (session->currentPrivilege() > minPriv)
-    {
-        session->currentPrivilege(static_cast<uint8_t>(minPriv));
-    }
     // For username / privilege lookup, fail with UNAUTH_NAME, if requested
     // max privilege does not match user privilege
     if (((request->req_max_privilege_level & userNameOnlyLookupMask) ==
