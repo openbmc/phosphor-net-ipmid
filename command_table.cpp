@@ -106,14 +106,16 @@ void Table::executeCommand(uint32_t inCommand,
     {
         auto start = std::chrono::steady_clock::now();
 
-        // Ignore messages that are not part of an active/pre-active session
+        // Ignore messages that are not part of an active session. Session-setup
+        // payloads (Open Session Request, RAKP1, RAKP3) are dispatched under
+        // session ID zero, so a non-zero session ID here must be fully
+        // activated (RAKP handshake complete) before any command is executed.
         if (handler->sessionID != session::sessionZero)
         {
             std::shared_ptr<session::Session> session =
                 session::Manager::get().getSession(handler->sessionID);
             auto state = static_cast<session::State>(session->state());
-            if ((state != session::State::setupInProgress) &&
-                (state != session::State::active))
+            if (state != session::State::active)
             {
                 return;
             }
