@@ -200,6 +200,19 @@ std::shared_ptr<Message> unflatten(std::vector<uint8_t>& inPacket)
     message->rmcpMsgClass =
         static_cast<ClassOfMsg>(header->base.rmcp.classOfMsg);
 
+    // Reject messages that have a session, but are not session init
+    // messages prior to the session being fully active
+    if (sessionID != session::sessionZero &&
+        session->state() ==
+            static_cast<uint8_t>(session::State::setupInProgress) &&
+        message->payloadType != PayloadType::OPEN_SESSION_REQUEST &&
+        message->payloadType != PayloadType::RAKP1 &&
+        message->payloadType != PayloadType::RAKP3)
+    {
+        throw std::runtime_error(
+            "Pre-authentication payload rejected: session not activated");
+    }
+
     // Confirm the number of data bytes received correlates to
     // the packet length in the header
     size_t payloadLen = endian::from_ipmi(header->payloadLength);
