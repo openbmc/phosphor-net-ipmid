@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0bb6801_c127665f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003059
+      },
+      "writtenOn": "2026-07-03T13:56:21Z",
+      "side": 1,
+      "message": "This looks valid. The privilege lookup stays in RAKP12 so RAKP2 and its error codes are still spec-correct, but currentPrivilege is no longer committed there, so the session carries no usable privilege until RAKP3 is verified. The value set in RAKP34, min(USER, channel limit, user privilege), faithfully reproduces the original semantics and runs only after the HMAC check passes.",
+      "revId": "1aad132ab2211c513b368e36794d4ca403ccf2ef",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
