@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3de485f5_51e9bf08",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003059
+      },
+      "writtenOn": "2026-07-03T13:48:07Z",
+      "side": 1,
+      "message": "This looks valid. The change correctly drops the setupInProgress allowance so a numbered session ID must be fully active before any command dispatches, and since the setup payloads run under session zero they skip this check and the handshake is unaffected",
+      "revId": "ed50d1453573baad8ef53b04c81dd21de68029b4",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
