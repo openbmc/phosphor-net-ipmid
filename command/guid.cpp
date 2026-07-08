@@ -18,7 +18,7 @@ static std::optional<command::Guid> guid;
 namespace command
 {
 
-std::unique_ptr<sdbusplus::bus::match_t> matchPtr(nullptr);
+std::unique_ptr<sdbusplus::match> matchPtr(nullptr);
 
 static constexpr auto propInterface = "xyz.openbmc_project.Common.UUID";
 static constexpr auto uuidProperty = "UUID";
@@ -112,12 +112,12 @@ void registerGUIDChangeCallback()
 {
     if (matchPtr == nullptr)
     {
-        using namespace sdbusplus::bus::match::rules;
+        using namespace sdbusplus::match_rules;
         sdbusplus::bus_t bus{ipmid_get_sd_bus_connection()};
 
         try
         {
-            matchPtr = std::make_unique<sdbusplus::bus::match_t>(
+            matchPtr = std::make_unique<sdbusplus::match>(
                 bus, propertiesChangedNamespace(subtreePath, propInterface),
                 [](sdbusplus::message_t& m) {
                     try

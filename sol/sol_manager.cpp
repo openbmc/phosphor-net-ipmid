@@ -23,8 +23,8 @@ constexpr const char* solPath = "/xyz/openbmc_project/ipmi/sol/";
 namespace sol
 {
 
-std::unique_ptr<sdbusplus::bus::match_t> matchPtrSOL(nullptr);
-std::unique_ptr<sdbusplus::bus::match_t> solConfPropertiesSignal(nullptr);
+std::unique_ptr<sdbusplus::match> matchPtrSOL(nullptr);
+std::unique_ptr<sdbusplus::match> solConfPropertiesSignal(nullptr);
 
 void Manager::initConsoleSocket()
 {
@@ -230,7 +230,7 @@ void Manager::stopAllPayloadInstance()
 
 void registerSOLServiceChangeCallback()
 {
-    using namespace sdbusplus::bus::match::rules;
+    using namespace sdbusplus::match_rules;
     sdbusplus::bus_t bus{ipmid_get_sd_bus_connection()};
     try
     {
@@ -240,7 +240,7 @@ void registerSOLServiceChangeCallback()
 
         if (!std::empty(servicePath.first))
         {
-            matchPtrSOL = std::make_unique<sdbusplus::bus::match_t>(
+            matchPtrSOL = std::make_unique<sdbusplus::match>(
                 bus,
                 path_namespace(servicePath.first) +
                     "arg0namespace='xyz.openbmc_project.Control.Service."
@@ -343,13 +343,13 @@ void registerSolConfChangeCallbackHandler(std::string channel)
 {
     if (solConfPropertiesSignal == nullptr)
     {
-        using namespace sdbusplus::bus::match::rules;
+        using namespace sdbusplus::match_rules;
         sdbusplus::bus_t bus{ipmid_get_sd_bus_connection()};
         try
         {
             auto servicePath = solPath + channel;
 
-            solConfPropertiesSignal = std::make_unique<sdbusplus::bus::match_t>(
+            solConfPropertiesSignal = std::make_unique<sdbusplus::match>(
                 bus, propertiesChangedNamespace(servicePath, solInterface),
                 procSolConfChange);
         }
