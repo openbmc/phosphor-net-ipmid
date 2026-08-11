@@ -39,7 +39,7 @@ enum class Privilege : uint8_t
     OEM,
 };
 
-// Mask to get only the privilege from requested maximum privlege (RAKP message
+// Mask to get only the privilege from requested maximum privilege (RAKP message
 // 1)
 constexpr uint8_t reqMaxPrivMask = 0xF;
 
