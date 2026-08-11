@@ -54,7 +54,7 @@ class Handler : public std::enable_shared_from_this<Handler>
      *
      * The incoming payload is read from the channel. If a message is read, it
      * is passed onto executeCommand, which may or may not execute the command
-     * asynchrounously. If the command is executed asynchrounously, a shared_ptr
+     * asynchronously. If the command is executed asynchronously, a shared_ptr
      * of self via shared_from_this will keep this object alive until the
      * response is ready. Then on the destructor, the response will be sent.
      */
@@ -141,7 +141,7 @@ class Handler : public std::enable_shared_from_this<Handler>
     /** @brief Socket channel for communicating with the remote client.*/
     std::shared_ptr<udpsocket::Channel> channel;
 
-    /** @brief asio io context to run asynchrounously */
+    /** @brief asio io context to run asynchronously */
     std::shared_ptr<boost::asio::io_context> io;
 
     parser::SessionHeader sessionHeader = parser::SessionHeader::IPMI20;
