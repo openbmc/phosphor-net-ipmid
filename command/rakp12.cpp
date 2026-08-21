@@ -206,20 +206,54 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
         logInvalidLoginRedfishEvent(message);
         return outPayload;
     }
-#ifdef PAM_AUTHENTICATE
     // Check whether user is already locked for failed attempts
-    if (!ipmi::ipmiUserPamAuthenticate(userName, passwd))
+    bool locked = false;
+    ipmi::Cc lockCc =
+        ipmi::ipmiUserCheckLockedForFailedAttempt(userName, locked);
+    if (lockCc != ipmi::ccSuccess)
     {
-        lg2::error(
-            "Authentication failed - user already locked out, user id: {ID}",
-            "ID", userId);
-
+        lg2::error("Authentication failed - lockout status check failed "
+                   "(D-Bus error), user id: {ID}",
+                   "ID", userId);
         response->rmcpStatusCode =
             static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
         logInvalidLoginRedfishEvent(message);
         return outPayload;
     }
-#endif
+    if (locked)
+    {
+        lg2::error(
+            "Authentication failed - user already locked out, user id: {ID}",
+            "ID", userId);
+        response->rmcpStatusCode =
+            static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
+        logInvalidLoginRedfishEvent(message);
+        return outPayload;
+    }
+
+    // Check whether user's password has expired
+    bool passwordExpired = false;
+    ipmi::Cc expiredCc =
+        ipmi::ipmiUserCheckPasswordExpired(userName, passwordExpired);
+    if (expiredCc != ipmi::ccSuccess)
+    {
+        lg2::error("Authentication failed - password expiry check failed "
+                   "(D-Bus error), user id: {ID}",
+                   "ID", userId);
+        response->rmcpStatusCode =
+            static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
+        logInvalidLoginRedfishEvent(message);
+        return outPayload;
+    }
+    if (passwordExpired)
+    {
+        lg2::error("Authentication failed - password expired, user id: {ID}",
+                   "ID", userId);
+        response->rmcpStatusCode =
+            static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
+        logInvalidLoginRedfishEvent(message);
+        return outPayload;
+    }
 
     uint8_t chNum = static_cast<uint8_t>(getInterfaceIndex());
     // Get channel based access information
