@@ -37,6 +37,35 @@ void logInvalidLoginRedfishEvent(const std::string& journalMsg,
         "MSG", journalMsg, "REDFISH_MESSAGE_ID", messageID,
         "REDFISH_MESSAGE_ARGS", messageArgs.value_or(std::string{}));
 }
+
+namespace
+{
+bool rejectIfNotClear(ipmi::Cc cc, bool positive, uint8_t userId,
+                      std::string_view checkFailMsg,
+                      std::string_view positiveMsg, RAKP2response* response,
+                      const std::string& message)
+{
+    if (cc != ipmi::ccSuccess)
+    {
+        lg2::error("Authentication failed - {MSG}, user id: {ID}", "MSG",
+                   checkFailMsg, "ID", userId);
+    }
+    else if (positive)
+    {
+        lg2::error("Authentication failed - {MSG}, user id: {ID}", "MSG",
+                   positiveMsg, "ID", userId);
+    }
+    else
+    {
+        return false;
+    }
+    response->rmcpStatusCode =
+        static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
+    logInvalidLoginRedfishEvent(message);
+    return true;
+}
+} // namespace
+
 std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
                             std::shared_ptr<message::Handler>& /* handler */)
 {
@@ -206,20 +235,27 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
         logInvalidLoginRedfishEvent(message);
         return outPayload;
     }
-#ifdef PAM_AUTHENTICATE
     // Check whether user is already locked for failed attempts
-    if (!ipmi::ipmiUserPamAuthenticate(userName, passwd))
+    bool locked = false;
+    ipmi::Cc lockCc =
+        ipmi::ipmiUserCheckLockedForFailedAttempt(userName, locked);
+    if (rejectIfNotClear(lockCc, locked, userId,
+                         "lockout status check failed (D-Bus error)",
+                         "user already locked out", response, message))
     {
-        lg2::error(
-            "Authentication failed - user already locked out, user id: {ID}",
-            "ID", userId);
-
-        response->rmcpStatusCode =
-            static_cast<uint8_t>(RAKP_ReturnCode::UNAUTH_NAME);
-        logInvalidLoginRedfishEvent(message);
         return outPayload;
     }
-#endif
+
+    // Check whether user's password has expired
+    bool passwordExpired = false;
+    ipmi::Cc expiredCc =
+        ipmi::ipmiUserCheckPasswordExpired(userName, passwordExpired);
+    if (rejectIfNotClear(expiredCc, passwordExpired, userId,
+                         "password expiry check failed (D-Bus error)",
+                         "password expired", response, message))
+    {
+        return outPayload;
+    }
 
     uint8_t chNum = static_cast<uint8_t>(getInterfaceIndex());
     // Get channel based access information
