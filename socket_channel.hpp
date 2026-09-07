@@ -70,9 +70,10 @@ class Channel
     std::string getRemoteAddress(uint32_t& remoteIpv4Addr) const
     {
         const char* retval = nullptr;
+        char ipv4addr[INET_ADDRSTRLEN] = {};
+        char ipv6addr[INET6_ADDRSTRLEN] = {};
         if (sockAddrSize == sizeof(sockaddr_in))
         {
-            char ipv4addr[INET_ADDRSTRLEN];
             const sockaddr_in* sa =
                 reinterpret_cast<const sockaddr_in*>(&remoteSockAddr);
             remoteIpv4Addr = sa->sin_addr.s_addr;
@@ -81,7 +82,6 @@ class Channel
         }
         else if (sockAddrSize == sizeof(sockaddr_in6))
         {
-            char ipv6addr[INET6_ADDRSTRLEN];
             const sockaddr_in6* sa =
                 reinterpret_cast<const sockaddr_in6*>(&remoteSockAddr);
 
