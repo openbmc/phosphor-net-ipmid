@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b1f10fca_82f21645",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002630
+      },
+      "writtenOn": "2026-09-07T14:00:48Z",
+      "side": 1,
+      "message": "Can you clarify what specific issue this fixes?\nLooking at the code, retval is consumed via return retval;\nwhich triggers the implicit const char* to std::string conversion before getRemoteAddress() returns.\nso ipv4addr/ipv6addr are still valid stack memory at that point.\nLeaving the if/else if block only ends the name\u0027s scope; the array\u0027s actual lifetime extends to the whole function, since it has no destructor.",
+      "revId": "e0b376a5916564201c49d21eece89218d58ed5c9",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
