@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9ccf55c_dc689877",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002630
+      },
+      "writtenOn": "2026-09-08T15:38:23Z",
+      "side": 1,
+      "message": "\u003e netipmid:\n\nthis is phosphor-net-ipmid repo, we don\u0027t need this.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 9
+      },
+      "revId": "ae24c4e742f29d2c8795051bc88f774290bb412a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
