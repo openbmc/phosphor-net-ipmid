@@ -8,7 +8,9 @@
 #include <openssl/rand.h>
 
 #include <algorithm>
+#include <limits>
 #include <numeric>
+#include <stdexcept>
 
 namespace cipher
 {
@@ -23,10 +25,26 @@ std::vector<uint8_t> AlgoAES128::decryptPayload(
     const std::vector<uint8_t>& packet, const size_t sessHeaderLen,
     const size_t payloadLen) const
 {
-    // verify packet size minimal: sessHeaderLen + payloadLen
-    // and payloadLen is more than AESCBC128ConfHeader
-    if (packet.size() < (sessHeaderLen + payloadLen) ||
-        payloadLen < AESCBC128ConfHeader)
+    /*
+     * Verify the packet holds sessHeaderLen + payloadLen bytes without letting
+     * the sum overflow, and that the payload carries the 16-byte IV plus at
+     * least one complete AES block. An IV-only payload would decrypt to
+     * nothing and the pad length byte read below would not exist.
+     */
+    if ((packet.size() < sessHeaderLen) ||
+        ((packet.size() - sessHeaderLen) < payloadLen) ||
+        (payloadLen < (AESCBC128ConfHeader + AESCBC128BlockSize)))
+    {
+        throw std::runtime_error("Invalid data length");
+    }
+
+    /*
+     * The encrypted data must be a whole number of AES blocks and must fit the
+     * int length that OpenSSL takes; a partial trailing block is malformed.
+     */
+    const size_t cipherLen = payloadLen - AESCBC128ConfHeader;
+    if (((cipherLen % AESCBC128BlockSize) != 0) ||
+        (cipherLen > static_cast<size_t>(std::numeric_limits<int>::max())))
     {
         throw std::runtime_error("Invalid data length");
     }
@@ -34,7 +52,7 @@ std::vector<uint8_t> AlgoAES128::decryptPayload(
     auto plainPayload =
         decryptData(packet.data() + sessHeaderLen,
                     packet.data() + sessHeaderLen + AESCBC128ConfHeader,
-                    payloadLen - AESCBC128ConfHeader);
+                    static_cast<int>(cipherLen));
 
     if (plainPayload.size() == 0)
     {
@@ -78,7 +96,7 @@ std::vector<uint8_t> AlgoAES128::encryptPayload(
      * block size of algorithm being used. For the AES algorithm, the block size
      * is 16 bytes.
      */
-    auto paddingLen = AESCBC128BlockSize - ((payloadLen + 1) & 0xF);
+    auto paddingLen = (AESCBC128BlockSize - ((payloadLen + 1) & 0xF)) & 0xF;
 
     /*
      * The additional field is for the Confidentiality Pad Length field. For the
@@ -138,21 +156,25 @@ std::vector<uint8_t> AlgoAES128::decryptData(
 
     int outputLen = 0;
 
-    /*
-     * If padding is disabled then EVP_DecryptFinal_ex() will not encrypt any
-     * more data and it will return an error if any data remains in a partial
-     * block: that is if the total data length is not a multiple of the block
-     * size. Since AES-CBC-128 encrypted payload format adds padding bytes and
-     * ensures that payload is a multiple of block size, we are not making the
-     * call to  EVP_DecryptFinal_ex().
-     */
     if (!EVP_DecryptUpdate(ctxPtr.get(), output.data(), &outputLen, input,
                            inputLen))
     {
         throw std::runtime_error("EVP_DecryptUpdate failed");
     }
 
-    output.resize(outputLen);
+    /*
+     * With padding disabled EVP_DecryptFinal_ex() produces no more data, but
+     * it fails if any input is left over in a partial block. That makes it a
+     * cheap final check that the whole ciphertext was consumed.
+     */
+    int finalLen = 0;
+    if (!EVP_DecryptFinal_ex(ctxPtr.get(), output.data() + outputLen,
+                             &finalLen))
+    {
+        throw std::runtime_error("EVP_DecryptFinal_ex failed");
+    }
+
+    output.resize(outputLen + finalLen);
 
     return output;
 }
