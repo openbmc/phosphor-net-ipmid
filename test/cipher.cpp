@@ -9,6 +9,9 @@
 #include <openssl/rand.h>
 #include <openssl/sha.h>
 
+#include <algorithm>
+#include <limits>
+#include <numeric>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -528,4 +531,114 @@ TEST(cryptoMemcmp, buf2_too_short_fail)
     auto check = cryptoMemcmp(std::span{buf1}, std::span{buf2});
 
     EXPECT_EQ(false, check);
+}
+
+/*
+ * Regression tests for malformed AES-CBC-128 payloads (nvbugs 6686213 and
+ * 6686225). decryptPayload() must reject them instead of reading outside the
+ * plaintext or outside the confidentiality pad table.
+ */
+TEST(CryptAlgo, AES_CBC_128_DecryptIvOnlyPayloadRejected)
+{
+    const std::vector<uint8_t> k2(cipher::crypt::AlgoAES128::AESCBC128BlockSize,
+                                  0);
+    cipher::crypt::AlgoAES128 algo(k2);
+
+    // Only the 16-byte IV, no ciphertext: nothing to decrypt.
+    const std::vector<uint8_t> packet(
+        cipher::crypt::AlgoAES128::AESCBC128ConfHeader, 0);
+
+    EXPECT_THROW(algo.decryptPayload(packet, 0, packet.size()),
+                 std::runtime_error);
+}
+
+TEST(CryptAlgo, AES_CBC_128_DecryptPartialBlockRejected)
+{
+    const std::vector<uint8_t> k2(cipher::crypt::AlgoAES128::AESCBC128BlockSize,
+                                  0);
+    cipher::crypt::AlgoAES128 algo(k2);
+
+    // IV plus one full block plus 8 stray bytes: not a whole number of blocks.
+    const std::vector<uint8_t> packet(
+        cipher::crypt::AlgoAES128::AESCBC128ConfHeader +
+            cipher::crypt::AlgoAES128::AESCBC128BlockSize + 8,
+        0);
+
+    EXPECT_THROW(algo.decryptPayload(packet, 0, packet.size()),
+                 std::runtime_error);
+}
+
+TEST(CryptAlgo, AES_CBC_128_DecryptLengthOverflowRejected)
+{
+    const std::vector<uint8_t> k2(cipher::crypt::AlgoAES128::AESCBC128BlockSize,
+                                  0);
+    cipher::crypt::AlgoAES128 algo(k2);
+
+    const std::vector<uint8_t> packet(
+        cipher::crypt::AlgoAES128::AESCBC128ConfHeader +
+            cipher::crypt::AlgoAES128::AESCBC128BlockSize,
+        0);
+
+    // sessHeaderLen + payloadLen wraps around to a small value; the bounds
+    // check must not be fooled by that.
+    EXPECT_THROW(algo.decryptPayload(packet, std::numeric_limits<size_t>::max(),
+                                     packet.size()),
+                 std::runtime_error);
+}
+
+TEST(CryptAlgo, AES_CBC_128_DecryptOversizedPadLengthRejected)
+{
+    const std::vector<uint8_t> k2(cipher::crypt::AlgoAES128::AESCBC128BlockSize,
+                                  0);
+    cipher::crypt::AlgoAES128 algo(k2);
+
+    // Deterministic fuzzer input from nvbug 6686225: byte zero selects the
+    // session header length, the rest is the packet. It decrypts to a pad
+    // length byte of 219, far beyond the 15-byte confidentiality pad table.
+    std::vector<uint8_t> input(297, 0x41);
+    std::fill_n(input.begin(), 8, 0x30);
+    input[8] = 0x28;
+    std::fill(input.begin() + 9, input.begin() + 35, 0x30);
+    input[35] = 0;
+    input[36] = 1;
+    input[37] = 1;
+    input[293] = 0;
+    input[294] = 0x30;
+    input[295] = 0x30;
+    input[296] = 0x0a;
+
+    const std::vector<uint8_t> packet(input.begin() + 1, input.end());
+    const size_t sessHeaderLen = input[0] % packet.size();
+
+    EXPECT_THROW(algo.decryptPayload(packet, sessHeaderLen,
+                                     packet.size() - sessHeaderLen),
+                 std::runtime_error);
+}
+
+TEST(CryptAlgo, AES_CBC_128_EncryptDecryptRoundTripAllPadLengths)
+{
+    const std::vector<uint8_t> k2(cipher::crypt::AlgoAES128::AESCBC128BlockSize,
+                                  0x5a);
+    cipher::crypt::AlgoAES128 algo(k2);
+
+    // Cover every payload length modulo the block size, including the lengths
+    // that need no pad bytes at all (payloadLen + 1 is a multiple of 16). An
+    // empty payload is not a valid IPMI message and is rejected on decrypt, so
+    // start at one byte.
+    for (size_t len = 1;
+         len < 2 * cipher::crypt::AlgoAES128::AESCBC128BlockSize; ++len)
+    {
+        std::vector<uint8_t> payload(len);
+        std::iota(payload.begin(), payload.end(), 0x10);
+        std::vector<uint8_t> plain = payload;
+
+        auto encrypted = algo.encryptPayload(plain);
+        ASSERT_EQ(encrypted.size() %
+                      cipher::crypt::AlgoAES128::AESCBC128BlockSize,
+                  0U)
+            << "payload length " << len;
+
+        auto decrypted = algo.decryptPayload(encrypted, 0, encrypted.size());
+        EXPECT_EQ(decrypted, payload) << "payload length " << len;
+    }
 }
