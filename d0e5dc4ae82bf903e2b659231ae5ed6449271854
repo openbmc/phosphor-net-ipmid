@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7977e4d3_0f993bcf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002762
+      },
+      "writtenOn": "2026-09-15T05:17:51Z",
+      "side": 1,
+      "message": "The change is good because it replaces the PAM-based lockout check with explicit D-Bus checks for account lockout and password expiry, while preserving disabled-user validation.\nNote:Please note that this introduces a runtime dependency on phosphor-user-manager; if it is unavailable, IPMI-over-LANPlus authentication will fail and LANPlus communication will be affected.\n@vernon.mauery@gmail.com Could You Check this ?",
+      "revId": "d0e5dc4ae82bf903e2b659231ae5ed6449271854",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
