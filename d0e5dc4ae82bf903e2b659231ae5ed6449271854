@@ -1,0 +1,9 @@
+Code-Review+2: Vernon Mauery <vernon.mauery@gmail.com>
+Code-Review+1: Nagavarapu Sai Pavan <saipavann@ami.com>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Submitted-by: Vijaysankar Ravi <vijaysankarr@ami.com>
+Submitted-at: Sat, 10 Oct 2026 04:18:07 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/phosphor-net-ipmid/+/94326
+Comments-Total: 7
+Project: openbmc/phosphor-net-ipmid
+Branch: refs/heads/master
