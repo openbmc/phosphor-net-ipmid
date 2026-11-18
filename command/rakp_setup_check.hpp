@@ -30,6 +30,28 @@ inline bool rakp1AllowedForState(uint8_t sessionState)
 }
 
 /**
+ * @brief Determine whether RAKP Message 3 may be processed for a session.
+ *
+ * RAKP Message 3 completes the RMCP+ key-exchange and activates the session.
+ * It must only be processed while the session is still being set up. Once a
+ * session is active (or tearing down / inactive), re-processing RAKP Message 3
+ * would allow an attacker who knows the BMC session ID to re-run activation
+ * against already-installed state. Combined with the Session::rakp2Committed
+ * gate (which ensures a matching RAKP Message 2 actually committed fresh key
+ * material), this prevents RAKP Message 3 from validating against stale or
+ * default authentication state.
+ *
+ * @param[in] sessionState - the current session::State value of the session
+ *
+ * @return true if RAKP Message 3 is permitted for this state, else false
+ */
+inline bool rakp3AllowedForState(uint8_t sessionState)
+{
+    return static_cast<session::State>(sessionState) ==
+           session::State::setupInProgress;
+}
+
+/**
  * @brief Verify an incoming RAKP message originates from the console that
  *        opened the session.
  *
