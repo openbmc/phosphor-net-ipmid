@@ -227,6 +227,44 @@ class Session : public SessionIface
         return cryptAlgoInterface ? true : false;
     }
 
+    /**
+     * @brief Drop packet keys derived during key exchange, used on RAKP1
+     *        re-derivation so no previously installed keys survive.
+     *
+     * The integrity and confidentiality interfaces are derived packet-key
+     * state (installed at RAKP3/4) and are torn down; they are rebuilt by the
+     * next RAKP3/4. The authentication interface holds the algorithm negotiated
+     * at Open Session (not re-negotiated by RAKP1) and is used right after this
+     * call, so it is kept and only its derived session integrity key is
+     * cleared.
+     */
+    void resetDerivedCryptoState()
+    {
+        integrityAlgoInterface = nullptr;
+        cryptAlgoInterface = nullptr;
+        if (authAlgoInterface)
+        {
+            authAlgoInterface->sessionIntegrityKey.clear();
+        }
+    }
+
+    /**
+     * @brief Bind the originating requester tuple to the session.
+     *
+     * Records the source IP address and port of the remote console that
+     * originated session setup. Subsequent RAKP messages are verified to
+     * originate from this same tuple.
+     *
+     * @param[in] addr - source IP address of the remote console
+     * @param[in] port - source port of the remote console
+     */
+    void bindRequester(const std::string& addr, uint16_t port)
+    {
+        remoteAddr = addr;
+        remoteConsolePort = port;
+        requesterBound = true;
+    }
+
     void updateLastTransactionTime()
     {
         lastTime = std::chrono::steady_clock::now();
@@ -290,6 +328,16 @@ class Session : public SessionIface
 
     /** @brief Socket channel for communicating with the remote client.*/
     std::shared_ptr<udpsocket::Channel> channelPtr;
+
+    /** @brief Originating requester tuple bound at session setup.
+     *
+     * The source IP address and port of the remote console that originated the
+     * Open Session Request. RAKP setup messages for this session must originate
+     * from this same tuple; see command::rakp1RequesterMatches().
+     */
+    std::string remoteAddr{};
+    uint16_t remoteConsolePort{0};
+    bool requesterBound{false};
 
   private:
     SessionID bmcSessionID = 0;           // BMC Session ID
