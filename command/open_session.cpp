@@ -9,9 +9,8 @@
 namespace command
 {
 
-std::vector<uint8_t> openSession(
-    const std::vector<uint8_t>& inPayload,
-    std::shared_ptr<message::Handler>& /* handler */)
+std::vector<uint8_t> openSession(const std::vector<uint8_t>& inPayload,
+                                 std::shared_ptr<message::Handler>& handler)
 {
     auto request =
         reinterpret_cast<const OpenSessionRequest*>(inPayload.data());
@@ -23,6 +22,14 @@ std::vector<uint8_t> openSession(
 
     std::vector<uint8_t> outPayload(sizeof(OpenSessionResponse));
     auto response = reinterpret_cast<OpenSessionResponse*>(outPayload.data());
+
+    if (!handler || !handler->getChannel())
+    {
+        response->status_code =
+            static_cast<uint8_t>(RAKP_ReturnCode::INSUFFICIENT_RESOURCE);
+        lg2::error("openSession : no handler or channel info present");
+        return outPayload;
+    }
 
     // Per the IPMI Spec, messageTag and remoteConsoleSessionID are always
     // returned
@@ -109,6 +116,10 @@ std::vector<uint8_t> openSession(
     response->confAlgo = request->confAlgo;
 
     session->updateLastTransactionTime();
+
+    uint32_t ipAddr{0};
+    std::string addr = handler->getChannel()->getRemoteAddress(ipAddr);
+    session->bindRequester(addr, handler->getChannel()->getPort());
 
     // Session state is Setup in progress
     session->state(static_cast<uint8_t>(session::State::setupInProgress));
