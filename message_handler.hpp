@@ -63,6 +63,18 @@ class Handler : public std::enable_shared_from_this<Handler>
     /** @brief Set socket channel in session object */
     void setChannelInSession() const;
 
+    /** @brief Get the socket channel this handler is operating on.
+     *
+     *  Used by the session setup commands to bind and verify the originating
+     *  requester tuple (source address and port).
+     *
+     *  @return shared pointer to the socket channel
+     */
+    std::shared_ptr<udpsocket::Channel> getChannel() const
+    {
+        return channel;
+    }
+
     /** @brief Send the SOL payload
      *
      *  The SOL payload is flattened and sent out on the socket
