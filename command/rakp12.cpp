@@ -365,6 +365,13 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
     // Generate Key Exchange Authentication Code - RAKP2
     auto output = authAlgo->generateHMAC(input);
 
+    // Fresh per-account key material and BMC random number are now committed to
+    // the authentication algorithm; mark RAKP2 complete so RAKP Message 3 is
+    // permitted to validate against them. This must be the only place this flag
+    // is set - every early-return above leaves it false so RAKP Message 3
+    // cannot complete against stale/default state.
+    session->rakp2Committed = true;
+
     response->messageTag = request->messageTag;
     response->rmcpStatusCode = static_cast<uint8_t>(RAKP_ReturnCode::NO_ERROR);
     response->reserved = 0;

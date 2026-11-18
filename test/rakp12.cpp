@@ -9,6 +9,7 @@
 
 using command::rakp1AllowedForState;
 using command::rakp1RequesterMatches;
+using command::rakp3AllowedForState;
 
 // Regression test for the RAKP Message 1 relabeling CVE.
 //
@@ -37,6 +38,33 @@ TEST(RAKP1SetupGuard, OnlySetupInProgressAllowsRakp1)
     EXPECT_FALSE(
         rakp1AllowedForState(static_cast<uint8_t>(session::State::inactive)));
     EXPECT_FALSE(rakp1AllowedForState(
+        static_cast<uint8_t>(session::State::tearDownInProgress)));
+}
+
+// Regression test for the RAKP Message 3 stale-state authentication bypass
+//
+// Every early-return error path in RAKP Message 1 (for example a request for
+// CALLBACK privilege) returns before the per-account user key and a fresh BMC
+// random number are committed to the authentication algorithm, leaving stale
+// or default key material behind. Before the fix, RAKP Message 3 validated
+// against whatever state was present, so an attacker could activate a session
+// without a valid password. RAKP Message 3 must only be processed for a
+// session still in setup (and, in RAKP34(), only when rakp2Committed is set).
+
+TEST(RAKP3SetupGuard, OnlySetupInProgressAllowsRakp3)
+{
+    // A session still being set up is the only state that may process RAKP3.
+    EXPECT_TRUE(rakp3AllowedForState(
+        static_cast<uint8_t>(session::State::setupInProgress)));
+
+    // An already-active session must not re-process RAKP Message 3.
+    EXPECT_FALSE(
+        rakp3AllowedForState(static_cast<uint8_t>(session::State::active)));
+
+    // Every other non-setup state must reject RAKP Message 3.
+    EXPECT_FALSE(
+        rakp3AllowedForState(static_cast<uint8_t>(session::State::inactive)));
+    EXPECT_FALSE(rakp3AllowedForState(
         static_cast<uint8_t>(session::State::tearDownInProgress)));
 }
 
