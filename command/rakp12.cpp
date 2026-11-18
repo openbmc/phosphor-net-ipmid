@@ -5,6 +5,7 @@
 #include "comm_module.hpp"
 #include "endian.hpp"
 #include "guid.hpp"
+#include "rakp_setup_check.hpp"
 #include "sessions_manager.hpp"
 
 #include <openssl/rand.h>
@@ -67,7 +68,7 @@ bool rejectIfNotClear(ipmi::Cc cc, bool positive, uint8_t userId,
 } // namespace
 
 std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
-                            std::shared_ptr<message::Handler>& /* handler */)
+                            std::shared_ptr<message::Handler>& handler)
 {
     auto request = reinterpret_cast<const RAKP1request*>(inPayload.data());
     // verify inPayload minimum size
@@ -103,6 +104,39 @@ std::vector<uint8_t> RAKP12(const std::vector<uint8_t>& inPayload,
             static_cast<uint8_t>(RAKP_ReturnCode::INVALID_SESSION_ID);
         return outPayload;
     }
+
+    if (!rakp1AllowedForState(session->state()))
+    {
+        lg2::warning(
+            "RAKP12: RAKP Message 1 rejected; session not in setup, id: {ID}",
+            "ID", lg2::hex, session->getBMCSessionID());
+        response->rmcpStatusCode =
+            static_cast<uint8_t>(RAKP_ReturnCode::INVALID_SESSION_ID);
+        logInvalidLoginRedfishEvent(
+            "RAKP Message 1 on non-setup session rejected");
+        return outPayload;
+    }
+
+    if (handler && handler->getChannel())
+    {
+        uint32_t ipAddr = 0;
+        std::string reqAddr = handler->getChannel()->getRemoteAddress(ipAddr);
+        uint16_t reqPort = handler->getChannel()->getPort();
+        if (!rakp1RequesterMatches(session->requesterBound, session->remoteAddr,
+                                   session->remoteConsolePort, reqAddr,
+                                   reqPort))
+        {
+            lg2::warning("RAKP12: RAKP Message 1 requester mismatch, id: {ID}",
+                         "ID", lg2::hex, session->getBMCSessionID());
+            response->rmcpStatusCode =
+                static_cast<uint8_t>(RAKP_ReturnCode::INVALID_SESSION_ID);
+            logInvalidLoginRedfishEvent(
+                "RAKP Message 1 requester tuple mismatch rejected");
+            return outPayload;
+        }
+    }
+
+    session->resetDerivedCryptoState();
 
     auto rakp1Size =
         sizeof(RAKP1request) - (userNameMaxLen - request->user_name_len);

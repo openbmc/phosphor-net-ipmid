@@ -21,7 +21,7 @@ endif
 
 test_sources = ['../integrity_algo.cpp', '../crypt_algo.cpp']
 
-tests = ['cipher.cpp']
+tests = ['cipher.cpp', 'rakp12.cpp']
 
 foreach t : tests
     test(
