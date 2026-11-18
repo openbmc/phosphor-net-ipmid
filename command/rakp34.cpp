@@ -4,6 +4,7 @@
 #include "endian.hpp"
 #include "guid.hpp"
 #include "memcmp.hpp"
+#include "rakp_setup_check.hpp"
 #include "rmcp.hpp"
 #include "sessions_manager.hpp"
 
@@ -105,6 +106,17 @@ std::vector<uint8_t> RAKP34(const std::vector<uint8_t>& inPayload,
     }
 
     session->updateLastTransactionTime();
+
+    if (!rakp3AllowedForState(session->state()) || !session->rakp2Committed)
+    {
+        lg2::warning(
+            "RAKP34: RAKP Message 3 rejected; no completed RAKP Message 2, "
+            "id: {ID}",
+            "ID", lg2::hex, session->getBMCSessionID());
+        response->rmcpStatusCode =
+            static_cast<uint8_t>(RAKP_ReturnCode::INVALID_INTEGRITY_VALUE);
+        return outPayload;
+    }
 
     auto authAlgo = session->getAuthAlgo();
     /*

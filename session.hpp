@@ -242,6 +242,7 @@ class Session : public SessionIface
     {
         integrityAlgoInterface = nullptr;
         cryptAlgoInterface = nullptr;
+        rakp2Committed = false;
         if (authAlgoInterface)
         {
             authAlgoInterface->sessionIntegrityKey.clear();
@@ -338,6 +339,22 @@ class Session : public SessionIface
     std::string remoteAddr{};
     uint16_t remoteConsolePort{0};
     bool requesterBound{false};
+
+    /** @brief Whether RAKP Message 1 committed fresh authentication material.
+     *
+     * Set only at the successful completion of RAKP Message 1 processing, once
+     * the per-account user key and a freshly generated BMC random number have
+     * been committed to the authentication algorithm. Cleared by
+     * resetDerivedCryptoState() at the start of every RAKP Message 1.
+     *
+     * RAKP Message 3 must refuse to validate unless this is set: every
+     * early-return error path in RAKP Message 1 leaves stale key material (a
+     * default/previous user key and a stale BMC random number) in the
+     * authentication algorithm, and without this gate RAKP Message 3 would
+     * happily validate against that stale state, activating a session with no
+     * valid password.
+     */
+    bool rakp2Committed{false};
 
   private:
     SessionID bmcSessionID = 0;           // BMC Session ID

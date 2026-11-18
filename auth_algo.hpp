@@ -114,15 +114,14 @@ class Interface
         }
     }
 
-    // User Key is hardcoded to PASSW0RD till the IPMI User account
-    // management is in place.
-    std::array<uint8_t, USER_KEY_MAX_LENGTH> userKey = {"0penBmc"};
+    // User Key - the per-account secret used to key the RAKP HMAC.
+    std::array<uint8_t, USER_KEY_MAX_LENGTH> userKey = {};
 
-    // Managed System Random Number
-    std::array<uint8_t, BMC_RANDOM_NUMBER_LEN> bmcRandomNum;
+    // Managed System Random Number - set during RAKP
+    std::array<uint8_t, BMC_RANDOM_NUMBER_LEN> bmcRandomNum = {};
 
     // Remote Console Random Number
-    std::array<uint8_t, REMOTE_CONSOLE_RANDOM_NUMBER_LEN> rcRandomNum;
+    std::array<uint8_t, REMOTE_CONSOLE_RANDOM_NUMBER_LEN> rcRandomNum = {};
 
     // Session Integrity Key
     std::vector<uint8_t> sessionIntegrityKey;
