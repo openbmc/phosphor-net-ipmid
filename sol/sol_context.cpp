@@ -286,9 +286,10 @@ void Context::resendPayload(bool clear)
 
     if (clear)
     {
+        size_t eraseCount = expectedCharCount;
         payloadCache.clear();
         expectedCharCount = 0;
-        sol::Manager::get().dataBuffer.erase(expectedCharCount);
+        sol::Manager::get().dataBuffer.erase(eraseCount);
     }
 }
 
