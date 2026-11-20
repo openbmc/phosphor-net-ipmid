@@ -209,6 +209,20 @@ void Manager::stopPayloadInstance(uint8_t payloadInstance)
         throw std::runtime_error("SOL Payload instance not found ");
     }
 
+    if (iter->second)
+    {
+        try
+        {
+            iter->second->enableAccumulateTimer(false);
+        }
+        catch (const std::exception& e)
+        {
+            lg2::error(
+                "Failed to stop accumulate timer for SOL payload instance: {ERROR}",
+                "ERROR", e);
+        }
+    }
+
     payloadMap.erase(iter);
 
     if (payloadMap.empty())
@@ -240,6 +254,23 @@ void Manager::stopPayloadInstanceBySessionID(session::SessionID sessionID)
 
 void Manager::stopAllPayloadInstance()
 {
+    for (auto& [instance, context] : payloadMap)
+    {
+        if (context)
+        {
+            try
+            {
+                context->enableAccumulateTimer(false);
+                context->enableRetryTimer(false);
+            }
+            catch (const std::exception& e)
+            {
+                lg2::error(
+                    "Failed to stop accumulate timer for SOL payload instance: {ERROR}",
+                    "ERROR", e);
+            }
+        }
+    }
     // Erase all payload instance
     payloadMap.erase(payloadMap.begin(), payloadMap.end());
 
