@@ -192,7 +192,7 @@ int EventLoop::setupSocket(std::shared_ptr<sdbusplus::asio::connection>& bus,
         udpSocket->bind(ep);
     }
     // SO_BINDTODEVICE
-    char nameout[IFNAMSIZ];
+    char nameout[IFNAMSIZ] = {0};
     unsigned int lenout = sizeof(nameout);
     if ((::getsockopt(udpSocket->native_handle(), SOL_SOCKET, SO_BINDTODEVICE,
                       nameout, &lenout) == -1))
@@ -200,6 +200,7 @@ int EventLoop::setupSocket(std::shared_ptr<sdbusplus::asio::connection>& bus,
         lg2::error("Failed to read bound device: {ERROR}", "ERROR",
                    strerror(errno));
     }
+    nameout[sizeof(nameout) - 1] = '\0';
     if (iface != nameout && iface != unboundIface)
     {
         // SO_BINDTODEVICE
