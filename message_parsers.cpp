@@ -158,8 +158,8 @@ std::vector<uint8_t> flatten(
 
     // Insert the Session Trailer
     packet.resize(packet.size() + sizeof(SessionTrailer_t));
-    auto trailer =
-        reinterpret_cast<SessionTrailer_t*>(packet.data() + packet.size());
+    auto trailer = reinterpret_cast<SessionTrailer_t*>(
+        packet.data() + packet.size() - sizeof(SessionTrailer_t));
     trailer->legacyPad = 0x00;
 
     return packet;
