@@ -2,6 +2,7 @@
 
 #include "main.hpp"
 #include "session.hpp"
+#include "sol/sol_manager.hpp"
 
 #include <phosphor-logging/lg2.hpp>
 #include <sdbusplus/asio/connection.hpp>
@@ -180,6 +181,18 @@ bool Manager::stopSession(SessionID bmcSessionID)
     {
         iter->second->state(
             static_cast<uint8_t>(session::State::tearDownInProgress));
+
+        try
+        {
+            sol::Manager::get().stopPayloadInstanceBySessionID(bmcSessionID);
+        }
+        catch (const std::exception& e)
+        {
+            lg2::error(
+                "Failed to stop payload instance: bmcSessionID = {ID}, error: {ERROR}",
+                "ID", bmcSessionID, "ERROR", e);
+        }
+
         return true;
     }
     else
@@ -266,6 +279,17 @@ void Manager::cleanStaleEntries()
                 "Removing idle IPMI LAN session, id: {ID}, handler: {HANDLE}",
                 "ID", session->getBMCSessionID(), "HANDLE",
                 getSessionHandle(session->getBMCSessionID()));
+            try
+            {
+                sol::Manager::get().stopPayloadInstanceBySessionID(
+                    session->getBMCSessionID());
+            }
+            catch (const std::exception& e)
+            {
+                lg2::error(
+                    "Failed to stop payload instance: bmcSessionID = {ID}, error: {ERROR}",
+                    "ID", session->getBMCSessionID(), "ERROR", e);
+            }
             sessionHandleMap[getSessionHandle(session->getBMCSessionID())] = 0;
             iter = sessionsMap.erase(iter);
         }
