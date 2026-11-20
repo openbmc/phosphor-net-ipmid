@@ -16,6 +16,7 @@
 
 #include <chrono>
 #include <cmath>
+#include <vector>
 
 constexpr const char* solInterface = "xyz.openbmc_project.Ipmi.SOL";
 constexpr const char* solPath = "/xyz/openbmc_project/ipmi/sol/";
@@ -215,6 +216,25 @@ void Manager::stopPayloadInstance(uint8_t payloadInstance)
         stopHostConsole();
 
         dataBuffer.erase(dataBuffer.size());
+    }
+}
+
+void Manager::stopPayloadInstanceBySessionID(session::SessionID sessionID)
+{
+    // Collect matching payload IDs first so erasing from payloadMap during
+    // stopPayloadInstance() cannot invalidate range-for iterators.
+    std::vector<uint8_t> tmpInstances;
+    for (const auto& [instance, context] : payloadMap)
+    {
+        if (context && context->sessionID == sessionID)
+        {
+            tmpInstances.push_back(instance);
+        }
+    }
+
+    for (const auto tmpInstance : tmpInstances)
+    {
+        stopPayloadInstance(tmpInstance);
     }
 }
 

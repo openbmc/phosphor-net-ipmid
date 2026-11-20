@@ -214,6 +214,15 @@ class Manager
      */
     void stopPayloadInstance(uint8_t payloadInstance);
 
+    /** @brief Stop SOL payload instance by session ID.
+     *
+     *  Deactivates SOL payload when a session ends to avoid stale session
+     *  references.
+     *
+     *  @param[in] sessionID - BMC session ID.
+     */
+    void stopPayloadInstanceBySessionID(session::SessionID sessionID);
+
     /* @brief Stop all the active SOL payload instances */
     void stopAllPayloadInstance();
 
